@@ -9,7 +9,6 @@ import { Reflector } from '@nestjs/core';
 import { CommandBus } from '@nestjs/cqrs';
 import { JsonWebTokenError, JwtService, TokenExpiredError } from '@nestjs/jwt';
 import RemoveSessionCommand from 'src/modules/users/auth/commands/impl/remove-session.command';
-import { jwtConstants } from 'src/modules/users/auth/constants';
 import { AuthRepository } from 'src/modules/users/auth/repositories/auth.repository';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { JwtErrorCode } from '../enum/jwt-error-code.enum';
@@ -51,9 +50,7 @@ export class AuthGuard implements CanActivate {
       });
 
     try {
-      const payload = await this.jwt.verifyAsync<IJwtPayload>(token, {
-        secret: jwtConstants.secret,
-      });
+      const payload = await this.jwt.verifyAsync<IJwtPayload>(token);
 
       const session = await this.repository.getSession(payload.token_id);
 

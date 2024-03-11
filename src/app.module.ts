@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
@@ -9,18 +9,21 @@ import { RequestContextModule } from 'nestjs-request-context';
 import { join } from 'path';
 import { AuthGuard } from './common/guards/auth.guard';
 import { PermissionsGuard } from './common/guards/permission.guard';
+import IEnv from './common/interface/env.interface';
 import { DrizzleModule } from './infrastructure/drizzle/drizzle.module';
 import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-file-upload.module';
 import { UserModules } from './modules/users';
-import { jwtConstants } from './modules/users/auth/constants';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, cache: true }),
     CqrsModule.forRoot(),
-    JwtModule.register({
+    JwtModule.registerAsync({
       global: true,
-      secret: jwtConstants.secret,
+      useFactory: async (config: ConfigService<IEnv>) => ({
+        secret: config.get('JWT_SECRET'),
+      }),
+      inject: [ConfigService],
     }),
     NestjsFormDataModule.config({ isGlobal: true }),
     RequestContextModule,
