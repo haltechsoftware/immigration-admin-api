@@ -9,6 +9,7 @@ import {
   maxLength,
   minLength,
   objectAsync,
+  optional,
   special,
   string,
   stringAsync,
@@ -24,10 +25,8 @@ const CreateUserDto = objectAsync({
     minLength(3, 'ຄວາມຍາວຕໍ່າສຸດທີ່ຕ້ອງການແມ່ນ 3 ຕົວອັກສອນ.'),
     maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
   ]),
-  image: special(
-    (input) => input instanceof MemoryStoredFile,
-    'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ',
-    [
+  image: optional(
+    special((input) => input instanceof MemoryStoredFile, 'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ', [
       custom(
         (input: MemoryStoredFile) =>
           ['image/jpeg', 'image/png', 'image/webp'].includes(input.mimeType),
@@ -37,7 +36,7 @@ const CreateUserDto = objectAsync({
         (input: MemoryStoredFile) => input.size <= 1024 * 1024 * 10,
         'ກະລຸນາເລືອກໄຟລ໌ທີ່ນ້ອຍກວ່າ 10 MB.',
       ),
-    ],
+    ]),
   ),
   email: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
     email('ຕ້ອງເປັນຮູບແບບອີເມວທີ່ຖືກຕ້ອງ.'),
