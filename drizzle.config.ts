@@ -10,5 +10,6 @@ export default {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: <string>process.env.DB_NAME,
+    ssl: process.env.DB_SSL,
   },
 } satisfies Config;

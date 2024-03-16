@@ -4,6 +4,7 @@ import {
   integer,
   pgTable,
   serial,
+  text,
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
@@ -17,7 +18,7 @@ export const profiles = pgTable('profiles', {
   }),
   first_name: varchar('first_name', { length: 100 }).notNull(),
   last_name: varchar('last_name', { length: 100 }).notNull(),
-  image: varchar('image', { length: 255 }).notNull(),
+  image: text('image'),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
     .notNull(),

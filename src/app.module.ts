@@ -12,7 +12,17 @@ import { PermissionsGuard } from './common/guards/permission.guard';
 import IEnv from './common/interface/env.interface';
 import { DrizzleModule } from './infrastructure/drizzle/drizzle.module';
 import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-file-upload.module';
+import { accommodationRequestModules } from './modules/accommodation_requests';
+import { BannerModules } from './modules/banners';
+import { checkpointModules } from './modules/checkpoints';
+import { feedbackModules } from './modules/feedback';
+import { fileAndDirectoryModules } from './modules/files_and_directories';
+import { HotelModules } from './modules/hotels';
+import { lawModules } from './modules/laws';
+import { NewsModules } from './modules/news';
+import { registrationModules } from './modules/registrations';
 import { UserModules } from './modules/users';
+import { visaModules } from './modules/visa';
 
 @Module({
   imports: [
@@ -33,6 +43,16 @@ import { UserModules } from './modules/users';
     }),
     DrizzleModule,
     ...UserModules,
+    ...BannerModules,
+    ...feedbackModules,
+    ...HotelModules,
+    ...NewsModules,
+    ...accommodationRequestModules,
+    ...visaModules,
+    ...lawModules,
+    ...checkpointModules,
+    ...fileAndDirectoryModules,
+    ...registrationModules,
   ],
   providers: [
     {
