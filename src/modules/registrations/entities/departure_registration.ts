@@ -32,6 +32,7 @@ export const departureRegistration = pgTable('departure_registration', {
   verification_code: char('verification_code', { length: 10 })
     .notNull()
     .unique(),
+  verified_at: timestamp('verified_at', { mode: 'string' }),
   black_list: blackListStatus('black_list').notNull(),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
