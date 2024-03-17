@@ -4,6 +4,7 @@ import { ValibotExceptionsFilter } from './common/filters/valibot-exception.filt
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
 
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new ValibotExceptionsFilter(httpAdapter));
