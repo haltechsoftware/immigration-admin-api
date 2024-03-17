@@ -50,7 +50,6 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
       permissions: permissionNames,
     };
 
-    delete user.roles;
     delete user.usersToRoles;
 
     return {
@@ -59,6 +58,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
       }),
       user,
       permissions: permissionNames,
+      roles: user.roles.map((val) => val.name),
     };
   }
 }
