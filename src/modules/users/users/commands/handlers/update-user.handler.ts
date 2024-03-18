@@ -19,12 +19,8 @@ export default class UpdateUserHandler
   async execute({ id, dto }: UpdateUserCommand): Promise<string> {
     const user = await this.repository.getById(id);
 
-    console.log(user);
-
     if (!user)
       throw new NotFoundException({ message: 'ຜູ້ໃຊ້ນີ້ບໍ່ມີໃນລະບົບ' });
-
-    console.log(dto.image);
 
     let imageUrl: string | undefined;
     if (dto.image) {

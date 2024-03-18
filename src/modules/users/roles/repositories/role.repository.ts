@@ -11,12 +11,14 @@ export class RoleRepository {
     await this.drizzle.db().transaction(async (tx) => {
       const roleRes = await tx.insert(roles).values(role).returning();
 
-      await tx.insert(rolesToPermissions).values(
-        perIds.map((id) => ({
-          role_id: roleRes[0].id,
-          permission_id: id,
-        })),
-      );
+      if (perIds.length > 0) {
+        await tx.insert(rolesToPermissions).values(
+          perIds.map((id) => ({
+            role_id: roleRes[0].id,
+            permission_id: id,
+          })),
+        );
+      }
     });
   }
 
@@ -39,16 +41,18 @@ export class RoleRepository {
         .where(eq(roles.id, insert.id))
         .returning();
 
-      await tx
-        .delete(rolesToPermissions)
-        .where(eq(rolesToPermissions.role_id, roleRes[0].id));
+      if (perIds.length > 0) {
+        await tx
+          .delete(rolesToPermissions)
+          .where(eq(rolesToPermissions.role_id, roleRes[0].id));
 
-      await tx.insert(rolesToPermissions).values(
-        perIds.map((id) => ({
-          role_id: roleRes[0].id,
-          permission_id: id,
-        })),
-      );
+        await tx.insert(rolesToPermissions).values(
+          perIds.map((id) => ({
+            role_id: roleRes[0].id,
+            permission_id: id,
+          })),
+        );
+      }
     });
   }
 
