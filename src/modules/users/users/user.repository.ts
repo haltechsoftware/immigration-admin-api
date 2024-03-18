@@ -39,12 +39,14 @@ export class UserRepository {
         user_id: userRes[0].id,
       });
 
-      await tx.insert(usersToRoles).values(
-        input.roleIds.map((id) => ({
-          role_id: id,
-          user_id: userRes[0].id,
-        })),
-      );
+      if (input.roleIds.length > 0) {
+        await tx.insert(usersToRoles).values(
+          input.roleIds.map((id) => ({
+            role_id: id,
+            user_id: userRes[0].id,
+          })),
+        );
+      }
     });
   }
 
