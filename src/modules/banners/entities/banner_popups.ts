@@ -21,3 +21,5 @@ export const bannerPopups = pgTable('banner_popups', {
     .defaultNow()
     .notNull(),
 });
+
+export type BannerPopup = typeof bannerPopups.$inferSelect;
