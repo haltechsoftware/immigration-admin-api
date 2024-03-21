@@ -7,12 +7,12 @@ export type InsertPopupType = InsertBannerPopup;
 
 export type UpdatePopupType = InsertPopupType;
 
-// export type UpdatePopupPrivateType = Omit<InsertPopupType, "image" | "link" | "start_time" | "end_time"> & {
-//   image?: string;
-//   link: string;
-//   start_time: number;
-//   end_time: number;
-// };
+export type UpdatePopupPrivateType = Omit<InsertPopupType, "image" | "link" | "start_time" | "end_time"> & {
+  image?: string;
+  link: string;
+  start_time: number;
+  end_time: number;
+};
 @Injectable()
 export class PopupRepository {
   constructor(private readonly drizzle: DrizzleService) {}
@@ -54,10 +54,10 @@ export class PopupRepository {
       .update(bannerPopups)
       .set({
         image: input.image, 
-          link: input.link, 
-          is_private: input.is_private, 
-          start_time: input.start_time, 
-          end_time: input.end_time
+        link: input.link, 
+        is_private: input.is_private, 
+        start_time: input.start_time, 
+        end_time: input.end_time
       })
       .where(eq(bannerPopups.id, input.id));
     });
@@ -67,7 +67,7 @@ export class PopupRepository {
     await this.drizzle.db().delete(bannerPopups).where(eq(bannerPopups.id, id));
   }
 
-  async updatePrivate(input): Promise<void> {
+  async updatePrivate(input: Partial<UpdatePopupPrivateType>): Promise<void> {
     await this.drizzle.db().transaction(async (tx) => {
       await tx
       .update(bannerPopups)
