@@ -23,3 +23,4 @@ export const bannerPopups = pgTable('banner_popups', {
 });
 
 export type BannerPopup = typeof bannerPopups.$inferSelect;
+export type InsertBannerPopup = typeof bannerPopups.$inferInsert;

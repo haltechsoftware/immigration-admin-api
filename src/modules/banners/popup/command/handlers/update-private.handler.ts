@@ -16,7 +16,7 @@ export default class UpdatePrivatePopupHandler
     const popup = await this.repository.getById(id);
 
     if (!popup)
-      throw new NotFoundException({ message: 'ບໍ່ມີໃນລະບົບ' });
+      throw new NotFoundException('ບໍ່ມີໃນລະບົບ' );
 
     await this.repository.updatePrivate({
         id,

@@ -26,14 +26,17 @@ export default class CreateUserHandler
       );
     }
 
+    const startTime = new Date(dto.start_time);
+    const endTime = new Date(dto.start_time);
+
     try {
       if (dto.end_time >= dto.start_time) {
           await this.repository.create({
               image: image,
               link: dto.link,
               is_private: dto.is_private,
-              start_time: new Date(dto.start_time),
-              end_time: new Date(dto.end_time),
+              start_time: startTime,
+              end_time: endTime,
           });
 
           return 'ເພີ່ມສຳເລັດ';

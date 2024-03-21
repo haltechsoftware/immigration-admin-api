@@ -16,13 +16,16 @@ export default class UpdatePopupHandler
 
   async execute({ dto,id }: UpdatePopupCommand): Promise<string> {
     const popup = await this.repository.getById(id);
-
-    if (!popup)
-      throw new NotFoundException({ message: 'ບໍ່ມີໃນລະບົບ' });
+    
+    if (!popup && popup === undefined) {
+      throw new NotFoundException('ບໍ່ມີໃນລະບົບ');
+    }
     
     let image: string | undefined;
 
     if (dto.image) {
+        await this.fileUpload.remove(popup.image);
+
       image = await this.fileUpload.upload(
         'image/',
         dto.image.buffer,
@@ -50,7 +53,7 @@ export default class UpdatePopupHandler
         }
     }
 
-    throw new HttpException('ວັນທີສິ້ນສຸດຕ້ອງໃຫ່ຍກວ່າ ຫຼື ເທົ່າກັບວັນທີເລີ່ມ', HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new HttpException({message: 'ວັນທີສິ້ນສຸດຕ້ອງໃຫ່ຍກວ່າ ຫຼື ເທົ່າກັບວັນທີເລີ່ມ'}, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

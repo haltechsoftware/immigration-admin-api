@@ -45,9 +45,9 @@ const CreatePopupDto = object({
     custom((input: string) => isNotEmpty(input), 'ບໍ່ສາມາດເປັນວ່າງ:'),
     custom((input) => IsDate.test(input), 'ຄວນເປັນວັນທີເດືອນປີ.'),
     custom((input: string) => {
-    const today = new Date().toISOString().slice(0, 19).replace('T', ' ').slice(0, 10);
+      const today = new Date().toISOString().slice(0, 10); // Adjusted to Y-M-D format
       return input.startsWith(today);
-    }, `ຄວນເປັນມື້ປັດຈຸບັນ: ${new Date().toISOString().slice(0, 19).replace('T', ' ').slice(0, 10)}`),
+    }, `ຄວນເປັນມື້ປັດຈຸບັນ: ${new Date().toISOString().slice(0, 10)}`),
   ]),
 
   end_time: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [

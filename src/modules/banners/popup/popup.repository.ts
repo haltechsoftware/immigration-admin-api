@@ -1,23 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { bannerPopups } from '../entities';
+import { InsertBannerPopup, bannerPopups } from '../entities';
 import { eq, sql } from 'drizzle-orm';
 
+export type InsertPopupType = InsertBannerPopup;
 
+export type UpdatePopupType = InsertPopupType;
+
+// export type UpdatePopupPrivateType = Omit<InsertPopupType, "image" | "link" | "start_time" | "end_time"> & {
+//   image?: string;
+//   link: string;
+//   start_time: number;
+//   end_time: number;
+// };
 @Injectable()
 export class PopupRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
-  async create(data): Promise<void> {
+  async create(input: InsertPopupType): Promise<void> {
+    console.log(input.start_time);
     await this.drizzle.db().transaction(async (tx) => {
       await tx
         .insert(bannerPopups)
         .values({ 
-          image: data.image, 
-          link: data.link, 
-          is_private: data.is_private, 
-          start_time: data.start_time, 
-          end_time: data.end_time
+          image: input.image, 
+          link: input.link, 
+          is_private: input.is_private, 
+          start_time: input.start_time, 
+          end_time: input.end_time
         })
         .returning();
     });
@@ -33,22 +43,23 @@ export class PopupRepository {
     id: number,
   ): Promise<any> {
     const res = await this._getByIdPrepared.execute({ id });
+    const data = res;
 
-      return {...res};
+    return data;
   }
 
-  async update(data): Promise<void> {
+  async update(input: UpdatePopupType): Promise<void> {
     await this.drizzle.db().transaction(async (tx) => {
       await tx
       .update(bannerPopups)
       .set({
-        image: data.image, 
-          link: data.link, 
-          is_private: data.is_private, 
-          start_time: data.start_time, 
-          end_time: data.end_time
+        image: input.image, 
+          link: input.link, 
+          is_private: input.is_private, 
+          start_time: input.start_time, 
+          end_time: input.end_time
       })
-      .where(eq(bannerPopups.id, data.id));
+      .where(eq(bannerPopups.id, input.id));
     });
   }
 
@@ -56,14 +67,14 @@ export class PopupRepository {
     await this.drizzle.db().delete(bannerPopups).where(eq(bannerPopups.id, id));
   }
 
-  async updatePrivate(data): Promise<void> {
+  async updatePrivate(input): Promise<void> {
     await this.drizzle.db().transaction(async (tx) => {
       await tx
       .update(bannerPopups)
       .set({
-          is_private: data.is_private, 
+          is_private: input.is_private, 
       })
-      .where(eq(bannerPopups.id, data.id));
+      .where(eq(bannerPopups.id, input.id));
     });
   }
 }

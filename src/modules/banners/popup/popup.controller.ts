@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Put, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, Query, UseInterceptors } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FormDataRequest } from 'nestjs-form-data';
 import { MergeDrizzleToReqInterceptor } from 'src/common/interceptor/merge-drizzle-to-req/merge-drizzle-to-req.interceptor';
@@ -15,6 +15,9 @@ import DeletePopupCommand from './command/impl/delete-popup.command';
 import UpdatePrivatePopupCommand from './command/impl/update-private-popup.command';
 import { UpdatePrivatePopupDto, UpdatePrivatePopupDtoType } from './dto/update-private.dto';
 import { ValibotAsync } from 'src/common/decorators/valibot/valibot-async.decorator';
+import { IOffsetBasePaginate } from 'src/common/interface/pagination/pagination.interface';
+import { BannerPopup } from '../entities';
+import GetReportPopupQuery from './queries/impl/report-popup.query';
 
 @Controller('popup')
 export class PopupController {
@@ -29,6 +32,12 @@ export class PopupController {
     query: OffsetBasePaginateDtoType,
   ) {
     return await this.queryBus.execute<GetPopupQuery>(new GetPopupQuery(query));
+  }
+
+  @Get('report')
+  async getReport(@Query() query
+  ): Promise<any> {
+    return await this.queryBus.execute<GetReportPopupQuery, IOffsetBasePaginate<BannerPopup>>(new GetReportPopupQuery(query));
   }
 
   @UseInterceptors(MergeDrizzleToReqInterceptor)
