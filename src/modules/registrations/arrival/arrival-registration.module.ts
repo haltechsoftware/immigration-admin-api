@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ArrivalRegistrationController } from './arrival-registration.controller';
-import reportRegisterHandlers from './queries/handlers';
+import arrivalRegisterHandlers from './queries/handlers';
 
 @Module({
-    providers: [...reportRegisterHandlers],
+    providers: [...arrivalRegisterHandlers],
     controllers:[ArrivalRegistrationController],
 })
 export class ArrivalRegistrationModule {}

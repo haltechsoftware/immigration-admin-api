@@ -1,12 +1,12 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import ReportRegisterQuery from '../impl/report.query';
 import { arrivalRegistration, passportInformation, visaInformation } from 'src/modules/registrations/entities';
 import { and, eq, param, sql, count, ilike, isNotNull, isNull } from 'drizzle-orm';
+import ArrivalRegisterQuery from '../impl/arrival.query';
 
 
-@QueryHandler(ReportRegisterQuery)
-export class ReportRegisterHandler implements IQueryHandler<ReportRegisterQuery> {
+@QueryHandler(ArrivalRegisterQuery)
+export class ArrivalRegisterHandler implements IQueryHandler<ArrivalRegisterQuery> {
   constructor(private readonly drizzle: DrizzleService) {}
 
   async execute({ params }: any) {

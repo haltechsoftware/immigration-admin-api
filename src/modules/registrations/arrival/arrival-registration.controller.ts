@@ -2,7 +2,7 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Public } from "src/common/decorators/public.decorator";
-import ReportRegisterQuery from './queries/impl/report.query';
+import ArrivalRegisterQuery from "./queries/impl/arrival.query";
 
 @Controller('arrival')
 export class ArrivalRegistrationController{
@@ -13,11 +13,11 @@ export class ArrivalRegistrationController{
 
     @Public()
     @Get()
-    async reportRegister(@Query() params: any): Promise<any> {
+    async arrivalRegister(@Query() params: any): Promise<any> {
         // const { start_date, end_date, entry_name } = params;
 
-        return await this.queryBus.execute<ReportRegisterQuery>(
-            new ReportRegisterQuery(params),
+        return await this.queryBus.execute<ArrivalRegisterQuery>(
+            new ArrivalRegisterQuery(params),
         );
     }
 

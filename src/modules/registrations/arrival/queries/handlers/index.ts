@@ -1,5 +1,5 @@
-import { ReportRegisterHandler } from './report.repository';
+import { ArrivalRegisterHandler } from './arrival.repository';
 
-const reportRegisterHandlers = [ReportRegisterHandler];
+const arrivalRegisterHandlers = [ArrivalRegisterHandler];
 
-export default reportRegisterHandlers;
+export default arrivalRegisterHandlers;
