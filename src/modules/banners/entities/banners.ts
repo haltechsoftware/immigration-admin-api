@@ -27,3 +27,6 @@ export const banners = pgTable('banners', {
 export const bannersRelations = relations(banners, ({ many }) => ({
   translates: many(bannersTranslate),
 }));
+
+export type Banners = typeof banners.$inferSelect;
+export type InsertBanners = typeof banners.$inferInsert;

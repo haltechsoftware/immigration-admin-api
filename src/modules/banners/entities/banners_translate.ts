@@ -31,3 +31,6 @@ export const bannersTranslateRelations = relations(
     }),
   }),
 );
+
+export type BannersTranslate = typeof bannersTranslate.$inferSelect;
+export type InsertbannersTranslate = typeof bannersTranslate.$inferInsert;
