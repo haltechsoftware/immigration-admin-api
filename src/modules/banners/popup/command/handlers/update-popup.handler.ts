@@ -4,6 +4,8 @@ import UpdatePopupCommand from "../impl/update-popup.command";
 import { PopupRepository } from "../../popup.repository";
 import { HttpException, HttpStatus, NotFoundException } from "@nestjs/common";
 import { existsSync, unlinkSync } from "fs";
+import { format } from "date-fns";
+import { DateTimeFormat } from "src/common/enum/date-time-fomat.enum";
 
 @CommandHandler(UpdatePopupCommand)
 export default class UpdatePopupHandler
@@ -33,14 +35,17 @@ export default class UpdatePopupHandler
       );
     }
 
+    const formatStartTime = format(new Date(dto.start_time), DateTimeFormat.Timestamp)
+    const formatEndTime = format(new Date(dto.end_time), DateTimeFormat.Timestamp)
+
     if (dto.end_time >= dto.start_time) {
         await this.repository.update({
             id,
             image: image,
             link: dto.link,
             is_private: dto.is_private,
-            start_time: new Date(dto.start_time),
-            end_time: new Date(dto.end_time),
+            start_time:  new Date(formatStartTime), // UTC | Asia/Vientiane Asia/Bangkok
+            end_time: new Date(formatEndTime),
         });
 
         return 'ອັດເດດສຳເລັດ';

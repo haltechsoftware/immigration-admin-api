@@ -12,7 +12,7 @@ import {
   string,
   transform,
 } from 'valibot';
-import { IsDate, isNotEmpty, isToday, isValidUrl } from '../utils/validation.util';
+import { IsDateTime, isNotEmpty, isToday, isValidUrl } from '../utils/validation.util';
 
 const CreatePopupDto = object({
   image: optional(
@@ -43,7 +43,7 @@ const CreatePopupDto = object({
 
   start_time: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
     custom((input: string) => isNotEmpty(input), 'ບໍ່ສາມາດເປັນວ່າງ:'),
-    custom((input) => IsDate.test(input), 'ຄວນເປັນວັນທີເດືອນປີ.'),
+    custom((input) => IsDateTime.test(input), 'ຄວນເປັນ: yyyy-MM-dd HH:mm:ss.SSS.'),
     custom((input: string) => {
       const today = new Date().toISOString().slice(0, 10); // Adjusted to Y-M-D format
       return input.startsWith(today);
@@ -52,7 +52,7 @@ const CreatePopupDto = object({
 
   end_time: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
     custom((input: string) => isNotEmpty(input), 'ບໍ່ສາມາດເປັນວ່າງ'),
-    custom((input) => IsDate.test(input), 'ຄວນເປັນວັນທີເດືອນປີ.'),
+    custom((input) => IsDateTime.test(input), 'ຄວນເປັນ: yyyy-MM-dd HH:mm:ss.SSS.'),
   ]),
 });
 

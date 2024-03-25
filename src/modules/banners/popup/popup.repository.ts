@@ -18,7 +18,6 @@ export class PopupRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
   async create(input: InsertPopupType): Promise<void> {
-    console.log(input.start_time);
     await this.drizzle.db().transaction(async (tx) => {
       await tx
         .insert(bannerPopups)

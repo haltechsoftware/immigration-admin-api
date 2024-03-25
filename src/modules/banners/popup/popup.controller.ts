@@ -42,7 +42,7 @@ export class PopupController {
 
   @UseInterceptors(MergeDrizzleToReqInterceptor)
   @FormDataRequest()
-  @Post('create-popup')
+  @Post('create')
   async create(
     @Valibot({ schema: CreatePopupDto }) body: CreatePopupDtoType,
   ) {
@@ -55,7 +55,7 @@ export class PopupController {
 
   @UseInterceptors(MergeDrizzleToReqInterceptor)
   @FormDataRequest()
-  @Put('update-popup/:id')
+  @Put('update/:id')
   async update(
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
     @Valibot({ schema: UpdatePopupDto }) body: UpdatePopupDtoType,

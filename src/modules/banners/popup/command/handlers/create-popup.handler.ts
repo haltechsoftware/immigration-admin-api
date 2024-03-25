@@ -4,6 +4,8 @@ import { PopupRepository } from "../../popup.repository";
 import { NodeFileUploadService } from "src/infrastructure/file-upload/node/node-file-upload.service";
 import { existsSync, unlinkSync } from "fs";
 import { HttpException, HttpStatus } from "@nestjs/common";
+import { format } from 'date-fns';
+import { DateTimeFormat } from "src/common/enum/date-time-fomat.enum";
 
 
 @CommandHandler(CreatePopupCommand)
@@ -26,8 +28,8 @@ export default class CreateUserHandler
       );
     }
 
-    const startTime = new Date(dto.start_time);
-    const endTime = new Date(dto.start_time);
+    const formatStartTime = format(new Date(dto.start_time), DateTimeFormat.Timestamp)
+    const formatEndTime = format(new Date(dto.end_time), DateTimeFormat.Timestamp)
 
     try {
       if (dto.end_time >= dto.start_time) {
@@ -35,8 +37,8 @@ export default class CreateUserHandler
               image: image,
               link: dto.link,
               is_private: dto.is_private,
-              start_time: startTime,
-              end_time: endTime,
+              start_time: new Date(formatStartTime), // UTC | Asia/Vientiane Asia/Bangkok,
+              end_time: new Date(formatEndTime),
           });
 
           return 'ເພີ່ມສຳເລັດ';

@@ -1,6 +1,6 @@
 import { MemoryStoredFile } from "nestjs-form-data";
 import { Output, custom, maxLength, minLength, object, optional, regex, special, string, transform } from "valibot";
-import { IsDate, isNotEmpty, isValidUrl } from "../utils/validation.util";
+import { IsDateTime, isNotEmpty, isValidUrl } from "../utils/validation.util";
 
 const UpdatePopupDto = object({
     image: optional(
@@ -31,16 +31,16 @@ const UpdatePopupDto = object({
 
     start_time: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
       custom((input: string) => isNotEmpty(input), 'ບໍ່ສາມາດເປັນວ່າງ:'),
-      custom((input) => IsDate.test(input), 'ຄວນເປັນວັນທີເດືອນປີ.'),
+      custom((input) => IsDateTime.test(input), 'ຄວນເປັນ: yyyy-MM-dd HH:mm:ss.SSS.'),
       custom((input: string) => {
-      const today = new Date().toISOString().slice(0, 19).replace('T', ' ').slice(0, 10);
+        const today = new Date().toISOString().slice(0, 10); // Adjusted to Y-M-D format
         return input.startsWith(today);
-      }, `ຄວນເປັນມື້ປັດຈຸບັນ: ${new Date().toISOString().slice(0, 19).replace('T', ' ').slice(0, 10)}`),
+      }, `ຄວນເປັນມື້ປັດຈຸບັນ: ${new Date().toISOString().slice(0, 10)}`),
     ]),
-
+  
     end_time: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
       custom((input: string) => isNotEmpty(input), 'ບໍ່ສາມາດເປັນວ່າງ'),
-      custom((input) => IsDate.test(input), 'ຄວນເປັນວັນທີເດືອນປີ.'),
+      custom((input) => IsDateTime.test(input), 'ຄວນເປັນ: yyyy-MM-dd HH:mm:ss.SSS.'),
     ]),
   });
 
