@@ -1,49 +1,51 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CreateBannerCommand } from "../impl/create.command";
-import { BannerRepository } from "../../banner.repository";
-import { NodeFileUploadService } from "src/infrastructure/file-upload/node/node-file-upload.service";
-import { format } from "date-fns";
-import { DateTimeFormat } from "src/common/enum/date-time-fomat.enum";
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { format } from 'date-fns';
+import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
+import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { BannerRepository } from '../../banner.repository';
+import { CreateBannerCommand } from '../impl/create.command';
 
 @CommandHandler(CreateBannerCommand)
-export class CreateBannerHandler implements ICommandHandler<CreateBannerCommand> {
+export class CreateBannerHandler
+  implements ICommandHandler<CreateBannerCommand>
+{
   constructor(
     private readonly _repository: BannerRepository,
     private readonly fileUpload: NodeFileUploadService,
-  ) { }
+  ) {}
 
   async execute({ input }: CreateBannerCommand): Promise<any> {
+    const image = await this.fileUpload.upload(
+      'banner/hero/',
+      input.image.buffer,
+      input.image.originalName,
+    );
 
-    let image: string | undefined;
-    if (input.image) {
-      image = await this.fileUpload.upload(
-        'profile/',
-        input.image.buffer,
-        input.image.originalName,
-      );
-    }
-
-    const startTime = format(new Date(input.start_time), DateTimeFormat.Timestamp );
-    const endTime = format(new Date(input.end_time), DateTimeFormat.Timestamp);
-    const startDateFormate = new Date(startTime);
-    const endDateFormate = new Date(endTime);
-
-    if (startDateFormate >= endDateFormate) {
-      return Promise.resolve('ບໍ່ສາມາດປ້ອນ ວັນທີເລີ່ມຕົ້ນ ຫຼາຍກວ່າ ວັນທີ່ສິ້ນສຸດ')
-    }
-    const bannerData = {
+    await this._repository.create({
       image,
       link: input.link,
-      start_time: startDateFormate,
-      end_time: endDateFormate,
+      start_time: format(input.start_time, DateTimeFormat.Timestamp),
+      end_time: format(input.end_time, DateTimeFormat.Timestamp),
       is_private: input.is_private,
-      translate_lo: { title: input.lo_title, lang: input.lo_lng, description: input.lo_description },
-      translate_en: { title: input.en_title, lang: input.en_lng, description: input.en_description },
-      translate_zh_cn: { title: input.zh_cn_title, lang: input.zh_cn_lng, description: input.zh_cn_description }
+      translates: [
+        {
+          title: input.en_title,
+          lang: 'en',
+          description: input.en_description,
+        },
+        {
+          title: input.lo_title,
+          lang: 'lo',
+          description: input.lo_description,
+        },
+        {
+          title: input.zh_cn_title,
+          lang: 'zh_cn',
+          description: input.zh_cn_description,
+        },
+      ],
+    });
 
-    };
-    await this._repository.create(bannerData)
-    return 'ບັນທຶກຂໍ້ມູນສຳເລັດ'
+    return 'ບັນທຶກຂໍ້ມູນສຳເລັດ';
   }
-
 }

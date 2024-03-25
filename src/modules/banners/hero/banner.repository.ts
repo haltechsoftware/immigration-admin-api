@@ -1,22 +1,30 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import { InsertBanners, InsertbannersTranslate, banners, bannersTranslate } from "../entities";
-import { eq, sql } from "drizzle-orm";
+import { Injectable } from '@nestjs/common';
+import { eq, sql } from 'drizzle-orm';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import {
+  InsertBanners,
+  InsertBannersTranslate,
+  banners,
+  bannersTranslate,
+} from '../entities';
 
 export type InsertBannerType = InsertBanners & {
-  bannersTranslate: InsertbannersTranslate
+  translates: InsertBannersTranslate[];
 };
 
-export type UpdateBannerType = Omit<InsertBannerType, 'bannersTranslate'>;
-export type UpatePrivate = Omit<InsertBannerType,
+export type UpdateBannerType = Omit<InsertBannerType, 'image'> & {
+  image?: string;
+};
+
+export type UpdatePrivate = Omit<
+  InsertBannerType,
   'image' | 'link' | 'start_time' | 'end_time' | 'bannersTranslate'
 >;
 @Injectable()
 export class BannerRepository {
-  constructor(
-    private readonly _drizzle: DrizzleService
-  ) { }
-  async create(input: InsertBanners): Promise<void> {
+  constructor(private readonly _drizzle: DrizzleService) {}
+
+  async create(input: InsertBannerType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
       const banner = await tx
         .insert(banners)
@@ -30,25 +38,17 @@ export class BannerRepository {
         })
         .returning();
 
-      const output = [];
-      const languages = ['translate_lo', 'translate_en', 'translate_zh_cn'];
-
-      languages.forEach(langs => {
-        const langData = input[langs];
-        output.push({
-          banner_id: banner[0]?.id,
-          lang: langData.lang,
-          title: langData.title,
-          description: langData.description,
-        });
-      });
-
-      await tx.insert(bannersTranslate).values(output);
-      return banner
+      await tx.insert(bannersTranslate).values(
+        input.translates.map((val) => ({
+          banner_id: banner[0].id,
+          lang: val.lang,
+          title: val.title,
+          description: val.description,
+        })),
+      );
     });
   }
 
-  //start find one
   private prepared = this._drizzle
     .db()
     .query.banners.findFirst({
@@ -59,26 +59,21 @@ export class BannerRepository {
     })
     .prepare('find_banner_by_id');
   async findOne(id: number) {
-    const res = await this.prepared.execute({ id });
-    if (!res) throw new NotFoundException({ message: 'banner id is Empty' })
-    return res
+    return await this.prepared.execute({ id });
   }
-  //end find one
-  async updatePrivate(input: UpatePrivate): Promise<void> {
 
-    await this._drizzle.db().transaction(async (tx) => {
-      const banner = await tx
-        .update(banners)
-        .set({
-          is_private: input.is_private,
-        })
-        .where(eq(banners.id, input.id));
-      return banner
-    })
+  async updatePrivate(input: UpdatePrivate): Promise<void> {
+    await this._drizzle
+      .db()
+      .update(banners)
+      .set({
+        is_private: input.is_private,
+      })
+      .where(eq(banners.id, input.id));
   }
+
   async update(input: UpdateBannerType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
-      
       await tx
         .update(banners)
         .set({
@@ -89,30 +84,20 @@ export class BannerRepository {
           is_private: input.is_private,
         })
         .where(eq(banners.id, input.id));
-     console.log('banner');
-     
-      const output = [];
-      const languages = ['translate_lo', 'translate_en', 'translate_zh_cn'];
 
-      languages.forEach(lang => {
-        const langData = input[lang];
-        output.push({
-          banner_id: input.id,
-          lang: langData.lang,
-          title: langData.title,
-          description: langData.description
-        });
+      input.translates.forEach(async (val) => {
+        await tx
+          .update(bannersTranslate)
+          .set({
+            title: val.title,
+            description: val.description,
+          })
+          .where(eq(bannersTranslate.id, val.id));
       });
-      await tx.delete(bannersTranslate).where(eq(bannersTranslate.banner_id, input.id));
-      await tx.insert(bannersTranslate).values(output)
-      // return banner
     });
   }
 
-  // method remove
   async remove(id: number): Promise<any> {
-    await this._drizzle.db().delete(bannersTranslate).where(eq(bannersTranslate.banner_id, id))
     await this._drizzle.db().delete(banners).where(eq(banners.id, id));
   }
-
 }

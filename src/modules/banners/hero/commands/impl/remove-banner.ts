@@ -1,5 +1,3 @@
 export class RemoveBannerCommand {
-    constructor(
-        public readonly id: number
-    ){}
+  constructor(public readonly id: number) {}
 }
