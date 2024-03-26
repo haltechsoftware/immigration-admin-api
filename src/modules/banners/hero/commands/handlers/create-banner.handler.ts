@@ -1,7 +1,9 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
-import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { BannerRepository } from '../../banner.repository';
 import { CreateBannerCommand } from '../impl/create-command';
 
@@ -11,7 +13,7 @@ export class CreateBannerHandler
 {
   constructor(
     private readonly _repository: BannerRepository,
-    private readonly fileUpload: NodeFileUploadService,
+    @Inject(FILE_UPLOAD_SERVICE) private readonly fileUpload: IFileUpload,
   ) {}
 
   async execute({ input }: CreateBannerCommand): Promise<any> {
