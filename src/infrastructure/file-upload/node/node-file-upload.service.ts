@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Provider } from '@nestjs/common';
 import { existsSync } from 'fs';
 import { mkdir, unlink, writeFile } from 'fs/promises';
 import { extname } from 'path';
 import { IFileUpload } from '../file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from '../inject-key';
 
 @Injectable()
 export class NodeFileUploadService implements IFileUpload {
@@ -47,3 +48,8 @@ export class NodeFileUploadService implements IFileUpload {
     return filename;
   }
 }
+
+export const NodeFileUploadProvider: Provider = {
+  provide: FILE_UPLOAD_SERVICE,
+  useClass: NodeFileUploadService,
+};
