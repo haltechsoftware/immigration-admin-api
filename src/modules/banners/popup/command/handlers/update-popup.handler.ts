@@ -1,11 +1,10 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { NodeFileUploadService } from "src/infrastructure/file-upload/node/node-file-upload.service";
-import UpdatePopupCommand from "../impl/update-popup.command";
-import { PopupRepository } from "../../popup.repository";
-import { HttpException, HttpStatus, NotFoundException } from "@nestjs/common";
-import { existsSync, unlinkSync } from "fs";
-import { format } from "date-fns";
-import { DateTimeFormat } from "src/common/enum/date-time-fomat.enum";
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { format } from 'date-fns';
+import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
+import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { PopupRepository } from '../../popup.repository';
+import UpdatePopupCommand from '../impl/update-popup.command';
 
 @CommandHandler(UpdatePopupCommand)
 export default class UpdatePopupHandler
@@ -16,49 +15,38 @@ export default class UpdatePopupHandler
     private readonly fileUpload: NodeFileUploadService,
   ) {}
 
-  async execute({ dto,id }: UpdatePopupCommand): Promise<string> {
+  async execute({ dto, id }: UpdatePopupCommand): Promise<string> {
     const popup = await this.repository.getById(id);
-    
-    if (!popup && popup === undefined) {
-      throw new NotFoundException('ບໍ່ມີໃນລະບົບ');
-    }
-    
+
+    if (!popup) throw new NotFoundException('ປ໊ອບອັບບໍ່ມີໃນລະບົບ');
+
     let image: string | undefined;
 
     if (dto.image) {
-        await this.fileUpload.remove(popup.image);
+      await this.fileUpload.remove(popup.image);
 
       image = await this.fileUpload.upload(
-        'image/',
+        'banner/popup/',
         dto.image.buffer,
         dto.image.originalName,
       );
     }
 
-    const formatStartTime = format(new Date(dto.start_time), DateTimeFormat.Timestamp)
-    const formatEndTime = format(new Date(dto.end_time), DateTimeFormat.Timestamp)
+    if (dto.end_time <= dto.start_time)
+      throw new BadRequestException({
+        message: 'ວັນທີສິ້ນສຸດຕ້ອງໃຫ່ຍກວ່າ ຫຼື ເທົ່າກັບວັນທີເລີ່ມ.',
+      });
 
-    if (dto.end_time >= dto.start_time) {
-        await this.repository.update({
-            id,
-            image: image,
-            link: dto.link,
-            is_private: dto.is_private,
-            start_time:  new Date(formatStartTime), // UTC | Asia/Vientiane Asia/Bangkok
-            end_time: new Date(formatEndTime),
-        });
+    await this.repository.update({
+      id,
+      image: image,
+      link: dto.link,
+      is_private: dto.is_private,
+      start_time: format(dto.start_time, DateTimeFormat.Timestamp),
+      end_time: format(dto.end_time, DateTimeFormat.Timestamp),
+      updated_at: format(new Date(), DateTimeFormat.Timestamp),
+    });
 
-        return 'ອັດເດດສຳເລັດ';
-    } else {
-    
-    if (image) {
-        const profilePath = `./client/${image}`;
-        if (existsSync(profilePath)) {
-            unlinkSync(profilePath);
-        }
-    }
-
-    throw new HttpException({message: 'ວັນທີສິ້ນສຸດຕ້ອງໃຫ່ຍກວ່າ ຫຼື ເທົ່າກັບວັນທີເລີ່ມ'}, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return 'ອັດເດດປ໊ອບອັບສຳເລັດ';
   }
 }

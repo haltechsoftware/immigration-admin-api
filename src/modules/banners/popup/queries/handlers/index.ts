@@ -1,7 +1,6 @@
-import { GetPopupByIdHandler } from "./get-popup-by-id.repository";
-import { GetPopupHandler } from "./get-popup.repository";
-import { GetReportPopupHandler } from "./report-popup.repository";
+import { GetPopupByIdHandler } from './get-popup-by-id.repository';
+import { GetPopupHandler } from './get-popup.repository';
 
-const popupQueryHandlers = [GetPopupByIdHandler, GetPopupHandler, GetReportPopupHandler];
+const popupQueryHandlers = [GetPopupByIdHandler, GetPopupHandler];
 
 export default popupQueryHandlers;

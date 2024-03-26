@@ -1,6 +1,5 @@
-import { IOffsetBasePaginate } from "src/common/interface/pagination/pagination.interface";
-import { BannerPopup } from '../../../entities/banner_popups';
+import { QueryPopupDtoType } from '../../dto/query-popup.dto';
 
 export default class GetPopupQuery {
-    constructor(public readonly paginate: IOffsetBasePaginate<BannerPopup>) {}
-  }
+  constructor(public readonly query: QueryPopupDtoType) {}
+}

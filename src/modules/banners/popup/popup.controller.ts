@@ -1,23 +1,34 @@
-import { Controller, Delete, Get, Post, Put, Query, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FormDataRequest } from 'nestjs-form-data';
-import { MergeDrizzleToReqInterceptor } from 'src/common/interceptor/merge-drizzle-to-req/merge-drizzle-to-req.interceptor';
-import { CreatePopupDto, CreatePopupDtoType } from './dto/create-popup.dto';
-import CreatePopupCommand from './command/impl/create-popup.command';
-import { Valibot } from '../../../common/decorators/valibot/valibot.decorator';
+import { Permissions } from 'src/common/decorators/permission.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
-import { UpdatePopupDto, UpdatePopupDtoType } from './dto/update-popup.dto';
-import UpdatePopupCommand from './command/impl/update-popup.command';
-import GetPopupByIdQuery from './queries/impl/get-popup-by-id.query';
-import { OffsetBasePaginateDto, OffsetBasePaginateDtoType } from 'src/common/dtos/offset-base-paginate.dto';
-import GetPopupQuery from './queries/impl/get-popup.query';
+import {
+  PermissionGroup,
+  PermissionName,
+} from 'src/common/enum/permission.enum';
+import { MergeDrizzleToReqInterceptor } from 'src/common/interceptor/merge-drizzle-to-req/merge-drizzle-to-req.interceptor';
+import { Valibot } from '../../../common/decorators/valibot/valibot.decorator';
+import CreatePopupCommand from './command/impl/create-popup.command';
 import DeletePopupCommand from './command/impl/delete-popup.command';
+import UpdatePopupCommand from './command/impl/update-popup.command';
 import UpdatePrivatePopupCommand from './command/impl/update-private-popup.command';
-import { UpdatePrivatePopupDto, UpdatePrivatePopupDtoType } from './dto/update-private.dto';
-import { ValibotAsync } from 'src/common/decorators/valibot/valibot-async.decorator';
-import { IOffsetBasePaginate } from 'src/common/interface/pagination/pagination.interface';
-import { BannerPopup } from '../entities';
-import GetReportPopupQuery from './queries/impl/report-popup.query';
+import { CreatePopupDto, CreatePopupDtoType } from './dto/create-popup.dto';
+import { QueryPopupDto, QueryPopupDtoType } from './dto/query-popup.dto';
+import { UpdatePopupDto, UpdatePopupDtoType } from './dto/update-popup.dto';
+import {
+  UpdatePrivatePopupDto,
+  UpdatePrivatePopupDtoType,
+} from './dto/update-private.dto';
+import GetPopupByIdQuery from './queries/impl/get-popup-by-id.query';
+import GetPopupQuery from './queries/impl/get-popup.query';
 
 @Controller('popup')
 export class PopupController {
@@ -26,26 +37,19 @@ export class PopupController {
     private readonly commandBus: CommandBus,
   ) {}
 
-  @Get('get-all')
+  @Permissions(PermissionGroup.Banner, PermissionName.Read)
+  @Get()
   async get(
-    @Valibot({ schema: OffsetBasePaginateDto, type: 'query' })
-    query: OffsetBasePaginateDtoType,
+    @Valibot({ schema: QueryPopupDto, type: 'query' })
+    query: QueryPopupDtoType,
   ) {
     return await this.queryBus.execute<GetPopupQuery>(new GetPopupQuery(query));
   }
 
-  @Get('report')
-  async getReport(@Query() query
-  ): Promise<any> {
-    return await this.queryBus.execute<GetReportPopupQuery, IOffsetBasePaginate<BannerPopup>>(new GetReportPopupQuery(query));
-  }
-
-  @UseInterceptors(MergeDrizzleToReqInterceptor)
+  @Permissions(PermissionGroup.Banner, PermissionName.Write)
   @FormDataRequest()
-  @Post('create')
-  async create(
-    @Valibot({ schema: CreatePopupDto }) body: CreatePopupDtoType,
-  ) {
+  @Post()
+  async create(@Valibot({ schema: CreatePopupDto }) body: CreatePopupDtoType) {
     const res = await this.commandBus.execute<CreatePopupCommand>(
       new CreatePopupCommand(body),
     );
@@ -53,9 +57,9 @@ export class PopupController {
     return { message: res };
   }
 
-  @UseInterceptors(MergeDrizzleToReqInterceptor)
+  @Permissions(PermissionGroup.Banner, PermissionName.Write)
   @FormDataRequest()
-  @Put('update/:id')
+  @Put(':id')
   async update(
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
     @Valibot({ schema: UpdatePopupDto }) body: UpdatePopupDtoType,
@@ -67,7 +71,8 @@ export class PopupController {
     return { message: res };
   }
 
-  @Get('get/:id')
+  @Permissions(PermissionGroup.Banner, PermissionName.Read)
+  @Get(':id')
   async getById(
     @Valibot({ schema: GetByIdDto, type: 'params' })
     params: GetByIdDtoType,
@@ -77,7 +82,8 @@ export class PopupController {
     );
   }
 
-  @Delete('delete/:id')
+  @Permissions(PermissionGroup.Banner, PermissionName.Remove)
+  @Delete(':id')
   async delete(
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
   ) {
@@ -88,12 +94,13 @@ export class PopupController {
     return { message: res };
   }
 
+  @Permissions(PermissionGroup.Banner, PermissionName.Write)
   @UseInterceptors(MergeDrizzleToReqInterceptor)
-  @FormDataRequest()
-  @Put('update-private/:id')
+  @Put(':id/change-status')
   async updatePrivate(
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
-    @ValibotAsync({ schema: UpdatePrivatePopupDto }) body: UpdatePrivatePopupDtoType,
+    @Valibot({ schema: UpdatePrivatePopupDto })
+    body: UpdatePrivatePopupDtoType,
   ) {
     const res = await this.commandBus.execute<UpdatePrivatePopupCommand>(
       new UpdatePrivatePopupCommand(params.id, body),
