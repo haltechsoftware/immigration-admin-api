@@ -12,7 +12,6 @@ export const hotelTranslate = pgTable('hotel_translate', {
   }),
   lang: langCode('lang').notNull(),
   name: varchar('name', { length: 255 }),
-  content: text('content'),
   address: text('address'),
 });
 
