@@ -12,7 +12,11 @@ import {
 import { newsCategories } from './news_categories';
 import { newsTranslate } from './news_translate';
 
-export const newsStatus = pgEnum('news_status', ['en', 'lo', 'zh_cn']);
+export const newsStatus = pgEnum('news_status', [
+  'draft',
+  'published',
+  'private',
+]);
 
 export const news = pgTable('news', {
   id: serial('id').primaryKey().notNull(),

@@ -16,7 +16,14 @@ export class NodeFileUploadService implements IFileUpload {
 
     const newFileName = this.generateUniqueFilename(name, extension);
 
-    if (!existsSync('client/' + path)) await mkdir('client/' + path);
+    let existsPath = 'client/';
+
+    path.split('/').forEach(async (val) => {
+      existsPath = existsPath + val + '/';
+      if (val && !existsSync(existsPath)) {
+        await mkdir(existsPath);
+      }
+    });
 
     const filePath = path + newFileName;
 
