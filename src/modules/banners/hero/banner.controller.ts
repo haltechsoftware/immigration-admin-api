@@ -12,10 +12,6 @@ import { Permissions } from 'src/common/decorators/permission.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
 import {
-  OffsetBasePaginateDto,
-  OffsetBasePaginateDtoType,
-} from 'src/common/dtos/offset-base-paginate.dto';
-import {
   PermissionGroup,
   PermissionName,
 } from 'src/common/enum/permission.enum';
@@ -95,11 +91,9 @@ export class BannerHeroController {
   async get(
     @Valibot({ schema: QueryBannerDto, type: 'query' })
     query: QueryBannerType,
-    @Valibot({ schema: OffsetBasePaginateDto, type: 'query' })
-    filter: OffsetBasePaginateDtoType,
   ) {
     return await this._queryBus.execute<GetAllBannerQuery>(
-      new GetAllBannerQuery(query, filter),
+      new GetAllBannerQuery(query),
     );
   }
 

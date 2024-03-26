@@ -13,17 +13,16 @@ export class GetAllBannerQueryHandler
   constructor(private readonly drizzle: DrizzleService) {}
 
   async execute({
-    input,
-    paginate: { offset, limit },
+    input: { offset, limit, is_inactive, is_private },
   }: GetAllBannerQuery): Promise<any> {
     const isPrivateCondition =
-      input.is_private !== undefined
-        ? eq(banners.is_private, input.is_private === '1' ? true : false)
+      is_private !== undefined
+        ? eq(banners.is_private, is_private === '1' ? true : false)
         : undefined;
 
     const isInactiveCondition =
-      input.is_inactive !== undefined
-        ? input.is_inactive === '1'
+      is_inactive !== undefined
+        ? is_inactive === '1'
           ? or(
               gt(
                 banners.start_time,
