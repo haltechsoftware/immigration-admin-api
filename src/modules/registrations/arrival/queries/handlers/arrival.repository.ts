@@ -20,9 +20,10 @@ export class ArrivalRegisterHandler implements IQueryHandler<ArrivalRegisterQuer
         params.passport_number ? eq(passportInformation.number, params.passport_number) : undefined,
         params.visa_number ? eq(visaInformation.number, params.visa_number) : undefined,
         params.verified_at && params.verified_at === '1' ? isNotNull(arrivalRegistration.verified_at) : params.verified_at && params.verified_at === '0' ? isNull(arrivalRegistration.verified_at) : undefined,
-        params.black_list ? eq(arrivalRegistration.black_list, params.black_list) : undefined
+        params.black_list ? eq(arrivalRegistration.black_list, params.black_list) : undefined,
+        params.verification_code ? eq(arrivalRegistration.verification_code, params.verification_code) : undefined 
       ));
-  
+    
     const total = await this.drizzle.db()
       .select({ value: count() })
       .from(arrivalRegistration)
@@ -33,12 +34,13 @@ export class ArrivalRegisterHandler implements IQueryHandler<ArrivalRegisterQuer
         params.passport_number ? eq(passportInformation.number, params.passport_number) : undefined,
         params.visa_number ? eq(visaInformation.number, params.visa_number) : undefined,
         params.verified_at && params.verified_at === '1' ? isNotNull(arrivalRegistration.verified_at) : params.verified_at && params.verified_at === '0' ? isNull(arrivalRegistration.verified_at) : undefined,
-        params.black_list ? eq(arrivalRegistration.black_list, params.black_list) : undefined
+        params.black_list ? eq(arrivalRegistration.black_list, params.black_list) : undefined,
+        params.verification_code ? eq(arrivalRegistration.verification_code, params.verification_code) : undefined
       ));
-  
+    
     return {
       data: res.map((val) => ({...val.arrival_registration, passport_information: val.passport_information, visa_information: val.visa_information})),
       total: total[0].value,
     };
-  }  
+  }     
 }
