@@ -21,6 +21,6 @@ export class RemoveBannerHandler
     await this.fileUpload.remove(banner.image);
     await this.repository.remove(banner.id);
 
-    return { status: 201, message: 'ລົບຂໍ້ມູນແບນເນີ້ ສຳເລັດ' };
+    return 'ລົບຂໍ້ມູນແບນເນີ້ ສຳເລັດ';
   }
 }

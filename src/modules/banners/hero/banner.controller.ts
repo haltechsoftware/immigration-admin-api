@@ -20,11 +20,11 @@ import {
   PermissionName,
 } from 'src/common/enum/permission.enum';
 import { MergeParamToBodyInterceptor } from 'src/common/interceptor/merge-param-to-body/merge-param-to-body.interceptor';
-import { CreateBannerCommand } from './commands/impl/create.command';
-import { PrivateFalseBannerCommand } from './commands/impl/private-false.banner.command';
-import { PrivateTrueBannerCommand } from './commands/impl/private-true.banner.command';
+import { CreateBannerCommand } from './commands/impl/create-command';
+import { PrivateBannerCommand } from './commands/impl/private-banner.command';
+import { PublicBannerCommand } from './commands/impl/public-banner.command';
 import { RemoveBannerCommand } from './commands/impl/remove-banner';
-import { UpdateBannerCommand } from './commands/impl/updata.command';
+import { UpdateBannerCommand } from './commands/impl/updata-command';
 import {
   CreateBannerHeroDto,
   CreateBannerHeroType,
@@ -69,11 +69,11 @@ export class BannerHeroController {
   @Permissions(PermissionGroup.Banner, PermissionName.Write)
   @Put(':id/private')
   @UseInterceptors(MergeParamToBodyInterceptor)
-  async privateTrue(
+  async private(
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
   ) {
-    const result = await this._commandBus.execute<PrivateTrueBannerCommand>(
-      new PrivateTrueBannerCommand(params.id),
+    const result = await this._commandBus.execute<PrivateBannerCommand>(
+      new PrivateBannerCommand(params.id),
     );
     return { message: result };
   }
@@ -81,11 +81,11 @@ export class BannerHeroController {
   @Permissions(PermissionGroup.Banner, PermissionName.Write)
   @Put(':id/public')
   @UseInterceptors(MergeParamToBodyInterceptor)
-  async privateFalse(
+  async public(
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
   ) {
-    const result = await this._commandBus.execute<PrivateFalseBannerCommand>(
-      new PrivateFalseBannerCommand(params.id),
+    const result = await this._commandBus.execute<PublicBannerCommand>(
+      new PublicBannerCommand(params.id),
     );
     return { message: result };
   }
@@ -120,8 +120,9 @@ export class BannerHeroController {
     @Valibot({ schema: GetByIdDto, type: 'params' })
     params: GetByIdDtoType,
   ) {
-    return await this._commandBus.execute<RemoveBannerCommand>(
+    const result = await this._commandBus.execute<RemoveBannerCommand>(
       new RemoveBannerCommand(params.id),
     );
+    return { message: result };
   }
 }

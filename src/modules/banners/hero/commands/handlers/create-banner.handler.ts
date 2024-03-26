@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
 import { BannerRepository } from '../../banner.repository';
-import { CreateBannerCommand } from '../impl/create.command';
+import { CreateBannerCommand } from '../impl/create-command';
 
 @CommandHandler(CreateBannerCommand)
 export class CreateBannerHandler

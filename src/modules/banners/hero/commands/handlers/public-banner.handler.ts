@@ -1,15 +1,15 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { BannerRepository } from '../../banner.repository';
-import { PrivateFalseBannerCommand } from '../impl/private-false.banner.command';
+import { PublicBannerCommand } from '../impl/public-banner.command';
 
-@CommandHandler(PrivateFalseBannerCommand)
-export class PrivateFalseBannerHandler
-  implements ICommandHandler<PrivateFalseBannerCommand>
+@CommandHandler(PublicBannerCommand)
+export class PublicBannerHandler
+  implements ICommandHandler<PublicBannerCommand>
 {
   constructor(private readonly repository: BannerRepository) {}
 
-  async execute({ id }: PrivateFalseBannerCommand): Promise<any> {
+  async execute({ id }: PublicBannerCommand): Promise<any> {
     const banner = await this.repository.findOne(id);
 
     if (!banner)

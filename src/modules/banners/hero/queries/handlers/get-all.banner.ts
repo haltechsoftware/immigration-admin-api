@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { format } from 'date-fns';
-import { and, count, eq, gt, gte, lte } from 'drizzle-orm';
+import { and, count, eq, gt, gte, lt, lte, or } from 'drizzle-orm';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { banners } from 'src/modules/banners/entities';
@@ -11,8 +11,6 @@ export class GetAllBannerQueryHandler
   implements IQueryHandler<GetAllBannerQuery>
 {
   constructor(private readonly drizzle: DrizzleService) {}
-
-  private _prepared = this.drizzle;
 
   async execute({
     input,
@@ -26,7 +24,16 @@ export class GetAllBannerQueryHandler
     const isInactiveCondition =
       input.is_inactive !== undefined
         ? input.is_inactive === '1'
-          ? gt(banners.start_time, format(new Date(), DateTimeFormat.Timestamp))
+          ? or(
+              gt(
+                banners.start_time,
+                format(new Date(), DateTimeFormat.Timestamp),
+              ),
+              lt(
+                banners.end_time,
+                format(new Date(), DateTimeFormat.Timestamp),
+              ),
+            )
           : and(
               lte(
                 banners.start_time,
@@ -42,9 +49,6 @@ export class GetAllBannerQueryHandler
     const conditional = and(isPrivateCondition, isInactiveCondition);
 
     const res = await this.drizzle.db().query.banners.findMany({
-      with: {
-        translates: true,
-      },
       where: conditional,
       limit,
       offset,
