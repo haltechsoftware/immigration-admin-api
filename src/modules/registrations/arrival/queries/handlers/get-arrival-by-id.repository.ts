@@ -23,7 +23,7 @@ export class GetArrivalByIdHandler implements IQueryHandler<GetArrivalByIdQuery>
             const res = await this.prepared.execute({ id });
 
             return {
-                data: res,
-            };
+            data: res,
+        };
     }
 }

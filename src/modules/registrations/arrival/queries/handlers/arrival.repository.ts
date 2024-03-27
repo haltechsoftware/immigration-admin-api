@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { arrivalRegistration, passportInformation, visaInformation } from 'src/modules/registrations/entities';
-import { and, eq, param, sql, count, ilike, isNotNull, isNull } from 'drizzle-orm';
+import { and, eq, count, ilike, isNotNull, isNull } from 'drizzle-orm';
 import ArrivalRegisterQuery from '../impl/arrival.query';
 
 

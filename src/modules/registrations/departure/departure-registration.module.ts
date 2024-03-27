@@ -1,4 +1,9 @@
 import { Module } from '@nestjs/common';
+import departureRegisterHandlers from './queries/handlers';
+import { DepartureRegistrationController } from './departure-registration.controller';
 
-@Module({})
+@Module({
+    providers: [...departureRegisterHandlers],
+    controllers: [DepartureRegistrationController]
+})
 export class DepartureRegistrationModule {}
