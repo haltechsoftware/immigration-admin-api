@@ -1,5 +1,5 @@
 
 export default class DepartureRegisterQuery { 
-    constructor(public readonly filler: any) {}
+    constructor(public readonly params: any) {}
 }
 
