@@ -19,3 +19,6 @@ export const feedbacks = pgTable('feedbacks', {
     .defaultNow()
     .notNull(),
 });
+
+export type Feedback = typeof feedbacks.$inferSelect;
+export type InsertFeedback = typeof feedbacks.$inferInsert;
