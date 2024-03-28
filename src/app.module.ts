@@ -11,7 +11,7 @@ import { AuthGuard } from './common/guards/auth.guard';
 import { PermissionsGuard } from './common/guards/permission.guard';
 import IEnv from './common/interface/env.interface';
 import { DrizzleModule } from './infrastructure/drizzle/drizzle.module';
-import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-file-upload.module';
+import { SupabaseStorageModule } from './infrastructure/file-upload/supabase/supabase-storage.module';
 import { accommodationRequestModules } from './modules/accommodation_requests';
 import { BannerModules } from './modules/banners';
 import { checkpointModules } from './modules/checkpoints';
@@ -37,7 +37,8 @@ import { visaModules } from './modules/visa';
     }),
     NestjsFormDataModule.config({ isGlobal: true }),
     RequestContextModule,
-    NodeFileUploadModule,
+    // NodeFileUploadModule,
+    SupabaseStorageModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),

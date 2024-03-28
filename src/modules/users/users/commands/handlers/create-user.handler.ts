@@ -1,6 +1,8 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { hash } from 'bcrypt';
-import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { UserRepository } from '../../user.repository';
 import CreateUserCommand from '../impl/create-user.command';
 
@@ -10,7 +12,7 @@ export default class CreateUserHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    private readonly fileUpload: NodeFileUploadService,
+    @Inject(FILE_UPLOAD_SERVICE) private readonly fileUpload: IFileUpload,
   ) {}
 
   async execute({ dto }: CreateUserCommand): Promise<string> {

@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Provider } from '@nestjs/common';
 import { existsSync } from 'fs';
 import { mkdir, unlink, writeFile } from 'fs/promises';
 import { extname } from 'path';
 import { IFileUpload } from '../file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from '../inject-key';
 
 @Injectable()
 export class NodeFileUploadService implements IFileUpload {
@@ -16,7 +17,14 @@ export class NodeFileUploadService implements IFileUpload {
 
     const newFileName = this.generateUniqueFilename(name, extension);
 
-    if (!existsSync('client/' + path)) await mkdir('client/' + path);
+    let existsPath = 'client/';
+
+    path.split('/').forEach(async (val) => {
+      existsPath = existsPath + val + '/';
+      if (val && !existsSync(existsPath)) {
+        await mkdir(existsPath);
+      }
+    });
 
     const filePath = path + newFileName;
 
@@ -40,3 +48,8 @@ export class NodeFileUploadService implements IFileUpload {
     return filename;
   }
 }
+
+export const NodeFileUploadProvider: Provider = {
+  provide: FILE_UPLOAD_SERVICE,
+  useClass: NodeFileUploadService,
+};

@@ -1,6 +1,7 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { UserRepository } from '../../user.repository';
 import DeleteUserCommand from '../impl/delete-user.command';
 
@@ -10,7 +11,7 @@ export default class DeleteUserHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    private readonly fileUpload: NodeFileUploadService,
+    @Inject(FILE_UPLOAD_SERVICE) private readonly fileUpload: IFileUpload,
   ) {}
 
   async execute({ id }: DeleteUserCommand): Promise<string> {
