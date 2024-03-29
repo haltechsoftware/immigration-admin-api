@@ -1,9 +1,9 @@
 import { Global, Module } from '@nestjs/common';
-import { NodeFileUploadService } from './node-file-upload.service';
+import { NodeFileUploadProvider } from './node-file-upload.service';
 
 @Global()
 @Module({
-  providers: [NodeFileUploadService],
-  exports: [NodeFileUploadService],
+  providers: [NodeFileUploadProvider],
+  exports: [NodeFileUploadProvider],
 })
 export class NodeFileUploadModule {}

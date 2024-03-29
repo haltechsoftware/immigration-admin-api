@@ -1,8 +1,10 @@
-import { Controller, Get, Param, Query } from "@nestjs/common";
+import { Controller, Get, Param } from "@nestjs/common";
 import { QueryBus } from '@nestjs/cqrs';
 import { Public } from "src/common/decorators/public.decorator";
 import ArrivalRegisterQuery from "./queries/impl/arrival.query";
 import GetArrivalByIdQuery from './queries/impl/get-arrival-by-id.query';
+import { Valibot } from "src/common/decorators/valibot/valibot.decorator";
+import { QueryArrivalDto, QueryArrivalDtoType } from "./dto/query-arrival.dto";
 
 @Controller('arrival')
 export class ArrivalRegistrationController{
@@ -11,12 +13,12 @@ export class ArrivalRegistrationController{
 
     @Public()
     @Get()
-    async arrivalRegister(@Query() params: any): Promise<any> {
-        return await this.queryBus.execute<ArrivalRegisterQuery>(
-            new ArrivalRegisterQuery(params)
-        );
+    async arrivalRegister(
+        @Valibot({ schema: QueryArrivalDto, type: 'query'}) 
+        query: QueryArrivalDtoType,
+    ) {
+        return await this.queryBus.execute<ArrivalRegisterQuery>(new ArrivalRegisterQuery(query));
     }
-
     
     @Public()
     @Get(':id')
