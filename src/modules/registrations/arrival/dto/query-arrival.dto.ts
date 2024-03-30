@@ -1,5 +1,5 @@
 import { OffsetBasePaginateDto } from 'src/common/dtos/offset-base-paginate.dto';
-import { object, merge, Output, optional, string, special } from 'valibot';
+import { merge, object, optional, Output, special, string } from 'valibot';
 
 const QueryArrivalDto = merge([
   OffsetBasePaginateDto,
@@ -7,14 +7,17 @@ const QueryArrivalDto = merge([
     entry_name: optional(string()),
     passport_number: optional(string()),
     visa_number: optional(string()),
-    verified_at: optional(string()),
+    is_verified: optional(
+      special<'verified' | 'no_verified'>(
+        (input) =>
+          input === 'verified' || input === 'no_verified' || input === '',
+        'Invalid type: Expected verified or no_verified',
+      ),
+    ),
     black_list: optional(
       special<'available' | 'unavailable'>(
         (input) =>
-          input === 'available' ||
-          input === 'unavailable' ||
-          input === '' ||
-          input === undefined,
+          input === 'available' || input === 'unavailable' || input === '',
         'Invalid type: Expected available or unavailable',
       ),
     ),

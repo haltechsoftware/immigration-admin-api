@@ -36,6 +36,12 @@ export default async () => {
         group_name: PermissionGroup.Registration,
         description: 'ສາມາດເບິ່ງຂໍ້ມູນຄົນລົງທະບຽນເຂົ້າເມືອງໄດ້',
       },
+      {
+        id: 34,
+        name: `${PermissionGroup.Registration}:${PermissionName.Write}`,
+        group_name: PermissionGroup.Registration,
+        description: 'ສາມາດກວດສອບແລະຢືນຢັນລະຫັດເຂົ້າ / ອອກ ເມືອງໄດ້',
+      },
 
       {
         id: 5,

@@ -1,8 +1,8 @@
+import { NotFoundException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { sql } from 'drizzle-orm';
-import GetArrivalByIdQuery from '../impl/get-arrival-by-id.query';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { NotFoundException } from '@nestjs/common';
+import GetArrivalByIdQuery from '../impl/get-arrival-by-id.query';
 
 @QueryHandler(GetArrivalByIdQuery)
 export class GetArrivalByIdHandler
@@ -18,6 +18,7 @@ export class GetArrivalByIdHandler
         passport_information: true,
         visa_information: true,
         personal_information: true,
+        intended_address: true,
       },
     })
     .prepare('get_arrival_by_id');
@@ -25,10 +26,9 @@ export class GetArrivalByIdHandler
   async execute({ id }: GetArrivalByIdQuery) {
     const res = await this.prepared.execute({ id });
 
-    if (!res) throw new NotFoundException({ message: 'ບໍ່ມີໄອດີ້ໃນລະບົບ' });
+    if (!res)
+      throw new NotFoundException({ message: 'ລາຍການລົງທະບຽນນີ້ບໍ່ມີໃນລະບົບ' });
 
-    return {
-      data: res,
-    };
+    return res;
   }
 }
