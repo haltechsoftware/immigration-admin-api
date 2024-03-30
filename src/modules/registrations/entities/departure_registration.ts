@@ -29,9 +29,7 @@ export const departureRegistration = pgTable('departure_registration', {
   ),
   departure_name: varchar('departure_name', { length: 255 }).notNull(),
   last_leaving: varchar('last_leaving', { length: 255 }).notNull(),
-  verification_code: char('verification_code', { length: 10 })
-    .notNull()
-    .unique(),
+  verification_code: char('verification_code', { length: 10 }).unique(),
   verified_at: timestamp('verified_at', { mode: 'string' }),
   black_list: blackListStatus('black_list').notNull(),
   created_at: timestamp('created_at', { mode: 'string' })

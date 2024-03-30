@@ -59,9 +59,7 @@ export const arrivalRegistration = pgTable('arrival_registration', {
   traveling_by_no: varchar('traveling_by_no', { length: 255 }).notNull(),
   traveling_from: varchar('traveling_from', { length: 255 }).notNull(),
   is_traveling_in_tour: boolean('is_traveling_in_tour').notNull(),
-  verification_code: char('verification_code', { length: 10 })
-    .notNull()
-    .unique(),
+  verification_code: char('verification_code', { length: 10 }).unique(),
   verified_at: timestamp('verified_at', { mode: 'string' }),
   black_list: blackListStatus('black_list').notNull(),
   created_at: timestamp('created_at', { mode: 'string' })
