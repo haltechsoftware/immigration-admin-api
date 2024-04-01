@@ -41,3 +41,6 @@ export const filesAndDirectoriesRelations = relations(
     files_or_directories: many(filesAndDirectories),
   }),
 );
+
+export type FileAndDirectory = typeof filesAndDirectories.$inferSelect;
+export type InsertFileAndDirectory = typeof filesAndDirectories.$inferInsert;
