@@ -30,3 +30,8 @@ export const hotels = pgTable('hotels', {
 export const hotelsRelations = relations(hotels, ({ many }) => ({
   translates: many(hotelTranslate),
 }));
+
+
+export type hotels = typeof hotels.$inferSelect;
+export type InsertHotels = typeof hotels.$inferInsert;
+
