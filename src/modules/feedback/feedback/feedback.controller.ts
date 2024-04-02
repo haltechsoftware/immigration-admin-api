@@ -1,18 +1,24 @@
-import { Controller, Delete, Get, Post, Put, UseInterceptors } from "@nestjs/common";
-import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { FormDataRequest } from "nestjs-form-data";
-import { Valibot } from "src/common/decorators/valibot/valibot.decorator";
-import { PermissionGroup, PermissionName } from '../../../common/enum/permission.enum';
+import { Controller, Delete, Get, Put } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Permissions } from 'src/common/decorators/permission.decorator';
-import GetFeedbackByIdQuery from "./queries/impl/get-feedback-by-id.query";
-import { QueryFeedbackDto, QueryFeedbackDtoType } from "./dto/query-feedback.dto";
-import GetFeedbackQuery from "./queries/impl/get-feedback.query";
-import { GetByIdDto, GetByIdDtoType } from "src/common/dtos/get-by-id.dto";
-import { MergeDrizzleToReqInterceptor } from "src/common/interceptor/merge-drizzle-to-req/merge-drizzle-to-req.interceptor";
-import { UpdatePublishedDto, UpdatePublishedDtoType } from "./dto/update-status.dto";
-import UpdateStatusCommand from "./command/impl/update-status.command";
-import DeleteFeedbackCommand from "./command/impl/delete-feedback.command";
-
+import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
+import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
+import {
+  PermissionGroup,
+  PermissionName,
+} from '../../../common/enum/permission.enum';
+import DeleteFeedbackCommand from './command/impl/delete-feedback.command';
+import UpdateStatusCommand from './command/impl/update-status.command';
+import {
+  QueryFeedbackDto,
+  QueryFeedbackDtoType,
+} from './dto/query-feedback.dto';
+import {
+  UpdatePublishedDto,
+  UpdatePublishedDtoType,
+} from './dto/update-status.dto';
+import GetFeedbackByIdQuery from './queries/impl/get-feedback-by-id.query';
+import GetFeedbackQuery from './queries/impl/get-feedback.query';
 
 @Controller('feedback')
 export class FeedbackController {
@@ -20,14 +26,16 @@ export class FeedbackController {
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
   ) {}
-  
+
   @Permissions(PermissionGroup.Feedback, PermissionName.Read)
   @Get()
   async get(
     @Valibot({ schema: QueryFeedbackDto, type: 'query' })
     query: QueryFeedbackDtoType,
   ) {
-    return await this.queryBus.execute<GetFeedbackQuery>(new GetFeedbackQuery(query));
+    return await this.queryBus.execute<GetFeedbackQuery>(
+      new GetFeedbackQuery(query),
+    );
   }
 
   @Permissions(PermissionGroup.Feedback, PermissionName.Read)
@@ -42,8 +50,7 @@ export class FeedbackController {
   }
 
   @Permissions(PermissionGroup.Feedback, PermissionName.Write)
-  @UseInterceptors(MergeDrizzleToReqInterceptor)
-  @Put(':id/change-status')
+  @Put(':id')
   async updatePrivate(
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
     @Valibot({ schema: UpdatePublishedDto })

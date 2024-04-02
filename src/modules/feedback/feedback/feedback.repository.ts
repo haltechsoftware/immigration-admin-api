@@ -1,12 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { eq, sql } from "drizzle-orm";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import { feedbacks } from "../entities";
+import { Injectable } from '@nestjs/common';
+import { eq, sql } from 'drizzle-orm';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { feedbacks } from '../entities';
 
 @Injectable()
 export class FeedbackRepository {
   constructor(private readonly drizzle: DrizzleService) {}
-  
+
   private _getByIdPrepared = this.drizzle
     .db()
     .query.feedbacks.findFirst({

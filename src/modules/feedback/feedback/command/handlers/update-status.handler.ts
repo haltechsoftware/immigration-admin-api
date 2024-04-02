@@ -1,7 +1,7 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import UpdateStatusCommand from "../impl/update-status.command";
-import { FeedbackRepository } from "../../feedback.repository";
-import { NotFoundException } from "@nestjs/common";
+import { NotFoundException } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { FeedbackRepository } from '../../feedback.repository';
+import UpdateStatusCommand from '../impl/update-status.command';
 
 @CommandHandler(UpdateStatusCommand)
 export default class UpdateStatusHandler
@@ -10,15 +10,15 @@ export default class UpdateStatusHandler
   constructor(private readonly repository: FeedbackRepository) {}
 
   async execute({ dto, id }: UpdateStatusCommand): Promise<string> {
-    const popup = await this.repository.getById(id);
+    const feedback = await this.repository.getById(id);
 
-    if (!popup) throw new NotFoundException('ຟິກເເບັກບໍ່ມີໃນລະບົບ');
+    if (!feedback) throw new NotFoundException('ຄຳຕິຊົມບໍ່ມີໃນລະບົບ');
 
     await this.repository.updateStatus({
       id,
       is_published: dto.is_published,
     });
 
-    return 'ອັດເດດຟິກແບັກສຳເລັດ';
+    return 'ອັດເດດຄຳຕິຊົມສຳເລັດ';
   }
 }

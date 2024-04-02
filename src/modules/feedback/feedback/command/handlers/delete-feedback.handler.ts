@@ -1,7 +1,8 @@
-import { NotFoundException } from "@nestjs/common";
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import DeleteFeedbackCommand from "../impl/delete-feedback.command";
-import { FeedbackRepository } from "../../feedback.repository";
+import { NotFoundException } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { FeedbackRepository } from '../../feedback.repository';
+import DeleteFeedbackCommand from '../impl/delete-feedback.command';
 
 @CommandHandler(DeleteFeedbackCommand)
 export default class DeleteFeedbackHandler
@@ -9,17 +10,19 @@ export default class DeleteFeedbackHandler
 {
   constructor(
     private readonly repository: FeedbackRepository,
+    private readonly fileUpload: NodeFileUploadService,
   ) {}
 
   async execute({ id }: DeleteFeedbackCommand): Promise<string> {
-    const popup = await this.repository.getById(id);
+    const feedback = await this.repository.getById(id);
 
-    if (!popup) throw new NotFoundException({ message: 'ຟິກແບັກບໍ່ມີໃນລະບົບ' });
+    if (!feedback)
+      throw new NotFoundException({ message: 'ຄຳຕິຊົມບໍ່ມີໃນລະບົບ' });
 
-    // await this.fileUpload.remove(popup.image);
+    if (feedback.media) await this.fileUpload.remove(feedback.media);
 
     await this.repository.remove(id);
 
-    return 'ລຶບຟິກແບັກສຳເລັດ';
+    return 'ຄຳຕິຊົມແບັກສຳເລັດ';
   }
 }
