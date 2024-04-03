@@ -1,29 +1,44 @@
-import { MemoryStoredFile } from "nestjs-form-data";
-import { Output, custom, enum_, maxLength, maxValue, minLength, minValue, number, object, optional, special, string } from "valibot";
+import { RequestContext } from 'nestjs-request-context';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import {
+  Output,
+  customAsync,
+  maxLength,
+  minLength,
+  numberAsync,
+  objectAsync,
+  optionalAsync,
+  string,
+} from 'valibot';
 
-enum Type {
-    File = 'file',
-    Dir = 'directory'
-}
+const CreateDirectoryDto = objectAsync({
+  directory_id: optionalAsync(
+    numberAsync('ຕ້ອງເປັນ number', [
+      customAsync(async (input: number) => {
+        if (input) {
+          const drizzle: DrizzleService =
+            RequestContext.currentContext.req.drizzle;
 
-const CreateDirectoryDto = object({
-    parent_id: string('ບໍ່ສາມາດຫວ່າງເປົ່າ'),
-    file: optional(
-        special((input) => input instanceof MemoryStoredFile, 'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ', [
-            custom(
-                (input: MemoryStoredFile) =>
-                    ['image/jpeg', 'image/png', 'image/webp'].includes(input.mimeType),
-                'ກະລຸນາເລືອກໄຟລ໌ JPEG ຫຼື PNG ຫຼື Webp.',
-            ),
-            custom(
-                (input: MemoryStoredFile) => input.size <= 1024 * 1024 * 10,
-                'ກະລຸນາເລືອກໄຟລ໌ທີ່ນ້ອຍກວ່າ 10 MB.',
-            ),
-        ]),
-    ),
-    name: string('ຕ້ອງເປັນ string'),
-    type: enum_(Type, 'ຕ້ອງເປັນ file ຫຼື directory ເທົ່າ')
-})
+          const res = await drizzle.db().query.filesAndDirectories.findFirst({
+            where: (fields, operators) =>
+              operators.and(
+                operators.eq(fields.id, input),
+                operators.eq(fields.type, 'directory'),
+              ),
+          });
+
+          return !!res;
+        }
+
+        return true;
+      }, 'directory_id ບໍ່ມີໃນລະບົບ'),
+    ]),
+  ),
+  name: string('ຕ້ອງເປັນ string', [
+    minLength(1, 'ບໍ່ຄວນວ່າງເປົ່າ'),
+    maxLength(255, 'ຕົວອັກສອນບໍ່ເກີນ 255'),
+  ]),
+});
 
 type CreateDirectoryDtoType = Output<typeof CreateDirectoryDto>;
 

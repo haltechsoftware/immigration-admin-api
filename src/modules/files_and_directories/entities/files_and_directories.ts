@@ -37,8 +37,11 @@ export const filesAndDirectoriesRelations = relations(
     directory: one(filesAndDirectories, {
       fields: [filesAndDirectories.parent_id],
       references: [filesAndDirectories.id],
+      relationName: 'files_or_directories',
     }),
-    files_or_directories: many(filesAndDirectories),
+    files_or_directories: many(filesAndDirectories, {
+      relationName: 'files_or_directories',
+    }),
   }),
 );
 

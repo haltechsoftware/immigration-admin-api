@@ -1,29 +1,26 @@
-import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { DeleteDirectoryCommand } from '../impl/delete-directory.command';
 import { FileAndDirectoryRepository } from '../../file_and_directory.repository';
-import fs from 'fs';
+import { DeleteDirectoryCommand } from '../impl/delete-directory.command';
 
 @CommandHandler(DeleteDirectoryCommand)
 export class DeleteDirectoryHandler
-    implements ICommandHandler<DeleteDirectoryCommand>
+  implements ICommandHandler<DeleteDirectoryCommand>
 {
-    constructor(
-        private readonly repository: FileAndDirectoryRepository,
-    ) { }
-    async execute({ id }: DeleteDirectoryCommand): Promise<any> {
-        const folder = await this.repository.findOne(id);
+  constructor(private readonly repository: FileAndDirectoryRepository) {}
+  async execute({ id }: DeleteDirectoryCommand): Promise<any> {
+    const folder = await this.repository.getOneDirectory(id);
 
-        if (!folder) throw new NotFoundException({ message: 'ໂຟເດີ້ນີ້ບໍ່ມີໃນລະບົບ' });
-        if(folder.type === 'file') throw new BadRequestException({message: 'ບໍ່ພົບ ໂຟເດີ້ນີ້'})
-        try {
-            fs.rmdirSync('./client/' + folder.name);
-            await this.repository.remove(folder.id);
-            return 'ໂຟເດີ້ຖືກລົບ ສຳເລັດ';
-        } catch (error) {
-            if (error.code === 'ENOTEMPTY') {
-                throw new ConflictException(`ບໍ່ສາມາດລົບໂຟເດີ້: ${folder.name}`);
-            }
-        }
-    }
+    if (!folder)
+      throw new NotFoundException({ message: 'ໂຟນເດີນີ້ບໍ່ມີໃນລະບົບ' });
+
+    if (folder.files_or_directories.length > 0)
+      throw new NotAcceptableException({
+        message: 'ບໍ່ສາມາດລຶບໂຟນເດີທີ່ມີໄຟລ໌ ຫຼື ໂພນເດີທາງໃນໄດ້',
+      });
+
+    await this.repository.remove(folder.id);
+
+    return 'ລຶບໂພນເດີສຳເລັດ';
+  }
 }

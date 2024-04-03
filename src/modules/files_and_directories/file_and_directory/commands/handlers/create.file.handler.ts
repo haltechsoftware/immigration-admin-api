@@ -1,45 +1,49 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { NodeFileUploadService } from "src/infrastructure/file-upload/node/node-file-upload.service";
-import { FileAndDirectoryRepository } from "../../file_and_directory.repository";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
-import { getFolderSize } from "../../size-folder/size-old";
-import { CreateFilesCommand } from "../impl/create-file.command";
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { FileAndDirectoryRepository } from '../../file_and_directory.repository';
+import { CreateFilesCommand } from '../impl/create-file.command';
 @CommandHandler(CreateFilesCommand)
-export class CreateFileHander implements ICommandHandler<CreateFilesCommand> {
-    constructor(
-        private readonly nodeFileUpload: NodeFileUploadService,
-        private readonly repository: FileAndDirectoryRepository,
-    ) { }
-    async execute({ input }: CreateFilesCommand): Promise<any> {
-        if (input.file && input.type === 'directory') throw new BadRequestException({ message: 'ປະເພດຟາຍບໍ່ສະພອດທ' })
-        const id = Number(input.parent_id)
-        const fileAndDirectory = await this.repository.findOne(id)
-        if(!fileAndDirectory) throw new NotFoundException({message: 'ບໍ່ມີໂຟເດີ້ ຢູ່ແລ້ວ'})
-        if (fileAndDirectory.type === 'file') throw new BadRequestException({ message: 'ບໍ່ສາມາດຊ້ອນຟາຍ' })
+export class CreateFileHandler implements ICommandHandler<CreateFilesCommand> {
+  constructor(
+    private readonly nodeFileUpload: NodeFileUploadService,
+    private readonly repository: FileAndDirectoryRepository,
+  ) {}
 
-        if (input.type === 'file') {
-            const folderPathSize = `./client/${fileAndDirectory.name}`; // Replace with your folder path
-            const { sizeInBytes } = getFolderSize(folderPathSize);
+  private part: string[] = [];
 
-            const uploadFile = await this.nodeFileUpload.upload(
-                `${fileAndDirectory.name}/`,
-                input.file.buffer,
-                input.file.originalName
-            )
-            await this.repository.create({
-                name: uploadFile,
-                type: input.type,
-                size: input.file.size,
-                parent_id: Number(input.parent_id)
-            })
-            await this.repository.updateSize({
-                id,
-                size: sizeInBytes
-            })
-            return { message: 'ອັບໂຫຼດຟາຍສຳເລັດ' };
-        }
+  async execute({ input }: CreateFilesCommand) {
+    if (input.directory_id)
+      await this.getParentSize(input.directory_id, input.file.size);
 
+    this.part.push('editor');
 
+    const url = await this.nodeFileUpload.upload(
+      this.part.reverse().join('/') + '/',
+      input.file.buffer,
+      input.file.originalName,
+    );
+
+    const names = url.split('/');
+
+    await this.repository.create({
+      name: names[names.length - 1],
+      type: 'file',
+      parent_id: input.directory_id,
+      size: input.file.size,
+    });
+
+    this.part = [];
+
+    return { message: 'ອັບໂຫຼດຟາຍສຳເລັດ' };
+  }
+
+  async getParentSize(id: number, size: number) {
+    const res = await this.repository.updateParentSize(id, size);
+
+    if (res) {
+      this.part.push(res.name);
+
+      if (res.parent_id) await this.getParentSize(res.parent_id, size);
     }
-
+  }
 }

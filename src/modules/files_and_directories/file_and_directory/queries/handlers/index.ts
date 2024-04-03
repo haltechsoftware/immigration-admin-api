@@ -1,8 +1,6 @@
-import { Provider } from "@nestjs/common";
-import { GetAllFilesAndDirectorydHandler } from "./get-all-repository";
-import { GetListFileByIdHandler } from "./get-list-file-by-id";
+import { Provider } from '@nestjs/common';
+import { GetAllFilesAndDirectoryHandler } from './get-all-repository';
 
-export const queryFileAndDirectory : Provider[] = [
-    GetAllFilesAndDirectorydHandler,
-    GetListFileByIdHandler,
-]
+export const queryFileAndDirectory: Provider[] = [
+  GetAllFilesAndDirectoryHandler,
+];

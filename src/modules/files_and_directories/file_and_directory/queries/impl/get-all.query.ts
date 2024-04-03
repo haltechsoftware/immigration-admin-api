@@ -1,9 +1,5 @@
-import { IOffsetBasePaginate } from "src/common/interface/pagination/pagination.interface";
-import { FileAndDirectory } from "src/modules/files_and_directories/entities";
+import { QueryFileAndDirectoryDtoType } from '../../dtos/query-file-and-directory.dto';
 
 export class GetAllFilesAndDirectoryQuery {
-    
-    constructor(
-        public readonly input: IOffsetBasePaginate<FileAndDirectory>
-    ){}
+  constructor(public readonly input: QueryFileAndDirectoryDtoType) {}
 }
