@@ -14,8 +14,10 @@ import { GetAllHotelQuery } from "./queries/imp/get-all.query";
 import { GetOneHotelQuery } from "./queries/imp/get-one.query";
 import { MergeDrizzleToReqInterceptor } from "src/common/interceptor/merge-drizzle-to-req/merge-drizzle-to-req.interceptor";
 import { UpdateHotelStatusDto, UpdatePopupStatusDtoType } from "./dtos/update-hotel-status.dto";
-import UpdateHotelStatusCommand from "./commands/imp/update-hotel-status.command";
 import { RemoveHotelCommand } from "./commands/imp/remove-hotel.command";
+import { MergeParamToBodyInterceptor } from "src/common/interceptor/merge-param-to-body/merge-param-to-body.interceptor";
+import { PublicHotelCommand } from "./commands/imp/public-hotel.command";
+import { PrivateHotelCommand } from "./commands/imp/private-hotel.command";
 
 
 @Controller('hotel')
@@ -72,20 +74,28 @@ export class HotelController {
     );
   }
 
-  
   @Permissions(PermissionGroup.Hotel, PermissionName.Write)
-  @UseInterceptors(MergeDrizzleToReqInterceptor)
-  @Put(':id/change-status')
-  async updatePrivate(
+  @Put(':id/public')
+  @UseInterceptors(MergeParamToBodyInterceptor)
+  async public(
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
-    @Valibot({ schema: UpdateHotelStatusDto })
-    body: UpdatePopupStatusDtoType,
   ) {
-    const res = await this.commandBus.execute<UpdateHotelStatusCommand>(
-      new UpdateHotelStatusCommand(params.id, body),
+    const result = await this.commandBus.execute<PublicHotelCommand>(
+      new PublicHotelCommand(params.id),
     );
+    return { message: result };
+  }
 
-    return { message: res };
+  @Permissions(PermissionGroup.Hotel, PermissionName.Write)
+  @Put(':id/private')
+  @UseInterceptors(MergeParamToBodyInterceptor)
+  async private(
+    @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
+  ) {
+    const result = await this.commandBus.execute<PrivateHotelCommand>(
+      new PrivateHotelCommand(params.id),
+    );
+    return { message: result };
   }
 
   @Permissions(PermissionGroup.Hotel, PermissionName.Remove)

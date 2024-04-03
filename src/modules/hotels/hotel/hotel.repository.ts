@@ -11,6 +11,11 @@ export type UpdateHotelType = Omit<InsertHotelType, 'image'> & {
   image?: string;
 };
 
+export type UpdatePublic = Omit<
+InsertHotelType,
+  'image' | 'link' | 'latitude' | 'longitude' | 'phone_number' | 'hotelTranslate'
+>;
+
 @Injectable()
 export class HotelRepository {
   constructor(private readonly _drizzle: DrizzleService) {}
@@ -79,10 +84,7 @@ export class HotelRepository {
     });
   }
 
-  async updatePublished(input: {
-    id: number;
-    is_published?: boolean;
-  }): Promise<void> {
+  async updatePublished(input: UpdatePublic): Promise<void> {
     await this._drizzle
       .db()
       .update(hotels)
