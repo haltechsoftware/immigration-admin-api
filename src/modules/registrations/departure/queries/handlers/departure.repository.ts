@@ -1,11 +1,20 @@
-import { personalInformation } from './../../../entities/personal_information';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import DepartureRegisterQuery from '../impl/departure.query';
+import {
+  and,
+  count,
+  eq,
+  ilike,
+  isNotNull,
+  isNull,
+  SQL,
+  SQLWrapper,
+} from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
   departureRegistration,
   passportInformation,
 } from 'src/modules/registrations/entities';
+<<<<<<< HEAD
 import {
   and,
   eq,
@@ -16,7 +25,11 @@ import {
   SQL,
   desc,
 } from 'drizzle-orm';
+=======
+>>>>>>> 2ac6ac7634b0accbf7cfb7148091940a7e336afa
 import { QueryDepartureDtoType } from '../../dto/query-departure.dto';
+import DepartureRegisterQuery from '../impl/departure.query';
+import { personalInformation } from './../../../entities/personal_information';
 
 @QueryHandler(DepartureRegisterQuery)
 export class DepartureRegisterHandler
@@ -37,29 +50,44 @@ export class DepartureRegisterHandler
 
     return {
       data: res.map((val) => ({
+<<<<<<< HEAD
         ...val.departure_registration,
         passport_information: val.passport_information,
         personal_information: val.personal_information,
+=======
+        id: val.departure_registration.id,
+        departure_name: val.departure_registration.departure_name,
+        black_list: val.departure_registration.black_list,
+        verification_code: val.departure_registration.verification_code,
+        verified_at: val.departure_registration.verified_at,
+        created_at: val.departure_registration.created_at,
+        passport_information: {
+          id: val.passport_information.id,
+          number: val.passport_information.number,
+        },
+>>>>>>> 2ac6ac7634b0accbf7cfb7148091940a7e336afa
       })),
       total: total[0].value,
     };
   }
 
   buildWhereConditions({
-    personal_information,
+    departure_name,
     passport_number,
-    verified_at,
+    is_verified,
     black_list,
     verification_code,
   }: QueryDepartureDtoType): SQL<unknown> {
-    const condition = [
-      ilike(personalInformation.name, `%${personal_information || ''}%`),
+    const condition: SQLWrapper[] = [
+      departure_name
+        ? ilike(departureRegistration.departure_name, `%${departure_name}%`)
+        : undefined,
       passport_number
         ? eq(passportInformation.number, passport_number)
         : undefined,
-      verified_at && verified_at === '1'
+      is_verified && is_verified === 'verified'
         ? isNotNull(departureRegistration.verified_at)
-        : verified_at && verified_at === '0'
+        : is_verified && is_verified === 'no_verified'
         ? isNull(departureRegistration.verified_at)
         : undefined,
       black_list ? eq(departureRegistration.black_list, black_list) : undefined,

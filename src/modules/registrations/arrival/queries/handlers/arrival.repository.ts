@@ -1,10 +1,21 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import {
+  and,
+  count,
+  eq,
+  ilike,
+  isNotNull,
+  isNull,
+  SQL,
+  SQLWrapper,
+} from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
   arrivalRegistration,
   passportInformation,
   visaInformation,
 } from 'src/modules/registrations/entities';
+<<<<<<< HEAD
 import {
   and,
   eq,
@@ -16,7 +27,10 @@ import {
   desc,
 } from 'drizzle-orm';
 import ArrivalRegisterQuery from '../impl/arrival.query';
+=======
+>>>>>>> 2ac6ac7634b0accbf7cfb7148091940a7e336afa
 import { QueryArrivalDtoType } from '../../dto/query-arrival.dto';
+import ArrivalRegisterQuery from '../impl/arrival.query';
 
 @QueryHandler(ArrivalRegisterQuery)
 export class ArrivalRegisterHandler
@@ -36,9 +50,20 @@ export class ArrivalRegisterHandler
 
     return {
       data: res.map((val) => ({
-        ...val.arrival_registration,
-        passport_information: val.passport_information,
-        visa_information: val.visa_information,
+        id: val.arrival_registration.id,
+        entry_name: val.arrival_registration.entry_name,
+        black_list: val.arrival_registration.black_list,
+        verification_code: val.arrival_registration.verification_code,
+        verified_at: val.arrival_registration.verified_at,
+        created_at: val.arrival_registration.created_at,
+        passport_information: {
+          id: val.passport_information.id,
+          number: val.passport_information.number,
+        },
+        visa_information: {
+          id: val.visa_information.id,
+          number: val.visa_information.number,
+        },
       })),
       total: total[0].value,
     };
@@ -48,19 +73,21 @@ export class ArrivalRegisterHandler
     entry_name,
     passport_number,
     visa_number,
-    verified_at,
+    is_verified,
     black_list,
     verification_code,
   }: QueryArrivalDtoType): SQL<unknown> {
-    const conditions = [
-      ilike(arrivalRegistration.entry_name, `%${entry_name || ''}%`),
+    const conditions: SQLWrapper[] = [
+      entry_name
+        ? ilike(arrivalRegistration.entry_name, `%${entry_name}%`)
+        : undefined,
       passport_number
         ? eq(passportInformation.number, passport_number)
         : undefined,
       visa_number ? eq(visaInformation.number, visa_number) : undefined,
-      verified_at && verified_at === '1'
+      is_verified && is_verified === 'verified'
         ? isNotNull(arrivalRegistration.verified_at)
-        : verified_at && verified_at === '0'
+        : is_verified && is_verified === 'no_verified'
         ? isNull(arrivalRegistration.verified_at)
         : undefined,
       black_list ? eq(arrivalRegistration.black_list, black_list) : undefined,

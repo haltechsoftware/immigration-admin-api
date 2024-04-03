@@ -1,14 +1,18 @@
+import { Controller, Get } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { Controller, Get, Param } from '@nestjs/common';
 import { Public } from 'src/common/decorators/public.decorator';
-import DepartureRegisterQuery from './queries/impl/departure.query';
-import GetDepartureByIdQuery from './queries/impl/get-departure-by-id.query';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
+import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
 import {
   QueryDepartureDto,
   QueryDepartureDtoType,
 } from './dto/query-departure.dto';
+<<<<<<< HEAD
 import DepartureVerifyCodeQuery from './queries/impl/verify-code-departure.query';
+=======
+import DepartureRegisterQuery from './queries/impl/departure.query';
+import GetDepartureByIdQuery from './queries/impl/get-departure-by-id.query';
+>>>>>>> 2ac6ac7634b0accbf7cfb7148091940a7e336afa
 
 @Controller('departure')
 export class DepartureRegistrationController {
@@ -27,7 +31,9 @@ export class DepartureRegistrationController {
 
   @Public()
   @Get(':id')
-  async GetDepartureByIdHandler(@Param('id') id: number): Promise<any> {
+  async GetDepartureByIdHandler(
+    @Valibot({ schema: GetByIdDto, type: 'params' }) { id }: GetByIdDtoType,
+  ): Promise<any> {
     return await this.queryBus.execute<GetDepartureByIdQuery>(
       new GetDepartureByIdQuery(id),
     );
