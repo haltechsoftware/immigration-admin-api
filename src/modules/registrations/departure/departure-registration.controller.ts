@@ -8,6 +8,7 @@ import {
   QueryDepartureDto,
   QueryDepartureDtoType,
 } from './dto/query-departure.dto';
+import DepartureVerifyCodeQuery from './queries/impl/verify-code-departure.query';
 
 @Controller('departure')
 export class DepartureRegistrationController {
@@ -29,6 +30,16 @@ export class DepartureRegistrationController {
   async GetDepartureByIdHandler(@Param('id') id: number): Promise<any> {
     return await this.queryBus.execute<GetDepartureByIdQuery>(
       new GetDepartureByIdQuery(id),
+    );
+  }
+
+  @Public()
+  @Get('get/:verification_code')
+  async verify_code(
+    @Param('verification_code') verification_code: string,
+  ): Promise<any> {
+    return await this.queryBus.execute<DepartureVerifyCodeQuery>(
+      new DepartureVerifyCodeQuery(verification_code),
     );
   }
 }

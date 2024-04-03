@@ -6,7 +6,16 @@ import {
   departureRegistration,
   passportInformation,
 } from 'src/modules/registrations/entities';
-import { and, eq, count, isNotNull, isNull, ilike, SQL } from 'drizzle-orm';
+import {
+  and,
+  eq,
+  count,
+  isNotNull,
+  isNull,
+  ilike,
+  SQL,
+  desc,
+} from 'drizzle-orm';
 import { QueryDepartureDtoType } from '../../dto/query-departure.dto';
 
 @QueryHandler(DepartureRegisterQuery)
@@ -23,13 +32,14 @@ export class DepartureRegisterHandler
       query.offset,
       query.limit,
     );
+
     const total = await this.retrieveTotalCount(whereConditions);
 
     return {
       data: res.map((val) => ({
         ...val.departure_registration,
-        personal_information: val.personal_information,
         passport_information: val.passport_information,
+        personal_information: val.personal_information,
       })),
       total: total[0].value,
     };
@@ -84,6 +94,7 @@ export class DepartureRegisterHandler
           passportInformation.id,
         ),
       )
+      .orderBy(desc(departureRegistration.id))
       .offset(offset)
       .limit(limit)
       .where(whereConditions);

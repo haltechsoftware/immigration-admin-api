@@ -5,7 +5,16 @@ import {
   passportInformation,
   visaInformation,
 } from 'src/modules/registrations/entities';
-import { and, eq, count, ilike, isNotNull, isNull, SQL } from 'drizzle-orm';
+import {
+  and,
+  eq,
+  count,
+  ilike,
+  isNotNull,
+  isNull,
+  SQL,
+  desc,
+} from 'drizzle-orm';
 import ArrivalRegisterQuery from '../impl/arrival.query';
 import { QueryArrivalDtoType } from '../../dto/query-arrival.dto';
 
@@ -80,6 +89,7 @@ export class ArrivalRegisterHandler
         visaInformation,
         eq(arrivalRegistration.visa_information_id, visaInformation.id),
       )
+      .orderBy(desc(arrivalRegistration.id))
       .offset(offset)
       .limit(limit)
       .where(whereConditions);
