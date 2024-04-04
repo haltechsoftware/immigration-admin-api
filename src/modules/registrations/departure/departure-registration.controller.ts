@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { Public } from 'src/common/decorators/public.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
@@ -7,12 +7,9 @@ import {
   QueryDepartureDto,
   QueryDepartureDtoType,
 } from './dto/query-departure.dto';
-<<<<<<< HEAD
-import DepartureVerifyCodeQuery from './queries/impl/verify-code-departure.query';
-=======
 import DepartureRegisterQuery from './queries/impl/departure.query';
 import GetDepartureByIdQuery from './queries/impl/get-departure-by-id.query';
->>>>>>> 2ac6ac7634b0accbf7cfb7148091940a7e336afa
+import DepartureVerifyCodeQuery from './queries/impl/verify-code-departure.query';
 
 @Controller('departure')
 export class DepartureRegistrationController {

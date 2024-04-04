@@ -2,6 +2,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import {
   and,
   count,
+  desc,
   eq,
   ilike,
   isNotNull,
@@ -14,19 +15,6 @@ import {
   departureRegistration,
   passportInformation,
 } from 'src/modules/registrations/entities';
-<<<<<<< HEAD
-import {
-  and,
-  eq,
-  count,
-  isNotNull,
-  isNull,
-  ilike,
-  SQL,
-  desc,
-} from 'drizzle-orm';
-=======
->>>>>>> 2ac6ac7634b0accbf7cfb7148091940a7e336afa
 import { QueryDepartureDtoType } from '../../dto/query-departure.dto';
 import DepartureRegisterQuery from '../impl/departure.query';
 import { personalInformation } from './../../../entities/personal_information';
@@ -50,11 +38,6 @@ export class DepartureRegisterHandler
 
     return {
       data: res.map((val) => ({
-<<<<<<< HEAD
-        ...val.departure_registration,
-        passport_information: val.passport_information,
-        personal_information: val.personal_information,
-=======
         id: val.departure_registration.id,
         departure_name: val.departure_registration.departure_name,
         black_list: val.departure_registration.black_list,
@@ -65,7 +48,6 @@ export class DepartureRegisterHandler
           id: val.passport_information.id,
           number: val.passport_information.number,
         },
->>>>>>> 2ac6ac7634b0accbf7cfb7148091940a7e336afa
       })),
       total: total[0].value,
     };

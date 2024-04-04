@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
-import { ArrivalRegistrationController } from './arrival-registration.controller';
-import arrivalRegisterHandlers from './queries/handlers';
 import { ArrivalRepository } from './arriva-registration.repository';
+import { ArrivalRegistrationController } from './arrival-registration.controller';
+import { arrivalCommandHandlers } from './commands/handlers';
+import arrivalRegisterHandlers from './queries/handlers';
 
 @Module({
-  providers: [...arrivalRegisterHandlers, ArrivalRepository],
+  providers: [
+    ...arrivalRegisterHandlers,
+    ...arrivalCommandHandlers,
+    ArrivalRepository,
+  ],
   controllers: [ArrivalRegistrationController],
 })
 export class ArrivalRegistrationModule {}

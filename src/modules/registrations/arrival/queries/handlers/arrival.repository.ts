@@ -2,6 +2,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import {
   and,
   count,
+  desc,
   eq,
   ilike,
   isNotNull,
@@ -15,20 +16,6 @@ import {
   passportInformation,
   visaInformation,
 } from 'src/modules/registrations/entities';
-<<<<<<< HEAD
-import {
-  and,
-  eq,
-  count,
-  ilike,
-  isNotNull,
-  isNull,
-  SQL,
-  desc,
-} from 'drizzle-orm';
-import ArrivalRegisterQuery from '../impl/arrival.query';
-=======
->>>>>>> 2ac6ac7634b0accbf7cfb7148091940a7e336afa
 import { QueryArrivalDtoType } from '../../dto/query-arrival.dto';
 import ArrivalRegisterQuery from '../impl/arrival.query';
 
