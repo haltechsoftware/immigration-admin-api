@@ -18,7 +18,7 @@ export class VerifyCodeRepository {
       .db()
       .update(departureRegistration)
       .set({
-        verified_at: verified_at,
+        verified_at,
       })
       .where(eq(departureRegistration.id, id))
       .execute();

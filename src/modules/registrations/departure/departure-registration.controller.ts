@@ -1,6 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { QueryBus } from '@nestjs/cqrs';
-import { Public } from 'src/common/decorators/public.decorator';
+import { Controller, Get, Post } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { Permissions } from 'src/common/decorators/permission.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
 import {
@@ -9,13 +9,24 @@ import {
 } from './dto/query-departure.dto';
 import DepartureRegisterQuery from './queries/impl/departure.query';
 import GetDepartureByIdQuery from './queries/impl/get-departure-by-id.query';
-import DepartureVerifyCodeQuery from './queries/impl/verify-code-departure.query';
+import {
+  VerifyDepartureCodeDto,
+  VerifyDepartureCodeDtoType,
+} from './dto/verify-departure-code.dto';
+import VerifyDepartureCodeCommand from './commands/impl/verify-departure-code.command';
+import {
+  PermissionGroup,
+  PermissionName,
+} from 'src/common/enum/permission.enum';
 
 @Controller('departure')
 export class DepartureRegistrationController {
-  constructor(private readonly queryBus: QueryBus) {}
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+  ) {}
 
-  @Public()
+  @Permissions(PermissionGroup.Registration, PermissionName.Read)
   @Get()
   async departureRegister(
     @Valibot({ schema: QueryDepartureDto, type: 'query' })
@@ -26,7 +37,7 @@ export class DepartureRegistrationController {
     );
   }
 
-  @Public()
+  @Permissions(PermissionGroup.Registration, PermissionName.Read)
   @Get(':id')
   async GetDepartureByIdHandler(
     @Valibot({ schema: GetByIdDto, type: 'params' }) { id }: GetByIdDtoType,
@@ -36,13 +47,16 @@ export class DepartureRegistrationController {
     );
   }
 
-  @Public()
-  @Get('get/:verification_code')
-  async verify_code(
-    @Param('verification_code') verification_code: string,
+  @Permissions(PermissionGroup.Registration, PermissionName.Write)
+  @Post()
+  async verifyCode(
+    @Valibot({ schema: VerifyDepartureCodeDto })
+    body: VerifyDepartureCodeDtoType,
   ): Promise<any> {
-    return await this.queryBus.execute<DepartureVerifyCodeQuery>(
-      new DepartureVerifyCodeQuery(verification_code),
+    const result = await this.commandBus.execute<VerifyDepartureCodeCommand>(
+      new VerifyDepartureCodeCommand(body),
     );
+
+    return { message: result };
   }
 }
