@@ -1,8 +1,8 @@
-import { Output, object, special, transform } from 'valibot';
+import { Output, minLength, object, string, transform } from 'valibot';
 
 const GetByIdDto = object({
   id: transform(
-    special<number>((input) => !isNaN(Number(input)), 'Invalid type'),
+    string('ຈະຕ້ອງເປັນ string', [minLength(1, 'ຈະຕ້ອງບໍ່ວ່າງເປົ່າ')]),
     (input) => Number(input),
   ),
 });
