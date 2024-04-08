@@ -6,7 +6,7 @@ import GetUserByIdQuery from '../impl/get-user-by-id.query';
 @QueryHandler(GetUserByIdQuery)
 export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
   constructor(private readonly drizzle: DrizzleService) {}
-
+  
   private prepared = this.drizzle
     .db()
     .query.users.findFirst({

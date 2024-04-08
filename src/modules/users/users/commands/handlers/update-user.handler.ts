@@ -1,9 +1,10 @@
-import { NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { hash } from 'bcrypt';
 import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
-import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { UserRepository } from '../../user.repository';
 import UpdateUserCommand from '../impl/update-user.command';
 
@@ -13,7 +14,7 @@ export default class UpdateUserHandler
 {
   constructor(
     private readonly repository: UserRepository,
-    private readonly fileUpload: NodeFileUploadService,
+    @Inject(FILE_UPLOAD_SERVICE) private readonly fileUpload: IFileUpload,
   ) {}
 
   async execute({ id, dto }: UpdateUserCommand): Promise<string> {

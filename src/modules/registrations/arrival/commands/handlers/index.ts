@@ -1,9 +1,5 @@
 import { UploadPassportImageHandler } from './upload-passport-image.handler';
 import { UploadVisaImageHandler } from './upload-visa-image.handler';
+import { VerifyArrivalCodeHandler } from './verify-code-arrival.repository';
 
-const arrivalCommandHandlers = [
-  UploadPassportImageHandler,
-  UploadVisaImageHandler,
-];
-
-export default arrivalCommandHandlers;
+export const arrivalCommandHandlers = [VerifyArrivalCodeHandler,  UploadPassportImageHandler,UploadVisaImageHandler];
