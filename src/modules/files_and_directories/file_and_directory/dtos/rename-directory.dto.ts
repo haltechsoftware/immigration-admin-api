@@ -1,17 +1,21 @@
 import { RequestContext } from 'nestjs-request-context';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
-  Output,
   customAsync,
   maxLength,
   minLength,
   numberAsync,
+  object,
   objectAsync,
+  optional,
   optionalAsync,
+  Output,
   string,
+  stringAsync,
+  transform,
 } from 'valibot';
 
-const CreateDirectoryDto = objectAsync({
+const RenameDirectoryDto = objectAsync({
   directory_id: optionalAsync(
     numberAsync('ຕ້ອງເປັນ number', [
       customAsync(async (input: number) => {
@@ -34,12 +38,25 @@ const CreateDirectoryDto = objectAsync({
       }, 'directory_id ບໍ່ມີໃນລະບົບ'),
     ]),
   ),
-  name: string('ຕ້ອງເປັນ string', [
+  name: stringAsync('ຕ້ອງເປັນ string', [
     minLength(1, 'ບໍ່ຄວນວ່າງເປົ່າ'),
     maxLength(255, 'ຕົວອັກສອນບໍ່ເກີນ 255'),
   ]),
 });
 
-type CreateDirectoryDtoType = Output<typeof CreateDirectoryDto>;
+const RenameDirectoryParamDto = object({
+  id: transform(string([minLength(1, 'ບໍ່ຄວນວ່າງເປົ່າ')]), (input) =>
+    Number(input),
+  ),
+  dir_id: optional(transform(string(), (input) => Number(input))),
+});
 
-export { CreateDirectoryDto, type CreateDirectoryDtoType };
+type RenameDirectoryDtoType = Output<typeof RenameDirectoryDto>;
+type RenameDirectoryParamDtoType = Output<typeof RenameDirectoryParamDto>;
+
+export {
+  RenameDirectoryDto,
+  RenameDirectoryDtoType,
+  RenameDirectoryParamDto,
+  RenameDirectoryParamDtoType,
+};

@@ -1,6 +1,6 @@
 import { Provider } from '@nestjs/common';
-import { GetAllFilesAndDirectoryHandler } from './get-all-repository';
+import { GetFileAndFolderByParentIdHandler } from './get-file-and-folder-by-parent-id.repository';
 
 export const queryFileAndDirectory: Provider[] = [
-  GetAllFilesAndDirectoryHandler,
+  GetFileAndFolderByParentIdHandler,
 ];

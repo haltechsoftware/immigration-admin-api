@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
-import { FileAndDirectoryRepository } from '../../file_and_directory.repository';
+import { FileAndDirectoryRepository } from '../../file-and-directory.repository';
 import { CreateFilesCommand } from '../impl/create-file.command';
 @CommandHandler(CreateFilesCommand)
 export class CreateFileHandler implements ICommandHandler<CreateFilesCommand> {
@@ -12,7 +12,7 @@ export class CreateFileHandler implements ICommandHandler<CreateFilesCommand> {
   private part: string[] = [];
 
   async execute({ input }: CreateFilesCommand) {
-    if (input.directory_id)
+    if (!!input.directory_id)
       await this.getParentSize(input.directory_id, input.file.size);
 
     this.part.push('editor');
@@ -28,13 +28,13 @@ export class CreateFileHandler implements ICommandHandler<CreateFilesCommand> {
     await this.repository.create({
       name: names[names.length - 1],
       type: 'file',
-      parent_id: input.directory_id,
+      parent_id: input.directory_id ? input.directory_id : undefined,
       size: input.file.size,
     });
 
     this.part = [];
 
-    return { message: 'ອັບໂຫຼດຟາຍສຳເລັດ' };
+    return 'ອັບໂຫຼດຟາຍສຳເລັດ';
   }
 
   async getParentSize(id: number, size: number) {

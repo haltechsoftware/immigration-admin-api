@@ -1,6 +1,6 @@
 import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { FileAndDirectoryRepository } from '../../file_and_directory.repository';
+import { FileAndDirectoryRepository } from '../../file-and-directory.repository';
 import { DeleteDirectoryCommand } from '../impl/delete-directory.command';
 
 @CommandHandler(DeleteDirectoryCommand)

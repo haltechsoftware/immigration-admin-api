@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { format } from 'date-fns';
 import { eq, sql } from 'drizzle-orm';
+import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { InsertFileAndDirectory, filesAndDirectories } from '../entities';
 export type InsertFileAndDirectoryType = Omit<
@@ -13,6 +15,20 @@ export type UpdateSize = Omit<InsertFileAndDirectory, 'name' | 'type'>;
 @Injectable()
 export class FileAndDirectoryRepository {
   constructor(private readonly _drizzle: DrizzleService) {}
+
+  async checkDirIsExist(name: string, dirId?: number, id?: number) {
+    return await this._drizzle.db().query.filesAndDirectories.findFirst({
+      where: (fields, operators) =>
+        operators.and(
+          operators.eq(fields.type, 'directory'),
+          operators.eq(fields.name, name),
+          id ? operators.not(operators.eq(fields.id, id)) : undefined,
+          dirId
+            ? operators.eq(fields.parent_id, dirId)
+            : operators.isNull(fields.parent_id),
+        ),
+    });
+  }
 
   async create(input: InsertFileAndDirectory): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
@@ -90,6 +106,14 @@ export class FileAndDirectoryRepository {
           .returning()
       )[0];
     });
+  }
+
+  async renameDirectory(id: number, name: string) {
+    await this._drizzle
+      .db()
+      .update(filesAndDirectories)
+      .set({ name, updated_at: format(new Date(), DateTimeFormat.Timestamp) })
+      .where(eq(filesAndDirectories.id, id));
   }
 
   private preparedRemove = this._drizzle

@@ -1,4 +1,11 @@
-import { Controller, Delete, Get, Post, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FormDataRequest } from 'nestjs-form-data';
 import { ValibotAsync } from 'src/common/decorators/valibot/valibot-async.decorator';
@@ -14,11 +21,20 @@ import {
   CreateDirectoryDtoType,
 } from './dtos/create-directory.dto';
 import { CreateFileDto, CreateFileDtoType } from './dtos/create-File.dto';
+
+import { MergeParamToBodyInterceptor } from 'src/common/interceptor/merge-param-to-body/merge-param-to-body.interceptor';
+import { RenameDirectoryCommand } from './commands/impl/rename-directory.command';
 import {
-  QueryFileAndDirectoryDto,
-  QueryFileAndDirectoryDtoType,
-} from './dtos/query-file-and-directory.dto';
-import { GetAllFilesAndDirectoryQuery } from './queries/impl/get-all.query';
+  QueryFileAndFolderByParentIdDto,
+  QueryFileAndFolderByParentIdDtoType,
+} from './dtos/query-file-and-folder-by-parent-id.dto';
+import {
+  RenameDirectoryDto,
+  RenameDirectoryDtoType,
+  RenameDirectoryParamDto,
+  RenameDirectoryParamDtoType,
+} from './dtos/rename-directory.dto';
+import { GetFileAndFolderByParentIdQuery } from './queries/impl/get-file-and-folder-by-parent-id.query';
 
 @Controller('file-and-directory')
 export class FileAndDirectoryController {
@@ -48,13 +64,27 @@ export class FileAndDirectoryController {
   }
 
   @Get()
-  async getByIdFile(
-    @Valibot({ schema: QueryFileAndDirectoryDto, type: 'query' })
-    params: QueryFileAndDirectoryDtoType,
+  async getFileAndFolder(
+    @Valibot({ schema: QueryFileAndFolderByParentIdDto, type: 'query' })
+    query: QueryFileAndFolderByParentIdDtoType,
   ) {
-    return await this._queryBus.execute<GetAllFilesAndDirectoryQuery>(
-      new GetAllFilesAndDirectoryQuery(params),
+    return await this._queryBus.execute<GetFileAndFolderByParentIdQuery>(
+      new GetFileAndFolderByParentIdQuery(query),
     );
+  }
+
+  @UseInterceptors(MergeParamToBodyInterceptor, MergeDrizzleToReqInterceptor)
+  @Put(':id/directory')
+  async renameDirectory(
+    @Valibot({ schema: RenameDirectoryParamDto })
+    { id }: RenameDirectoryParamDtoType,
+    @ValibotAsync({ schema: RenameDirectoryDto })
+    body: RenameDirectoryDtoType,
+  ) {
+    const result = await this._commandBus.execute<RenameDirectoryCommand>(
+      new RenameDirectoryCommand(id, body),
+    );
+    return { message: result };
   }
 
   @Delete(':id/directory')

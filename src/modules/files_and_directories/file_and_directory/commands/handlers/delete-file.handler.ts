@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
-import { FileAndDirectoryRepository } from '../../file_and_directory.repository';
+import { FileAndDirectoryRepository } from '../../file-and-directory.repository';
 import { DeleteFileCommand } from '../impl/delete-file.command';
 
 @CommandHandler(DeleteFileCommand)
