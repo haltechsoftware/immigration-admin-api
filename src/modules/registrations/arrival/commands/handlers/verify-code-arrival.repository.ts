@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { sql } from 'drizzle-orm';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { ArrivalRepository } from '../../arriva-registration.repository';
+import { ArrivalRegistrationRepository } from '../../arrival-registration.repository';
 import VerifyArrivalCodeCommand from '../impl/verify-arrival-code.command';
 
 @CommandHandler(VerifyArrivalCodeCommand)
@@ -12,7 +12,7 @@ export class VerifyArrivalCodeHandler
   implements ICommandHandler<VerifyArrivalCodeCommand>
 {
   constructor(
-    private readonly repository: ArrivalRepository,
+    private readonly repository: ArrivalRegistrationRepository,
     private readonly drizzle: DrizzleService,
   ) {}
 
