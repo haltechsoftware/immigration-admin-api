@@ -26,7 +26,7 @@ export class CreateBannerHandler
     await this._repository.create({
       image,
       link: input.link,
-      start_time: format(input.start_time, DateTimeFormat.Timestamp),
+      start_time: 'fdsfs',
       end_time: format(input.end_time, DateTimeFormat.Timestamp),
       is_private: input.is_private,
       translates: [
