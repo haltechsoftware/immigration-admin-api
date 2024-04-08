@@ -18,3 +18,7 @@ export const accommodationRequestRelations = relations(
     translates: many(accommodationRequestTranslate),
   }),
 );
+
+export type AccommodationRequest = typeof accommodationRequest.$inferSelect;
+export type InsertAccommodationRequest =
+  typeof accommodationRequest.$inferInsert;
