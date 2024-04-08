@@ -1,18 +1,18 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import VerifyDepartureCodeCommand from '../impl/verify-departure-code.command';
-import { VerifyCodeRepository } from '../../departure-registration.reppository';
-import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { sql } from 'drizzle-orm';
 import { NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { format } from 'date-fns';
+import { sql } from 'drizzle-orm';
+import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { DepartureRepository } from '../../departure-registration.repository';
+import VerifyDepartureCodeCommand from '../impl/verify-departure-code.command';
 
 @CommandHandler(VerifyDepartureCodeCommand)
 export class VerifyDepartureCodeHandler
   implements ICommandHandler<VerifyDepartureCodeCommand>
 {
   constructor(
-    private readonly repository: VerifyCodeRepository,
+    private readonly repository: DepartureRepository,
     private readonly drizzle: DrizzleService,
   ) {}
 
@@ -34,7 +34,7 @@ export class VerifyDepartureCodeHandler
         message: 'ບໍ່ສາມາດກວດສອບລະຫັດທີ່ກວດສອບແລ້ວໄດ້',
       });
 
-    await this.repository.updateVerifycode({
+    await this.repository.updateVerifyCode({
       id: res.id,
       verified_at: format(new Date(), DateTimeFormat.Timestamp),
     });

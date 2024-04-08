@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import departureRegisterHandlers from './queries/handlers';
-import { DepartureRegistrationController } from './departure-registration.controller';
-import { VerifyCodeRepository } from './departure-registration.reppository';
 import { departureCommandHandlers } from './commands/handlers';
+import { DepartureRegistrationController } from './departure-registration.controller';
+import { DepartureRepository } from './departure-registration.repository';
+import departureRegisterHandlers from './queries/handlers';
 
 @Module({
   providers: [
     ...departureRegisterHandlers,
     ...departureCommandHandlers,
-    VerifyCodeRepository,
+    DepartureRepository,
   ],
   controllers: [DepartureRegistrationController],
 })

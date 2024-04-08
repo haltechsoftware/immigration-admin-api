@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { departureRegistration } from '../entities';
-import { eq } from 'drizzle-orm';
 
 @Injectable()
-export class VerifyCodeRepository {
+export class DepartureRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
-  async updateVerifycode({
+  async updateVerifyCode({
     id,
     verified_at,
   }: {
@@ -20,7 +20,6 @@ export class VerifyCodeRepository {
       .set({
         verified_at,
       })
-      .where(eq(departureRegistration.id, id))
-      .execute();
+      .where(eq(departureRegistration.id, id));
   }
 }
