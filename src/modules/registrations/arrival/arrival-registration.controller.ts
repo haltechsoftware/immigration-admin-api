@@ -1,29 +1,25 @@
-import { Controller, Get, Post, Query } from '@nestjs/common';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { FormDataRequest } from 'nestjs-form-data';
-import { Public } from 'src/common/decorators/public.decorator';
-import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
-import { Output } from 'valibot';
-import { UploadPassportImageCommand } from './commands/impl/upload-passport-image.command';
-import { UploadVisaImageCommand } from './commands/impl/upload-visa-image.command';
-import { UploadPassportImageDto } from './dtos/upload-passport-image.dto';
-import { UploadVisaImageDto } from './dtos/upload-visa-image.dto';
-import ArrivalRegisterQuery from './queries/impl/arrival.query';
 import { Controller, Get, Post } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { FormDataRequest } from 'nestjs-form-data';
 import { Permissions } from 'src/common/decorators/permission.decorator';
+import { Public } from 'src/common/decorators/public.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
 import {
   PermissionGroup,
   PermissionName,
 } from 'src/common/enum/permission.enum';
+import { Output } from 'valibot';
+import { UploadPassportImageCommand } from './commands/impl/upload-passport-image.command';
+import { UploadVisaImageCommand } from './commands/impl/upload-visa-image.command';
 import VerifyArrivalCodeCommand from './commands/impl/verify-arrival-code.command';
 import { QueryArrivalDto, QueryArrivalDtoType } from './dto/query-arrival.dto';
 import {
   VerifyArrivalCodeDto,
   VerifyArrivalCodeDtoType,
 } from './dto/verify-arrival-code.dto';
+import { UploadPassportImageDto } from './dtos/upload-passport-image.dto';
+import { UploadVisaImageDto } from './dtos/upload-visa-image.dto';
 import ArrivalRegisterQuery from './queries/impl/arrival.query';
 import GetArrivalByIdQuery from './queries/impl/get-arrival-by-id.query';
 
@@ -61,7 +57,7 @@ export class ArrivalRegistrationController {
     );
 
     return { url };
-}
+  }
 
   @Permissions(PermissionGroup.Registration, PermissionName.Read)
   @Get()

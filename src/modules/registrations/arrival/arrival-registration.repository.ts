@@ -16,4 +16,21 @@ export class ArrivalRegistrationRepository {
       where: (fields, operators) => operators.eq(fields.number, number),
     });
   }
+
+  async updateVerifyCode({
+    id,
+    verified_at,
+  }: {
+    id: number;
+    verified_at: string;
+  }): Promise<void> {
+    await this.drizzle
+      .db()
+      .update(arrivalRegistration)
+      .set({
+        verified_at,
+      })
+      .where(eq(arrivalRegistration.id, id))
+      .execute();
+  }
 }
