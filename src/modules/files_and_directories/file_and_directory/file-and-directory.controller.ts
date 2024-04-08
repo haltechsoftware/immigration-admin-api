@@ -20,10 +20,10 @@ import {
   CreateDirectoryDto,
   CreateDirectoryDtoType,
 } from './dtos/create-directory.dto';
-import { CreateFileDto, CreateFileDtoType } from './dtos/create-File.dto';
 
 import { MergeParamToBodyInterceptor } from 'src/common/interceptor/merge-param-to-body/merge-param-to-body.interceptor';
 import { RenameDirectoryCommand } from './commands/impl/rename-directory.command';
+import { CreateFileDto, CreateFileDtoType } from './dtos/create-file.dto';
 import {
   QueryFileAndFolderByParentIdDto,
   QueryFileAndFolderByParentIdDtoType,
