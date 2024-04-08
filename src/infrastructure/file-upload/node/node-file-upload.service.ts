@@ -42,8 +42,9 @@ export class NodeFileUploadService implements IFileUpload {
   }
 
   private generateUniqueFilename(base: string, extension: string): string {
+    const baseWithoutSpaces = base.replace(/\s+/g, '-').toLowerCase();
     const randomString = Math.random().toString(36).substring(2, 15);
-    const filename = `${base}-${randomString}.${extension}`;
+    const filename = `${baseWithoutSpaces}-${randomString}${extension}`;
 
     return filename;
   }
