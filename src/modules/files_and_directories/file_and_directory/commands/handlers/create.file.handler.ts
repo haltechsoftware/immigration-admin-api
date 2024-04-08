@@ -1,11 +1,13 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { FileAndDirectoryRepository } from '../../file-and-directory.repository';
 import { CreateFilesCommand } from '../impl/create-file.command';
 @CommandHandler(CreateFilesCommand)
 export class CreateFileHandler implements ICommandHandler<CreateFilesCommand> {
   constructor(
-    private readonly nodeFileUpload: NodeFileUploadService,
+    @Inject(FILE_UPLOAD_SERVICE) private readonly fileUpload: IFileUpload,
     private readonly repository: FileAndDirectoryRepository,
   ) {}
 
@@ -17,7 +19,7 @@ export class CreateFileHandler implements ICommandHandler<CreateFilesCommand> {
 
     this.part.push('editor');
 
-    const url = await this.nodeFileUpload.upload(
+    const url = await this.fileUpload.upload(
       this.part.reverse().join('/') + '/',
       input.file.buffer,
       input.file.originalName,

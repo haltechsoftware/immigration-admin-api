@@ -1,6 +1,7 @@
-import { NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { FileAndDirectoryRepository } from '../../file-and-directory.repository';
 import { DeleteFileCommand } from '../impl/delete-file.command';
 
@@ -8,7 +9,7 @@ import { DeleteFileCommand } from '../impl/delete-file.command';
 export class DeleteFilesHandler implements ICommandHandler<DeleteFileCommand> {
   constructor(
     private readonly repository: FileAndDirectoryRepository,
-    private readonly fileUpload: NodeFileUploadService,
+    @Inject(FILE_UPLOAD_SERVICE) private readonly fileUpload: IFileUpload,
   ) {}
 
   private part: string[] = [];
