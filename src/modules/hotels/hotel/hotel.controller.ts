@@ -1,24 +1,31 @@
-import { Controller, Delete, Get, Post, Put, UseInterceptors } from "@nestjs/common";
-import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { FormDataRequest } from "nestjs-form-data";
-import { PermissionGroup, PermissionName } from '../../../common/enum/permission.enum';
+import {
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  UseInterceptors,
+} from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { FormDataRequest } from 'nestjs-form-data';
 import { Permissions } from 'src/common/decorators/permission.decorator';
-import { Valibot } from "src/common/decorators/valibot/valibot.decorator";
-import { CreateHotelDto, CreateHotelDtoType } from "./dtos/create-hotel.dto";
-import CreateHotelCommand from "./commands/imp/create-hotel.command";
-import { UpdateHotelDto, UpdateHotelDtoType } from "./dtos/update-hotel.dto";
-import { GetByIdDto, GetByIdDtoType } from "src/common/dtos/get-by-id.dto";
-import UpdateHotelCommand from "./commands/imp/update-hotel.command";
-import { QueryHotelDto, QueryHotelType } from "./dtos/query-hotel.dto";
-import { GetAllHotelQuery } from "./queries/imp/get-all.query";
-import { GetOneHotelQuery } from "./queries/imp/get-one.query";
-import { MergeDrizzleToReqInterceptor } from "src/common/interceptor/merge-drizzle-to-req/merge-drizzle-to-req.interceptor";
-import { UpdateHotelStatusDto, UpdatePopupStatusDtoType } from "./dtos/update-hotel-status.dto";
-import { RemoveHotelCommand } from "./commands/imp/remove-hotel.command";
-import { MergeParamToBodyInterceptor } from "src/common/interceptor/merge-param-to-body/merge-param-to-body.interceptor";
-import { PublicHotelCommand } from "./commands/imp/public-hotel.command";
-import { PrivateHotelCommand } from "./commands/imp/private-hotel.command";
-
+import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
+import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
+import { MergeParamToBodyInterceptor } from 'src/common/interceptor/merge-param-to-body/merge-param-to-body.interceptor';
+import {
+  PermissionGroup,
+  PermissionName,
+} from '../../../common/enum/permission.enum';
+import CreateHotelCommand from './commands/imp/create-hotel.command';
+import { PrivateHotelCommand } from './commands/imp/private-hotel.command';
+import { PublicHotelCommand } from './commands/imp/public-hotel.command';
+import { RemoveHotelCommand } from './commands/imp/remove-hotel.command';
+import UpdateHotelCommand from './commands/imp/update-hotel.command';
+import { CreateHotelDto, CreateHotelDtoType } from './dtos/create-hotel.dto';
+import { QueryHotelDto, QueryHotelType } from './dtos/query-hotel.dto';
+import { UpdateHotelDto, UpdateHotelDtoType } from './dtos/update-hotel.dto';
+import { GetAllHotelQuery } from './queries/imp/get-all.query';
+import { GetOneHotelQuery } from './queries/imp/get-one.query';
 
 @Controller('hotel')
 export class HotelController {

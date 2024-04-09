@@ -1,9 +1,8 @@
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { sql } from "drizzle-orm";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import { GetOneHotelQuery } from "../imp/get-one.query";
-import { NotFoundException } from "@nestjs/common";
-
+import { NotFoundException } from '@nestjs/common';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { sql } from 'drizzle-orm';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { GetOneHotelQuery } from '../imp/get-one.query';
 
 @QueryHandler(GetOneHotelQuery)
 export class GetOneHotelQueryHandler

@@ -1,8 +1,8 @@
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import { GetAllHotelQuery } from "../imp/get-all.query";
-import { and, count, eq } from "drizzle-orm";
-import { hotels } from "src/modules/hotels/entities";
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { count, eq } from 'drizzle-orm';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { hotels, hotelTranslate } from 'src/modules/hotels/entities';
+import { GetAllHotelQuery } from '../imp/get-all.query';
 
 @QueryHandler(GetAllHotelQuery)
 export class GetAllHotelQueryHandler
@@ -12,26 +12,34 @@ export class GetAllHotelQueryHandler
   async execute({
     input: { offset, limit, is_published },
   }: GetAllHotelQuery): Promise<any> {
-        const isPrivateCondition =
-        is_published !== undefined
-            ? eq(hotels.is_published, is_published === '1' ? true : false)
-            : undefined;
+    const isPrivateCondition = is_published
+      ? eq(hotels.is_published, is_published === '1' ? true : false)
+      : undefined;
 
-        const res = await this._drizzle.db().query.hotels.findMany({
-        where: isPrivateCondition,
-        limit,
-        offset,
-        });
+    const res = await this._drizzle.db().query.hotels.findMany({
+      with: {
+        translates: {
+          where: eq(hotelTranslate.lang, 'lo'),
+        },
+      },
+      where: isPrivateCondition,
+      limit,
+      offset,
+    });
 
-        const total = await this._drizzle
-        .db()
-        .select({ value: count() })
-        .from(hotels)
-        .where(isPrivateCondition);
+    const total = await this._drizzle
+      .db()
+      .select({ value: count() })
+      .from(hotels)
+      .where(isPrivateCondition);
 
-        return {
-        data: res,
-        total: total[0].value,
-        };
-    }
+    return {
+      data: res.map((val) => ({
+        ...val,
+        name: val.translates[0].name,
+        translates: undefined,
+      })),
+      total: total[0].value,
+    };
+  }
 }

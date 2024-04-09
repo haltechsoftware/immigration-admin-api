@@ -1,7 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import { InsertHotels, InsertHotelsTranslate, hotelTranslate, hotels } from "../entities";
-import { eq, sql } from "drizzle-orm";
+import { Injectable } from '@nestjs/common';
+import { eq, sql } from 'drizzle-orm';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import {
+  InsertHotels,
+  InsertHotelsTranslate,
+  hotelTranslate,
+  hotels,
+} from '../entities';
 
 export type InsertHotelType = InsertHotels & {
   translates: InsertHotelsTranslate[];
@@ -12,8 +17,13 @@ export type UpdateHotelType = Omit<InsertHotelType, 'image'> & {
 };
 
 export type UpdatePublic = Omit<
-InsertHotelType,
-  'image' | 'link' | 'latitude' | 'longitude' | 'phone_number' | 'hotelTranslate'
+  InsertHotelType,
+  | 'image'
+  | 'link'
+  | 'latitude'
+  | 'longitude'
+  | 'phone_number'
+  | 'hotelTranslate'
 >;
 
 @Injectable()
@@ -25,12 +35,11 @@ export class HotelRepository {
       const hotel = await tx
         .insert(hotels)
         .values({
-          latitude: input.latitude,
-          longitude: input.longitude,
+          link_map: input.link_map,
           image: input.image,
           link: input.link,
           phone_number: input.phone_number,
-          is_published: input.is_published
+          is_published: input.is_published,
         })
         .returning();
 
@@ -39,7 +48,7 @@ export class HotelRepository {
           hotel_id: hotel[0].id,
           lang: val.lang,
           name: val.name,
-          address: val.address
+          address: val.address,
         })),
       );
     });
@@ -63,12 +72,11 @@ export class HotelRepository {
       await tx
         .update(hotels)
         .set({
-          latitude: input.latitude,
-          longitude: input.longitude,
+          link_map: input.link_map,
           image: input.image,
           link: input.link,
           phone_number: input.phone_number,
-          is_published: input.is_published
+          is_published: input.is_published,
         })
         .where(eq(hotels.id, input.id));
 
@@ -77,7 +85,7 @@ export class HotelRepository {
           .update(hotelTranslate)
           .set({
             name: val.name,
-            address: val.address
+            address: val.address,
           })
           .where(eq(hotelTranslate.id, val.id));
       });

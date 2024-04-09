@@ -1,7 +1,7 @@
 import { Output, boolean, object } from 'valibot';
 
 const UpdateHotelStatusDto = object({
-    is_published: boolean('ຕ້ອງເປັນ boolean'),
+  is_published: boolean('ຕ້ອງເປັນ boolean'),
 });
 
 type UpdatePopupStatusDtoType = Output<typeof UpdateHotelStatusDto>;

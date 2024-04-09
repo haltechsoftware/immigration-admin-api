@@ -1,12 +1,10 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { PublicHotelCommand } from "../imp/public-hotel.command";
-import { HotelRepository } from "../../hotel.repository";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { HotelRepository } from '../../hotel.repository';
+import { PublicHotelCommand } from '../imp/public-hotel.command';
 
 @CommandHandler(PublicHotelCommand)
-export class PublicHotelHandler
-  implements ICommandHandler<PublicHotelCommand>
-{
+export class PublicHotelHandler implements ICommandHandler<PublicHotelCommand> {
   constructor(private readonly repository: HotelRepository) {}
 
   async execute({ id }: PublicHotelCommand): Promise<any> {
@@ -15,13 +13,13 @@ export class PublicHotelHandler
     if (!hotel)
       throw new NotFoundException({ message: 'ໂຮງແຮມນີ້ບໍ່ມີໃນລະບົບ' });
 
-    if (hotel.is_published === false) {
+    if (hotel.is_published === true) {
       throw new BadRequestException({
         message: 'ບໍ່ສາມາດເປິດການມອງເຫັນຊໍ້າໄດ້',
       });
     }
 
-    hotel.is_published = false;
+    hotel.is_published = true;
 
     await this.repository.updatePublished(hotel);
 
