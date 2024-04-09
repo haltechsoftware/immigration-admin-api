@@ -2,7 +2,6 @@ import { relations } from 'drizzle-orm';
 
 import {
   boolean,
-  numeric,
   pgTable,
   serial,
   text,
@@ -13,8 +12,7 @@ import { hotelTranslate } from './hotel_translate';
 
 export const hotels = pgTable('hotels', {
   id: serial('id').primaryKey().notNull(),
-  latitude: numeric('latitude', { precision: 10, scale: 6 }).notNull(),
-  longitude: numeric('longitude', { precision: 10, scale: 6 }).notNull(),
+  link_map: text('link_map').notNull(),
   image: text('image').notNull(),
   link: text('link'),
   phone_number: varchar('phone_number', { length: 50 }),
@@ -30,3 +28,6 @@ export const hotels = pgTable('hotels', {
 export const hotelsRelations = relations(hotels, ({ many }) => ({
   translates: many(hotelTranslate),
 }));
+
+export type hotels = typeof hotels.$inferSelect;
+export type InsertHotels = typeof hotels.$inferInsert;
