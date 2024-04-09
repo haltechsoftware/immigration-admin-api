@@ -29,3 +29,8 @@ export const accommodationRequestTranslateRelations = relations(
     }),
   }),
 );
+
+export type AccommodationRequestTranslate =
+  typeof accommodationRequestTranslate.$inferSelect;
+export type InsertAccommodationRequestTranslate =
+  typeof accommodationRequestTranslate.$inferInsert;
