@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { arrivalRegistration } from '../entities';
 
 @Injectable()
 export class ArrivalRegistrationRepository {
