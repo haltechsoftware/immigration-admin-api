@@ -21,3 +21,7 @@ export const hotelTranslateRelations = relations(hotelTranslate, ({ one }) => ({
     references: [hotels.id],
   }),
 }));
+
+
+export type HotelsTranslate = typeof hotelTranslate.$inferSelect;
+export type InsertHotelsTranslate = typeof hotelTranslate.$inferInsert;

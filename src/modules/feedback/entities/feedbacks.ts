@@ -13,9 +13,12 @@ export const feedbacks = pgTable('feedbacks', {
   tel: varchar('tel', { length: 100 }),
   email: varchar('email', { length: 100 }),
   message: text('message'),
-  media: text('media').notNull(),
+  media: text('media'),
   is_published: boolean('is_published'),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
     .notNull(),
 });
+
+export type Feedback = typeof feedbacks.$inferSelect;
+export type InsertFeedback = typeof feedbacks.$inferInsert;

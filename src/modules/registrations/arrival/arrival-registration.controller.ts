@@ -1,15 +1,27 @@
-// import { ArrivalRegistrationService } from './arrival-registration.service';
-import { Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FormDataRequest } from 'nestjs-form-data';
+import { Permissions } from 'src/common/decorators/permission.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
+import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
+import {
+  PermissionGroup,
+  PermissionName,
+} from 'src/common/enum/permission.enum';
 import { Output } from 'valibot';
 import { UploadPassportImageCommand } from './commands/impl/upload-passport-image.command';
 import { UploadVisaImageCommand } from './commands/impl/upload-visa-image.command';
+import VerifyArrivalCodeCommand from './commands/impl/verify-arrival-code.command';
+import { QueryArrivalDto, QueryArrivalDtoType } from './dto/query-arrival.dto';
+import {
+  VerifyArrivalCodeDto,
+  VerifyArrivalCodeDtoType,
+} from './dto/verify-arrival-code.dto';
 import { UploadPassportImageDto } from './dtos/upload-passport-image.dto';
 import { UploadVisaImageDto } from './dtos/upload-visa-image.dto';
 import ArrivalRegisterQuery from './queries/impl/arrival.query';
+import GetArrivalByIdQuery from './queries/impl/get-arrival-by-id.query';
 
 @Controller('arrival')
 export class ArrivalRegistrationController {
@@ -17,16 +29,6 @@ export class ArrivalRegistrationController {
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
   ) {}
-
-  @Public()
-  @Get()
-  async arrivalRegister(@Query() params: any): Promise<any> {
-    // const { start_date, end_date, entry_name } = params;
-
-    return await this.queryBus.execute<ArrivalRegisterQuery>(
-      new ArrivalRegisterQuery(params),
-    );
-  }
 
   @Public()
   @Post('upload-passport')
@@ -55,5 +57,38 @@ export class ArrivalRegistrationController {
     );
 
     return { url };
+  }
+
+  @Permissions(PermissionGroup.Registration, PermissionName.Read)
+  @Get()
+  async arrivalRegister(
+    @Valibot({ schema: QueryArrivalDto, type: 'query' })
+    query: QueryArrivalDtoType,
+  ) {
+    return await this.queryBus.execute<ArrivalRegisterQuery>(
+      new ArrivalRegisterQuery(query),
+    );
+  }
+
+  @Permissions(PermissionGroup.Registration, PermissionName.Read)
+  @Get(':id')
+  async getArrivalById(
+    @Valibot({ schema: GetByIdDto, type: 'params' }) { id }: GetByIdDtoType,
+  ): Promise<any> {
+    return await this.queryBus.execute<GetArrivalByIdQuery>(
+      new GetArrivalByIdQuery(id),
+    );
+  }
+
+  @Permissions(PermissionGroup.Registration, PermissionName.Write)
+  @Post()
+  async verifyCode(
+    @Valibot({ schema: VerifyArrivalCodeDto }) body: VerifyArrivalCodeDtoType,
+  ): Promise<any> {
+    const result = await this.commandBus.execute<VerifyArrivalCodeCommand>(
+      new VerifyArrivalCodeCommand(body),
+    );
+
+    return { message: result };
   }
 }

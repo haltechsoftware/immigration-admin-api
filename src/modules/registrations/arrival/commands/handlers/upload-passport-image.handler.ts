@@ -1,5 +1,7 @@
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { NodeFileUploadService } from 'src/infrastructure/file-upload/node/node-file-upload.service';
+import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { ArrivalRegistrationRepository } from '../../arrival-registration.repository';
 import { UploadPassportImageCommand } from '../impl/upload-passport-image.command';
 
@@ -8,7 +10,8 @@ export class UploadPassportImageHandler
   implements ICommandHandler<UploadPassportImageCommand, string>
 {
   constructor(
-    private readonly upload: NodeFileUploadService,
+e readonly upload: NodeFileUploadService,
+    @Inject(FILE_UPLOAD_SERVICE) private readonly upload: IFileUpload,
     private readonly repository: ArrivalRegistrationRepository,
   ) {}
 
