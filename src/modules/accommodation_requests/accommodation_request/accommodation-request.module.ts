@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AccommodationRequestController } from './accommodation_request.controller';
+import { AccommodationRequestController } from './accommodation-request.controller';
+import { AccommodationRequestRepository } from './accommodation-request.repository';
 import { accommodationRequestHandlers } from './commands/handlers';
-import { AccommodationRequestRepository } from './accommodation_request.repository';
 import { accommodationRequestQuery } from './queries/handlers';
 
 @Module({

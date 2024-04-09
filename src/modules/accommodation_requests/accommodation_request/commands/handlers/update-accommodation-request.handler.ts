@@ -1,44 +1,46 @@
+import { NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UpdatedAccommodationCommand } from '../impl/update-accommodation_request.command';
-import { AccommodationRequestRepository } from '../../accommodation_request.repository';
 import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
-import { NotFoundException } from '@nestjs/common';
+import { AccommodationRequestRepository } from '../../accommodation-request.repository';
+import { UpdatedAccommodationCommand } from '../impl/update-accommodation-request.command';
 
 @CommandHandler(UpdatedAccommodationCommand)
 export class UpdatedAccommodationHandler
   implements ICommandHandler<UpdatedAccommodationCommand>
 {
   constructor(private readonly _repository: AccommodationRequestRepository) {}
+
   async execute({ id, input }: UpdatedAccommodationCommand): Promise<any> {
     const accommodation_request = await this._repository.findOne(id);
+
     if (!accommodation_request)
-      throw new NotFoundException({ message: 'ໄອດີທີ່ຮ້ອງຂໍໄປ ບໍ່ພົບຂໍ້ມູນ' });
+      throw new NotFoundException({ message: 'ບໍ່ພົບຂໍ້ມູນການຮ້ອງຂໍທີ່ພັກ' });
 
     await this._repository.update({
       id: accommodation_request.id,
       updated_at: format(new Date(), DateTimeFormat.Timestamp),
       translates: [
         {
-          id: input.en_id,
-          title: input.en_title,
-          lang: 'en',
-          content: input.en_content,
-        },
-        {
-          id: input.lo_id,
-          title: input.lo_title,
+          id: input.lo.id,
+          title: input.lo.title,
           lang: 'lo',
-          content: input.lo_content,
+          content: input.lo.content,
         },
         {
-          id: input.zh_cn_id,
-          title: input.zh_cn_title,
+          id: input.en.id,
+          title: input.en.title,
+          lang: 'en',
+          content: input.en.content,
+        },
+        {
+          id: input.zh_cn.id,
+          title: input.zh_cn.title,
           lang: 'zh_cn',
-          content: input.zh_cn_content,
+          content: input.zh_cn.content,
         },
       ],
     });
-    return { message: 'ແກ້ໄຂຂໍ້ມູນສຳເລັດ' };
+    return { message: 'ແກ້ໄຂຂໍ້ມູນການຮ້ອງຂໍທີ່ພັກສຳເລັດ' };
   }
 }

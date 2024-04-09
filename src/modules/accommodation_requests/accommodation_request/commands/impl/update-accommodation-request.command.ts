@@ -1,4 +1,4 @@
-import { UpdateAccommodationRequestDtoType } from '../../dtos/update-accommodation_request.dto';
+import { UpdateAccommodationRequestDtoType } from '../../dtos/update-accommodation-request.dto';
 
 export class UpdatedAccommodationCommand {
   constructor(

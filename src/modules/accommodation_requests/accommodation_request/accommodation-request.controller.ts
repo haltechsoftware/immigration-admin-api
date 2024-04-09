@@ -1,34 +1,34 @@
 import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { Permissions } from 'src/common/decorators/permission.decorator';
-import {
-  CreateAccommodationRequestDto,
-  CreateAccommodationRequestDtoType,
-} from './dtos/create-accommodation_request.dto';
-import { CreateAccommodationRequestCommand } from './commands/impl/create-accommodation_request.command';
-import {
-  UpdateAccommodationRequestDto,
-  UpdateAccommodationRequestDtoType,
-} from './dtos/update-accommodation_request.dto';
-import { UpdatedAccommodationCommand } from './commands/impl/update-accommodation_request.command';
+import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
-import { DeletedAccommodationCommand } from './commands/impl/remove-accommodation_request.command';
-import {
-  PermissionGroup,
-  PermissionName,
-} from 'src/common/enum/permission.enum';
 import {
   OffsetBasePaginateDto,
   OffsetBasePaginateDtoType,
 } from 'src/common/dtos/offset-base-paginate.dto';
-import { GetPaginateAccommodationRequest } from './queries/impl/get-paginate-accommodation_request';
-import { GetDetailAccommodationRequest } from './queries/impl/get-detail-accommodation_request';
-import { query } from 'express';
+import {
+  PermissionGroup,
+  PermissionName,
+} from 'src/common/enum/permission.enum';
+import { CreateAccommodationRequestCommand } from './commands/impl/create-accommodation-request.command';
+import { DeletedAccommodationCommand } from './commands/impl/remove-accommodation-request.command';
+import { UpdatedAccommodationCommand } from './commands/impl/update-accommodation-request.command';
+import {
+  CreateAccommodationRequestDto,
+  CreateAccommodationRequestDtoType,
+} from './dtos/create-accommodation-request.dto';
+import {
+  UpdateAccommodationRequestDto,
+  UpdateAccommodationRequestDtoType,
+} from './dtos/update-accommodation-request.dto';
+import { GetDetailAccommodationRequest } from './queries/impl/get-detail-accommodation-request';
+import { GetPaginateAccommodationRequest } from './queries/impl/get-paginate-accommodation-request';
 
 @Controller('accommodation-request')
 export class AccommodationRequestController {
   constructor(private _commandBus: CommandBus, private _queryBus: QueryBus) {}
+
   @Permissions(PermissionGroup.AccommodationRequest, PermissionName.Write)
   @Post()
   async created(
@@ -40,7 +40,6 @@ export class AccommodationRequestController {
     );
   }
 
-  //**** get paginate */
   @Permissions(PermissionGroup.AccommodationRequest, PermissionName.Read)
   @Get()
   async get(
@@ -52,7 +51,6 @@ export class AccommodationRequestController {
     );
   }
 
-  //**** get detail */
   @Permissions(PermissionGroup.AccommodationRequest, PermissionName.Read)
   @Get(':id')
   async getPaginate(
@@ -64,7 +62,6 @@ export class AccommodationRequestController {
     );
   }
 
-  //**** updated  */
   @Permissions(PermissionGroup.AccommodationRequest, PermissionName.Write)
   @Put(':id')
   async updated(

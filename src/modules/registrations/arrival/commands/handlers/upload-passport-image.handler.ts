@@ -10,7 +10,6 @@ export class UploadPassportImageHandler
   implements ICommandHandler<UploadPassportImageCommand, string>
 {
   constructor(
-e readonly upload: NodeFileUploadService,
     @Inject(FILE_UPLOAD_SERVICE) private readonly upload: IFileUpload,
     private readonly repository: ArrivalRegistrationRepository,
   ) {}
