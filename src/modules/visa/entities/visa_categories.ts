@@ -18,3 +18,7 @@ export const visaCategoriesRelations = relations(
     translates: many(visaCategoryTranslate),
   }),
 );
+
+export type VisaCategory = typeof visaCategories.$inferSelect;
+export type InsertVisaCategory = typeof visaCategories.$inferInsert;
+
