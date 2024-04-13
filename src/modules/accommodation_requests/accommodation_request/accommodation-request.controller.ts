@@ -4,10 +4,6 @@ import { Permissions } from 'src/common/decorators/permission.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
 import {
-  OffsetBasePaginateDto,
-  OffsetBasePaginateDtoType,
-} from 'src/common/dtos/offset-base-paginate.dto';
-import {
   PermissionGroup,
   PermissionName,
 } from 'src/common/enum/permission.enum';
@@ -19,9 +15,18 @@ import {
   CreateAccommodationRequestDtoType,
 } from './dtos/create-accommodation-request.dto';
 import {
+  QueryAccommodationRequestByIdDto,
+  QueryAccommodationRequestByIdDtoType,
+} from './dtos/query-accommodation-request-by-id.dto';
+import {
+  QueryAccommodationRequestDto,
+  QueryAccommodationRequestDtoType,
+} from './dtos/query-accommodation-request.dto';
+import {
   UpdateAccommodationRequestDto,
   UpdateAccommodationRequestDtoType,
 } from './dtos/update-accommodation-request.dto';
+import { GetAccommodationByIdRequestQuery } from './queries/impl/get-accommodation-request-by-id.query';
 import { GetDetailAccommodationRequest } from './queries/impl/get-detail-accommodation-request';
 import { GetPaginateAccommodationRequest } from './queries/impl/get-paginate-accommodation-request';
 
@@ -35,16 +40,19 @@ export class AccommodationRequestController {
     @Valibot({ schema: CreateAccommodationRequestDto })
     input: CreateAccommodationRequestDtoType,
   ) {
-    return await this._commandBus.execute<CreateAccommodationRequestCommand>(
-      new CreateAccommodationRequestCommand(input),
-    );
+    const result =
+      await this._commandBus.execute<CreateAccommodationRequestCommand>(
+        new CreateAccommodationRequestCommand(input),
+      );
+
+    return { message: result };
   }
 
   @Permissions(PermissionGroup.AccommodationRequest, PermissionName.Read)
   @Get()
   async get(
-    @Valibot({ schema: OffsetBasePaginateDto, type: 'query' })
-    query: OffsetBasePaginateDtoType,
+    @Valibot({ schema: QueryAccommodationRequestDto, type: 'query' })
+    query: QueryAccommodationRequestDtoType,
   ) {
     return await this._queryBus.execute<GetPaginateAccommodationRequest>(
       new GetPaginateAccommodationRequest(query),
@@ -53,12 +61,25 @@ export class AccommodationRequestController {
 
   @Permissions(PermissionGroup.AccommodationRequest, PermissionName.Read)
   @Get(':id')
-  async getPaginate(
+  async getById(
     @Valibot({ schema: GetByIdDto, type: 'params' })
     params: GetByIdDtoType,
   ) {
+    return await this._queryBus.execute<GetAccommodationByIdRequestQuery>(
+      new GetAccommodationByIdRequestQuery(params.id),
+    );
+  }
+
+  @Permissions(PermissionGroup.AccommodationRequest, PermissionName.Read)
+  @Get(':id/detail')
+  async getDetail(
+    @Valibot({ schema: GetByIdDto, type: 'params' })
+    params: GetByIdDtoType,
+    @Valibot({ schema: QueryAccommodationRequestByIdDto, type: 'query' })
+    query: QueryAccommodationRequestByIdDtoType,
+  ) {
     return await this._queryBus.execute<GetDetailAccommodationRequest>(
-      new GetDetailAccommodationRequest(params.id),
+      new GetDetailAccommodationRequest(params.id, query),
     );
   }
 
@@ -69,9 +90,10 @@ export class AccommodationRequestController {
     input: UpdateAccommodationRequestDtoType,
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
   ) {
-    return await this._commandBus.execute<UpdatedAccommodationCommand>(
+    const result = await this._commandBus.execute<UpdatedAccommodationCommand>(
       new UpdatedAccommodationCommand(params.id, input),
     );
+    return { message: result };
   }
 
   @Permissions(PermissionGroup.AccommodationRequest, PermissionName.Remove)

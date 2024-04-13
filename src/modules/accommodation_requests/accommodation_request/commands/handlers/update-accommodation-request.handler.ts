@@ -41,6 +41,6 @@ export class UpdatedAccommodationHandler
         },
       ],
     });
-    return { message: 'ແກ້ໄຂຂໍ້ມູນການຮ້ອງຂໍທີ່ພັກສຳເລັດ' };
+    return 'ແກ້ໄຂຂໍ້ມູນການຮ້ອງຂໍທີ່ພັກສຳເລັດ';
   }
 }

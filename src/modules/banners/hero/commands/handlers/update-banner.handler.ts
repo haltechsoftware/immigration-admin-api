@@ -17,6 +17,8 @@ export class UpdateBannerHandler
   ) {}
 
   async execute({ id, input }: UpdateBannerCommand): Promise<any> {
+    console.log(input);
+
     const banner = await this._repository.findOne(id);
 
     if (!banner)
@@ -45,15 +47,15 @@ export class UpdateBannerHandler
       translates: [
         {
           id: input.lo_id,
-          title: input.en_title,
-          lang: 'en',
-          description: input.en_description,
-        },
-        {
-          id: input.en_id,
           title: input.lo_title,
           lang: 'lo',
           description: input.lo_description,
+        },
+        {
+          id: input.en_id,
+          title: input.en_title,
+          lang: 'en',
+          description: input.en_description,
         },
         {
           id: input.zh_cn_id,

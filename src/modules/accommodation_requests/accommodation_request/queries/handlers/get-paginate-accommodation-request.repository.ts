@@ -17,22 +17,32 @@ export class GetPaginateAccommodationRequestHandler
     .prepare('count-accommodation_request');
 
   async execute({
-    paginate: { offset, limit },
+    paginate: { cursor, limit, lang },
   }: GetPaginateAccommodationRequest): Promise<any> {
     const res = await this._drizzle.db().query.accommodationRequest.findMany({
       with: {
         translates: {
-          columns: { title: true },
+          columns: { id: true, title: true },
+          where: lang
+            ? (fields, operators) => operators.eq(fields.lang, lang)
+            : undefined,
         },
       },
-      offset,
+      orderBy: (fields, operators) => operators.asc(fields.created_at),
+      where: (fields, operators) =>
+        cursor ? operators.gt(fields.created_at, cursor) : undefined,
       limit,
     });
 
     const total = await this._prepared.execute();
 
     return {
-      data: res,
+      data: res.map((val) => ({
+        ...val,
+        lang_id: val.translates[0].id,
+        title: val.translates[0].title,
+        translates: undefined,
+      })),
       total: total[0].value,
     };
   }

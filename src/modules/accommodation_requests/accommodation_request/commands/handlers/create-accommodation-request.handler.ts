@@ -27,6 +27,6 @@ export class CreateAccommodationRequestHandler
         },
       ],
     });
-    return { message: 'ບັນທຶກການຮ້ອງຂໍທີ່ພັກສຳເລັດ' };
+    return 'ບັນທຶກການຮ້ອງຂໍທີ່ພັກສຳເລັດ';
   }
 }
