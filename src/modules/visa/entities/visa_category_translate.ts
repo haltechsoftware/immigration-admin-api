@@ -26,3 +26,7 @@ export const visaCategoryTranslateRelations = relations(
     }),
   }),
 );
+
+
+export type visaCategoryTranslate = typeof visaCategoryTranslate.$inferSelect;
+export type InsertVisaCategoryTranslate = typeof visaCategoryTranslate.$inferInsert;
