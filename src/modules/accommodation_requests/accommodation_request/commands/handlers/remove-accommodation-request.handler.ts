@@ -16,6 +16,6 @@ export class DeletedAccommodationHandler
 
     await this._repository.remove(accommodation_request.id);
 
-    return { message: 'ລົບຂໍ້ມູນການຮ້ອງຂໍທີ່ພັກສຳເລັດ' };
+    return 'ລົບຂໍ້ມູນການຮ້ອງຂໍທີ່ພັກສຳເລັດ';
   }
 }

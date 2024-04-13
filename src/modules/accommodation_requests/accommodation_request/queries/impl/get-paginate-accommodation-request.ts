@@ -1,8 +1,5 @@
-import { IOffsetBasePaginate } from 'src/common/interface/pagination/pagination.interface';
-import { AccommodationRequest } from 'src/modules/accommodation_requests/entities';
+import { QueryAccommodationRequestDtoType } from '../../dtos/query-accommodation-request.dto';
 
 export class GetPaginateAccommodationRequest {
-  constructor(
-    public readonly paginate: IOffsetBasePaginate<AccommodationRequest>,
-  ) {}
+  constructor(public readonly paginate: QueryAccommodationRequestDtoType) {}
 }
