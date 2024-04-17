@@ -1,8 +1,8 @@
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { sql } from "drizzle-orm";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import { GetOneVisaCategoryQuery } from "../impl/get-visa_category-by-id.query";
-import { NotFoundException } from "@nestjs/common";
+import { NotFoundException } from '@nestjs/common';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { sql } from 'drizzle-orm';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { GetOneVisaCategoryQuery } from '../impl/get-visa_category-by-id.query';
 
 @QueryHandler(GetOneVisaCategoryQuery)
 export class GetOneVisaCategoryQueryHandler
@@ -22,7 +22,8 @@ export class GetOneVisaCategoryQueryHandler
   async execute({ id }: GetOneVisaCategoryQuery): Promise<any> {
     const res = await this.prepared.execute({ id });
 
-    if (!res) throw new NotFoundException({ message: 'ປະເພດວີຊານີ້ບໍ່ມີໃນລະບົບ' });
+    if (!res)
+      throw new NotFoundException({ message: 'ປະເພດວີຊານີ້ບໍ່ມີໃນລະບົບ' });
 
     return res;
   }

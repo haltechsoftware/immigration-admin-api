@@ -1,6 +1,5 @@
-import { IOffsetBasePaginate } from "src/common/interface/pagination/pagination.interface";
-import { VisaCategory } from "src/modules/visa/entities";
+import { QueryVisaCategoryType } from '../../dto/query-visa-category.dto';
 
 export default class GetVisaCategoryQuery {
-    constructor(public readonly paginate: IOffsetBasePaginate<VisaCategory>) {}
-  }
+  constructor(public readonly paginate: QueryVisaCategoryType) {}
+}

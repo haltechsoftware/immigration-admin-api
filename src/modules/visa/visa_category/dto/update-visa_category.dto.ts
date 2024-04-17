@@ -1,15 +1,11 @@
-import { Output, merge, number, object, omit, optional, string, transform } from "valibot";
-import { CreateVisaCategoryDto } from "./create.visa_category.dto";
+import { Output, object } from 'valibot';
+import { VisaCategoryTranslateDto } from './visa-category-translate.dto';
 
-const UpdateVisaCategoryDto = merge([
-    CreateVisaCategoryDto,
-    object({
-      lo_id: transform(number('ຈະຕ້ອງເປັນ number'), (input) => Number(input)),
-      en_id: transform(number('ຈະຕ້ອງເປັນ number'), (input) => Number(input)),
-      zh_cn_id: transform(number('ຈະຕ້ອງເປັນ number'), (input) => Number(input)),
-    }),
-  ]);
-  
-  type UpdateVisaCategoryType = Output<typeof UpdateVisaCategoryDto>;
-  export { UpdateVisaCategoryDto, type UpdateVisaCategoryType };
-  
+const UpdateVisaCategoryDto = object({
+  lo: VisaCategoryTranslateDto,
+  en: VisaCategoryTranslateDto,
+  zh_cn: VisaCategoryTranslateDto,
+});
+
+type UpdateVisaCategoryType = Output<typeof UpdateVisaCategoryDto>;
+export { UpdateVisaCategoryDto, type UpdateVisaCategoryType };

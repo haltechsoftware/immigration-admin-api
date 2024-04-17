@@ -1,18 +1,34 @@
-import { Controller, Delete, Get, Post, Put } from "@nestjs/common";
-import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { FormDataRequest } from "nestjs-form-data";
-import { Valibot } from "src/common/decorators/valibot/valibot.decorator";
+import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Permissions } from 'src/common/decorators/permission.decorator';
-import { PermissionGroup, PermissionName } from "src/common/enum/permission.enum";
-import { CreateVisaCategoryDto, CreateVisaCategoryDtoType } from "./dto/create.visa_category.dto";
-import CreateVisaCategoryCommand from "./command/impl/create-visa_category.command";
-import { GetByIdDto, GetByIdDtoType } from "src/common/dtos/get-by-id.dto";
-import { GetOneVisaCategoryQuery } from "./queries/impl/get-visa_category-by-id.query";
-import { OffsetBasePaginateDto, OffsetBasePaginateDtoType } from "src/common/dtos/offset-base-paginate.dto";
-import GetVisaCategoryQuery from "./queries/impl/get-visa_category-all.query";
-import { UpdateVisaCategoryDto, UpdateVisaCategoryType } from "./dto/update-visa_category.dto";
-import { UpdateVisaCategoryCommand } from "./command/impl/update-visa_category.command";
-import { RemoveVisaCategoryCommand } from "./command/impl/remove-visa_category.command";
+import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
+import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
+import {
+  PermissionGroup,
+  PermissionName,
+} from 'src/common/enum/permission.enum';
+import CreateVisaCategoryCommand from './command/impl/create-visa_category.command';
+import { RemoveVisaCategoryCommand } from './command/impl/remove-visa_category.command';
+import { UpdateVisaCategoryCommand } from './command/impl/update-visa_category.command';
+import {
+  CreateVisaCategoryDto,
+  CreateVisaCategoryDtoType,
+} from './dto/create.visa_category.dto';
+import {
+  QueryVisaCategoryDetailDto,
+  QueryVisaCategoryDetailDtoType,
+} from './dto/query-visa-category-detail.dto';
+import {
+  QueryVisaCategory,
+  QueryVisaCategoryType,
+} from './dto/query-visa-category.dto';
+import {
+  UpdateVisaCategoryDto,
+  UpdateVisaCategoryType,
+} from './dto/update-visa_category.dto';
+import { GetVisaCategoryDetailQuery } from './queries/impl/get-visa-category-detail.query';
+import GetVisaCategoryQuery from './queries/impl/get-visa_category-all.query';
+import { GetOneVisaCategoryQuery } from './queries/impl/get-visa_category-by-id.query';
 
 @Controller('visa-category')
 export class VisaController {
@@ -22,9 +38,10 @@ export class VisaController {
   ) {}
 
   @Permissions(PermissionGroup.Visa, PermissionName.Write)
-  @FormDataRequest()
   @Post()
-  async create(@Valibot({ schema: CreateVisaCategoryDto }) body: CreateVisaCategoryDtoType) {
+  async create(
+    @Valibot({ schema: CreateVisaCategoryDto }) body: CreateVisaCategoryDtoType,
+  ) {
     const res = await this._commandBus.execute<CreateVisaCategoryCommand>(
       new CreateVisaCategoryCommand(body),
     );
@@ -44,17 +61,31 @@ export class VisaController {
   }
 
   @Permissions(PermissionGroup.Visa, PermissionName.Read)
+  @Get(':id/detail')
+  async getDetail(
+    @Valibot({ schema: GetByIdDto, type: 'params' })
+    params: GetByIdDtoType,
+    @Valibot({ schema: QueryVisaCategoryDetailDto, type: 'query' })
+    query: QueryVisaCategoryDetailDtoType,
+  ) {
+    return await this._queryBus.execute<GetVisaCategoryDetailQuery>(
+      new GetVisaCategoryDetailQuery(params.id, query),
+    );
+  }
+
+  @Permissions(PermissionGroup.Visa, PermissionName.Read)
   @Get()
   async get(
-    @Valibot({ schema: OffsetBasePaginateDto, type: 'query' })
-    query: OffsetBasePaginateDtoType,
+    @Valibot({ schema: QueryVisaCategory, type: 'query' })
+    query: QueryVisaCategoryType,
   ) {
-    return await this._queryBus.execute<GetVisaCategoryQuery>(new GetVisaCategoryQuery(query));
+    return await this._queryBus.execute<GetVisaCategoryQuery>(
+      new GetVisaCategoryQuery(query),
+    );
   }
 
   @Permissions(PermissionGroup.Visa, PermissionName.Write)
   @Put(':id')
-  @FormDataRequest()
   async update(
     @Valibot({ schema: UpdateVisaCategoryDto }) input: UpdateVisaCategoryType,
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
@@ -75,7 +106,7 @@ export class VisaController {
     const result = await this._commandBus.execute<RemoveVisaCategoryCommand>(
       new RemoveVisaCategoryCommand(params.id),
     );
-    
+
     return { message: result };
   }
 }

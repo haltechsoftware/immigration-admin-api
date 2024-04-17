@@ -1,13 +1,7 @@
-import { object, optional, Output, special } from 'valibot';
+import { LanguageDto } from 'src/common/dtos/language.dto';
+import { Output, partial } from 'valibot';
 
-export const QueryAccommodationRequestByIdDto = object({
-  lang: optional(
-    special<'lo' | 'en' | 'zh_cn' | undefined>(
-      (input) => input === 'lo' || input === 'en' || input === 'zh_cn',
-      'ລະຫັດພາສາບໍ່ຖືກຕ້ອງ',
-    ),
-  ),
-});
+export const QueryAccommodationRequestByIdDto = partial(LanguageDto);
 
 export type QueryAccommodationRequestByIdDtoType = Output<
   typeof QueryAccommodationRequestByIdDto
