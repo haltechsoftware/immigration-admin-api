@@ -24,10 +24,9 @@ export const news = pgTable('news', {
     onDelete: 'cascade',
     onUpdate: 'no action',
   }),
-  slug: varchar('slug', { length: 255 }).notNull().unique(),
   thumbnail: text('thumbnail').notNull(),
   status: newsStatus('status').notNull(),
-  public_at: timestamp('public_at'),
+  public_at: timestamp('public_at', {mode: 'string'}),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
     .notNull(),
@@ -43,3 +42,6 @@ export const newsRelations = relations(news, ({ many, one }) => ({
   }),
   translates: many(newsTranslate),
 }));
+
+export type News = typeof news.$inferSelect;
+export type InsertNews = typeof news.$inferInsert;

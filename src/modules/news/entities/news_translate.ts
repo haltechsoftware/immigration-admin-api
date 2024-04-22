@@ -16,6 +16,7 @@ export const newsTranslate = pgTable('news_translate', {
     onDelete: 'cascade',
     onUpdate: 'no action',
   }),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   content: json('content'),
@@ -28,3 +29,6 @@ export const newsTranslateRelations = relations(newsTranslate, ({ one }) => ({
     references: [news.id],
   }),
 }));
+
+export type NewsTranslate = typeof newsTranslate.$inferSelect;
+export type InsertNewsTranslate = typeof newsTranslate.$inferInsert;
