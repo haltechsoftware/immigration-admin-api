@@ -16,8 +16,12 @@ export const roles = pgTable('roles', {
   name: varchar('name', { length: 50 }).notNull(),
   description: text('description'),
   is_default: boolean('is_default').default(false).notNull(),
-  created_at: timestamp('created_at').defaultNow().notNull(),
-  updated_at: timestamp('updated_at').defaultNow().notNull(),
+  created_at: timestamp('created_at', { mode: 'string' })
+    .defaultNow()
+    .notNull(),
+  updated_at: timestamp('updated_at', { mode: 'string' })
+    .defaultNow()
+    .notNull(),
 });
 
 export const roleRelations = relations(roles, ({ many }) => ({
