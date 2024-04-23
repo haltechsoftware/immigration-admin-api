@@ -77,6 +77,7 @@ export class HotelRepository {
           link: input.link,
           phone_number: input.phone_number,
           is_published: input.is_published,
+          updated_at: input.updated_at,
         })
         .where(eq(hotels.id, input.id));
 

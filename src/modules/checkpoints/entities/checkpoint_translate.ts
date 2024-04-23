@@ -10,8 +10,10 @@ export const checkpointTranslate = pgTable('checkpoint_translate', {
     onDelete: 'cascade',
     onUpdate: 'no action',
   }),
-  name: varchar('name', { length: 255 }),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
+  name: varchar('name', { length: 255 }).notNull().unique(),
   content: text('content'),
+  address: text('address'),
   lang: langCode('lang').notNull(),
 });
 

@@ -14,6 +14,7 @@ export type InsertBannerType = InsertBanners & {
 
 export type UpdateBannerType = Omit<InsertBannerType, 'image'> & {
   image?: string;
+  updated_at?: string;
 };
 
 export type UpdatePrivate = Omit<
@@ -82,6 +83,7 @@ export class BannerRepository {
           start_time: input.start_time,
           end_time: input.end_time,
           is_private: input.is_private,
+          updated_at: input.updated_at,
         })
         .where(eq(banners.id, input.id));
 

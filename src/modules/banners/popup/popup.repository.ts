@@ -41,6 +41,7 @@ export class PopupRepository {
         is_private: input.is_private,
         start_time: input.start_time,
         end_time: input.end_time,
+        updated_at: input.updated_at,
       })
       .where(eq(bannerPopups.id, input.id));
   }

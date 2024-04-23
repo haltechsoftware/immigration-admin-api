@@ -1,9 +1,10 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
-import { checkpointCategoryTranslate } from './checkpoint_category_translate';
 import { checkpoints } from './checkpoints';
+import { provinceTranslate } from './province_translate';
+import { countriesToProvinces } from './countries_to_provinces';
 
-export const checkpointCategories = pgTable('checkpoint_categories', {
+export const provinces = pgTable('provinces', {
   id: serial('id').primaryKey().notNull(),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
@@ -13,10 +14,8 @@ export const checkpointCategories = pgTable('checkpoint_categories', {
     .notNull(),
 });
 
-export const checkpointCategoriesRelations = relations(
-  checkpointCategories,
-  ({ many }) => ({
-    translates: many(checkpointCategoryTranslate),
-    checkpoints: many(checkpoints),
-  }),
-);
+export const provincesRelations = relations(provinces, ({ many }) => ({
+  checkpoints: many(checkpoints),
+  translates: many(provinceTranslate),
+  countries: many(countriesToProvinces),
+}));
