@@ -11,3 +11,6 @@ export const laws = pgTable('laws', {
     .defaultNow()
     .notNull(),
 });
+
+export type Law = typeof laws.$inferSelect;
+export type InsertLaw = typeof laws.$inferInsert;
