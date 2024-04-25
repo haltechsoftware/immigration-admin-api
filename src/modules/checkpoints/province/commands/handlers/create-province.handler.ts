@@ -10,24 +10,24 @@ export class CreateProvinceHandler implements ICommandHandler<CreateProvinceComm
     ) { }
     async execute({ input }: CreateProvinceCommand): Promise<any> {
 const res = await this.provinceRepository.findOne(1)
-console.log(!res);
+console.log(input);
 
         const data = [
                      {
-                    name: input.en.name,
-                    description: input.en.description,
+                    name: input.en_name,
+                    description: input.en_description,
                     lang: 'en',
                     slug: ''
                 },
                 {
-                    name: input.lo.name,
-                    description: input.lo.description,
+                    name: input.lo_name,
+                    description: input.lo_description,
                     lang: 'lo',
                     slug: ''
                 },
                 {
-                    name: input.zh_cn.name,
-                    description: input.zh_cn.description,
+                    name: input.zh_cn_name,
+                    description: input.zh_cn_description,
                     lang: 'zh_cn',
                     slug: ''
                 },

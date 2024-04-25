@@ -12,7 +12,7 @@ export const provinces = pgTable('provinces', {
   updated_at: timestamp('updated_at', { mode: 'string' })
     .defaultNow()
     .notNull(),
-});
+}); 
 
 export const provincesRelations = relations(provinces, ({ many }) => ({
   checkpoints: many(checkpoints),
