@@ -17,4 +17,5 @@ export enum PermissionGroup {
   Checkpoint = 'checkpoint',
   Contact = 'contact',
   FileAndDirectory = 'file-and-directory',
+  Provinces = 'provinces',
 }
