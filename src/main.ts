@@ -3,7 +3,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { AppModule } from './app.module';
 import { ValibotExceptionsFilter } from './common/filters/valibot-exception.filter';
 
-async function bootstrap() { 
+async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
 
@@ -12,6 +12,6 @@ async function bootstrap() {
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new ValibotExceptionsFilter(httpAdapter));
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();

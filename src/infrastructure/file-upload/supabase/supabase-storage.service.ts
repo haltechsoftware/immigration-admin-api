@@ -22,7 +22,6 @@ export class SupabaseStorageService implements IFileUpload {
     const newFileName = this.generateUniqueFilename(name, extension);
 
     const filePath = path + newFileName;
-    console.log(filePath);
 
     const { data, error } = await this.supabase.storage
       .from('immigration')
