@@ -47,10 +47,12 @@ export class ArrivalRegisterHandler
           id: val.passport_information.id,
           number: val.passport_information.number,
         },
-        visa_information: {
-          id: val.visa_information.id,
-          number: val.visa_information.number,
-        },
+        visa_information: val.visa_information
+          ? {
+              id: val.visa_information.id,
+              number: val.visa_information.number,
+            }
+          : undefined,
       })),
       total: total[0].value,
     };
@@ -99,7 +101,7 @@ export class ArrivalRegisterHandler
         passportInformation,
         eq(arrivalRegistration.passport_information_id, passportInformation.id),
       )
-      .innerJoin(
+      .leftJoin(
         visaInformation,
         eq(arrivalRegistration.visa_information_id, visaInformation.id),
       )
