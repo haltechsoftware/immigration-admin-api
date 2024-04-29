@@ -62,7 +62,6 @@ export class ProvinceRepository {
             name: val.name,
             slug: val.slug,
             description: val.description,
-            lang: val.lang,
           })
           .where(eq(provinceTranslate.id, val.id));
       });

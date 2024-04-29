@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { CreateProvinceCommand } from "../impl/create-province.command";
 import { ProvinceRepository } from "../../province.repository";
+import { generateSlugs } from "src/modules/checkpoints/helpers/slug-name";
 
 
 @CommandHandler(CreateProvinceCommand)
@@ -9,53 +10,30 @@ export class CreateProvinceHandler implements ICommandHandler<CreateProvinceComm
         private readonly provinceRepository: ProvinceRepository
     ) { }
     async execute({ input }: CreateProvinceCommand): Promise<any> {
-const res = await this.provinceRepository.findOne(1)
-console.log(input);
 
-        const data = [
-                     {
-                    name: input.en_name,
-                    description: input.en_description,
+        const slug = generateSlugs(input)
+        await this.provinceRepository.create({
+            translates: [
+                {
+                    name: input.en.name,
+                    description: input.en.description,
                     lang: 'en',
-                    slug: ''
+                    slug: slug.en_name
                 },
                 {
-                    name: input.lo_name,
-                    description: input.lo_description,
+                    name: input.lo.name,
+                    description: input.lo.description,
                     lang: 'lo',
-                    slug: ''
+                    slug: slug.lo_name
                 },
                 {
-                    name: input.zh_cn_name,
-                    description: input.zh_cn_description,
+                    name: input.zh_cn.name,
+                    description: input.zh_cn.description,
                     lang: 'zh_cn',
-                    slug: ''
+                    slug: slug.zh_cn_name
                 },
-        ]
-        console.log(data);
-        
-        // await this.provinceRepository.create({
-        //     translates: [
-        //         {
-        //             name: input.en.name,
-        //             description: input.en.description,
-        //             lang: 'en',
-        //             slug: ''
-        //         },
-        //         {
-        //             name: input.lo.name,
-        //             description: input.lo.description,
-        //             lang: 'lo',
-        //             slug: ''
-        //         },
-        //         {
-        //             name: input.zh_cn.name,
-        //             description: input.zh_cn.description,
-        //             lang: 'zh_cn',
-        //             slug: ''
-        //         },
-        //     ]
-        // })
-        return
+            ]
+        })
+        return { message: 'ເພີ່ມຂໍ້ມູນສຳເລັດ' }
     }
 }

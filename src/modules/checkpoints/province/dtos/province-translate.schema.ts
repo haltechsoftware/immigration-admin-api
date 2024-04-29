@@ -16,11 +16,12 @@ export const ProvinceTranslateSchema = objectAsync({
         minLength(2, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
         customAsync(async function (input: string) {
             const drizzle:DrizzleService = RequestContext.currentContext.req.drizzle;
-            const res = await drizzle.db().query.provinceTranslate.findFirst({
-                where: ({ name }, { eq }) => eq(name, input),
+            const checkpoint_name = input.split(',').map((val) => String(val));
+            const res = await drizzle.db().query.provinceTranslate.findMany({
+                where: ({ name }, { inArray }) => inArray(name, checkpoint_name),
             });
-            return res ? false : true;
+            return res.length === 0;
         }, 'ແຂວງນີ້ມີໃນລະບົບແລ້ວ'),
     ]),
-    description: string('ຈະຕ້ອງເປັນ string'),
+    description: string('ຈະຕ້ອງເປັນ string')
 });
