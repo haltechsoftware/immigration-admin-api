@@ -25,7 +25,7 @@ export class UpdateHotelHandler implements ICommandHandler<UpdateHotelCommand> {
       await this.fileUpload.remove(hotel.image);
 
       imageUrl = await this.fileUpload.upload(
-        'hotel/',
+        'hotel/image/',
         input.image.buffer,
         input.image.originalName,
       );
@@ -35,28 +35,33 @@ export class UpdateHotelHandler implements ICommandHandler<UpdateHotelCommand> {
       id,
       image: imageUrl,
       link: input.link,
-      link_map: input.map_link,
       phone_number: input.phone_number,
       updated_at: format(new Date(), DateTimeFormat.Timestamp),
       is_published: input.is_published,
       translates: [
         {
-          id: input.lo_id,
-          name: input.lo_name,
           lang: 'lo',
-          address: input.lo_address,
+          id: input.lo.id,
+          name: input.lo.name,
+          province: input.lo.province,
+          district: input.lo.district,
+          village: input.lo.village,
         },
         {
-          id: input.en_id,
-          name: input.en_name,
           lang: 'en',
-          address: input.en_address,
+          id: input.en.id,
+          name: input.en.name,
+          province: input.en.province,
+          district: input.en.district,
+          village: input.en.village,
         },
         {
-          id: input.zh_cn_id,
-          name: input.zh_name,
           lang: 'zh_cn',
-          address: input.zh_address,
+          id: input.zh_cn.id,
+          name: input.zh_cn.name,
+          province: input.zh_cn.province,
+          district: input.zh_cn.district,
+          village: input.zh_cn.village,
         },
       ],
     });

@@ -13,7 +13,6 @@ import { hotelTranslate } from './hotel_translate';
 
 export const hotels = mysqlTable('hotels', {
   id: serial('id').primaryKey().notNull(),
-  link_map: text('link_map').notNull(),
   image: text('image').notNull(),
   link: text('link'),
   phone_number: varchar('phone_number', { length: 50 }),
