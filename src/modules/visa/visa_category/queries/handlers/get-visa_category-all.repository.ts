@@ -14,7 +14,7 @@ export class GetVisaCategoryHandler
     .db()
     .select({ value: count() })
     .from(visaCategories)
-    .prepare('count_visa_category');
+    .prepare();
 
   async execute({ paginate: { cursor, limit, lang } }: GetVisaCategoryQuery) {
     const res = await this._drizzle.db().query.visaCategories.findMany({

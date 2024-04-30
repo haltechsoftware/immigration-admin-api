@@ -1,15 +1,18 @@
 import { relations } from 'drizzle-orm';
-import { integer, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import { bigint, mysqlTable, serial, varchar } from 'drizzle-orm/mysql-core';
 import { langCode } from 'src/modules/banners/entities';
 import { newsCategories } from './news_categories';
 
-export const newsCategoriesTranslate = pgTable('news_categories_translate', {
+export const newsCategoriesTranslate = mysqlTable('news_categories_translate', {
   id: serial('id').primaryKey().notNull(),
-  category_id: integer('category_id').references(() => newsCategories.id, {
+  category_id: bigint('category_id', {
+    mode: 'number',
+    unsigned: true,
+  }).references(() => newsCategories.id, {
     onDelete: 'cascade',
-    onUpdate: 'no action',
   }),
-  lang: langCode('lang').notNull(),
+  lang: langCode.notNull(),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull(),
 });
 

@@ -17,7 +17,7 @@ export class GetOneVisaCategoryQueryHandler
         translates: true,
       },
     })
-    .prepare('find_visa_category_by_id');
+    .prepare();
 
   async execute({ id }: GetOneVisaCategoryQuery): Promise<any> {
     const res = await this.prepared.execute({ id });

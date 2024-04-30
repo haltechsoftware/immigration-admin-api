@@ -1,20 +1,25 @@
 import { relations } from 'drizzle-orm';
-import { integer, json, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import {
+  bigint,
+  json,
+  mysqlTable,
+  serial,
+  varchar,
+} from 'drizzle-orm/mysql-core';
 import { langCode } from 'src/modules/banners/entities';
 import { visaCategories } from './visa_categories';
 
-export const visaCategoryTranslate = pgTable('visa_category_translate', {
+export const visaCategoryTranslate = mysqlTable('visa_category_translate', {
   id: serial('id').primaryKey().notNull(),
-  visa_category_id: integer('visa_category_id').references(
-    () => visaCategories.id,
-    {
-      onDelete: 'cascade',
-      onUpdate: 'no action',
-    },
-  ),
+  visa_category_id: bigint('visa_category_id', {
+    mode: 'number',
+    unsigned: true,
+  }).references(() => visaCategories.id, {
+    onDelete: 'cascade',
+  }),
   name: varchar('name', { length: 255 }).notNull(),
   content: json('content'),
-  lang: langCode('lang').notNull(),
+  lang: langCode.notNull(),
 });
 
 export const visaCategoryTranslateRelations = relations(
@@ -27,6 +32,6 @@ export const visaCategoryTranslateRelations = relations(
   }),
 );
 
-
 export type visaCategoryTranslate = typeof visaCategoryTranslate.$inferSelect;
-export type InsertVisaCategoryTranslate = typeof visaCategoryTranslate.$inferInsert;
+export type InsertVisaCategoryTranslate =
+  typeof visaCategoryTranslate.$inferInsert;

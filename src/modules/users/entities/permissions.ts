@@ -1,9 +1,14 @@
 import { relations } from 'drizzle-orm';
-
-import { pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import {
+  mysqlTable,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/mysql-core';
 import { rolesToPermissions } from './roles_to_permissions';
 
-export const permissions = pgTable('permissions', {
+export const permissions = mysqlTable('permissions', {
   id: serial('id').primaryKey().notNull(),
   name: varchar('name', { length: 50 }).notNull(),
   group_name: varchar('group_name', { length: 50 }).notNull(),

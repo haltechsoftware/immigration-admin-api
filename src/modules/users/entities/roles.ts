@@ -1,17 +1,16 @@
 import { relations } from 'drizzle-orm';
-
 import {
   boolean,
-  pgTable,
+  mysqlTable,
   serial,
   text,
   timestamp,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/mysql-core';
 import { rolesToPermissions } from './roles_to_permissions';
 import { usersToRoles } from './users_to_roles';
 
-export const roles = pgTable('roles', {
+export const roles = mysqlTable('roles', {
   id: serial('id').primaryKey().notNull(),
   name: varchar('name', { length: 50 }).notNull(),
   description: text('description'),

@@ -1,32 +1,34 @@
 import { relations } from 'drizzle-orm';
-
 import {
-  integer,
-  pgEnum,
-  pgTable,
+  bigint,
+  mysqlEnum,
+  mysqlTable,
   serial,
   text,
   timestamp,
-  varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/mysql-core';
 import { newsCategories } from './news_categories';
 import { newsTranslate } from './news_translate';
 
-export const newsStatus = pgEnum('news_status', [
-  'draft',
-  'published',
+export const newsStatus = mysqlEnum('status', [
   'private',
+  'published',
+  'draft',
+  'zh_cn',
+  'lo',
+  'en',
 ]);
 
-export const news = pgTable('news', {
+export const news = mysqlTable('news', {
   id: serial('id').primaryKey().notNull(),
-  category_id: integer('category_id').references(() => newsCategories.id, {
+  category_id: bigint('category_id', {
+    mode: 'number',
+    unsigned: true,
+  }).references(() => newsCategories.id, {
     onDelete: 'cascade',
-    onUpdate: 'no action',
   }),
-  slug: varchar('slug', { length: 255 }).notNull().unique(),
   thumbnail: text('thumbnail').notNull(),
-  status: newsStatus('status').notNull(),
+  status: newsStatus.notNull(),
   public_at: timestamp('public_at'),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()

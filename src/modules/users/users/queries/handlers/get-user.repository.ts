@@ -12,7 +12,7 @@ export class GetUserHandler implements IQueryHandler<GetUserQuery> {
     .db()
     .select({ value: count() })
     .from(users)
-    .prepare('count_users');
+    .prepare();
 
   async execute({ paginate: { offset, limit } }: GetUserQuery) {
     const res = await this.drizzle.db().query.users.findMany({
