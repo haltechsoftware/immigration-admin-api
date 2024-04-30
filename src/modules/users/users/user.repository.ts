@@ -29,21 +29,20 @@ export class UserRepository {
     await this.drizzle.db().transaction(async (tx) => {
       const userRes = await tx
         .insert(users)
-        .values({ email: input.email, password: input.password })
-        .returning();
+        .values({ email: input.email, password: input.password });
 
       await tx.insert(profiles).values({
         first_name: input.profile.first_name,
         last_name: input.profile.last_name,
         image: input.profile.image,
-        user_id: userRes[0].id,
+        user_id: userRes[0].insertId,
       });
 
       if (input.roleIds.length > 0) {
         await tx.insert(usersToRoles).values(
           input.roleIds.map((id) => ({
             role_id: id,
-            user_id: userRes[0].id,
+            user_id: userRes[0].insertId,
           })),
         );
       }
@@ -59,7 +58,7 @@ export class UserRepository {
         usersToRoles: { with: { role: true } },
       },
     })
-    .prepare('get_user_by_id');
+    .prepare();
   async getById(
     id: number,
   ): Promise<void | (User & { profile: Profile; roles: Role[] })> {

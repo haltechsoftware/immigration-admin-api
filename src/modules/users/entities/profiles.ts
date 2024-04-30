@@ -1,21 +1,22 @@
 import { relations } from 'drizzle-orm';
-
 import {
-  integer,
-  pgTable,
+  bigint,
+  mysqlTable,
   serial,
   text,
   timestamp,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/mysql-core';
 import { users } from './users';
 
-export const profiles = pgTable('profiles', {
+export const profiles = mysqlTable('profiles', {
   id: serial('id').primaryKey().notNull(),
-  user_id: integer('user_id').references(() => users.id, {
-    onDelete: 'cascade',
-    onUpdate: 'no action',
-  }),
+  user_id: bigint('user_id', { mode: 'number', unsigned: true }).references(
+    () => users.id,
+    {
+      onDelete: 'cascade',
+    },
+  ),
   first_name: varchar('first_name', { length: 100 }).notNull(),
   last_name: varchar('last_name', { length: 100 }).notNull(),
   image: text('image'),

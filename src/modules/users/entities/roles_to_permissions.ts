@@ -1,27 +1,26 @@
 import { relations } from 'drizzle-orm';
-import { integer, pgTable, primaryKey } from 'drizzle-orm/pg-core';
+import { bigint, mysqlTable, primaryKey } from 'drizzle-orm/mysql-core';
 import { permissions } from './permissions';
 import { roles } from './roles';
 
-export const rolesToPermissions = pgTable(
+export const rolesToPermissions = mysqlTable(
   'roles_to_permissions',
   {
-    role_id: integer('role_id')
+    role_id: bigint('role_id', { mode: 'number', unsigned: true })
       .notNull()
-      .references(() => roles.id, {
-        onDelete: 'cascade',
-        onUpdate: 'no action',
-      }),
-    permission_id: integer('permission_id')
+      .references(() => roles.id, { onDelete: 'cascade' }),
+    permission_id: bigint('permission_id', { mode: 'number', unsigned: true })
       .notNull()
-      .references(() => permissions.id, {
-        onDelete: 'cascade',
-        onUpdate: 'no action',
-      }),
+      .references(() => permissions.id, { onDelete: 'cascade' }),
   },
-  (t) => ({
-    pk: primaryKey({ columns: [t.role_id, t.permission_id] }),
-  }),
+  (table) => {
+    return {
+      rolesToPermissionsRoleIdPermissionIdPk: primaryKey({
+        columns: [table.role_id, table.permission_id],
+        name: 'roles_to_permissions_role_id_permission_id_pk',
+      }),
+    };
+  },
 );
 
 export const rolesToPermissionsRelations = relations(

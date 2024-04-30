@@ -17,7 +17,7 @@ export class GetOneBannerQueryHandler
         translates: true,
       },
     })
-    .prepare('find_banner_by_id');
+    .prepare();
 
   async execute({ id }: GetOneBannerQuery): Promise<any> {
     const res = await this.prepared.execute({ id });

@@ -1,8 +1,14 @@
 import { relations } from 'drizzle-orm';
-import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  mysqlTable,
+  serial,
+  text,
+  timestamp,
+} from 'drizzle-orm/mysql-core';
 import { bannersTranslate } from './banners_translate';
 
-export const banners = pgTable('banners', {
+export const banners = mysqlTable('banners', {
   id: serial('id').primaryKey().notNull(),
   image: text('image').notNull(),
   link: text('link'),

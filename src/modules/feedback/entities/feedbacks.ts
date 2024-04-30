@@ -1,13 +1,13 @@
 import {
   boolean,
-  pgTable,
+  mysqlTable,
   serial,
   text,
   timestamp,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/mysql-core';
 
-export const feedbacks = pgTable('feedbacks', {
+export const feedbacks = mysqlTable('feedbacks', {
   id: serial('id').primaryKey().notNull(),
   name: varchar('name', { length: 255 }),
   tel: varchar('tel', { length: 100 }),

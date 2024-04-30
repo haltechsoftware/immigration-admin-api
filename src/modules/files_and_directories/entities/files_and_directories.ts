@@ -1,35 +1,42 @@
 import { relations } from 'drizzle-orm';
 import {
-  AnyPgColumn,
-  integer,
-  pgEnum,
-  pgTable,
+  bigint,
+  foreignKey,
+  int,
+  mysqlEnum,
+  mysqlTable,
   serial,
   timestamp,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/mysql-core';
 
-export const fileType = pgEnum('file_type', ['directory', 'file']);
+export const fileType = mysqlEnum('type', ['file', 'directory']);
 
-export const filesAndDirectories = pgTable('files_and_directories', {
-  id: serial('id').primaryKey().notNull(),
-  parent_id: integer('parent_id').references(
-    (): AnyPgColumn => filesAndDirectories.id,
-    {
-      onDelete: 'cascade',
-      onUpdate: 'no action',
-    },
-  ),
-  name: varchar('name', { length: 255 }),
-  size: integer('size'),
-  type: fileType('type').notNull(),
-  created_at: timestamp('created_at', { mode: 'string' })
-    .defaultNow()
-    .notNull(),
-  updated_at: timestamp('updated_at', { mode: 'string' })
-    .defaultNow()
-    .notNull(),
-});
+export const filesAndDirectories = mysqlTable(
+  'files_and_directories',
+  {
+    id: serial('id').primaryKey().notNull(),
+    parent_id: bigint('parent_id', { mode: 'number', unsigned: true }),
+    name: varchar('name', { length: 255 }),
+    size: int('size'),
+    type: fileType.notNull(),
+    created_at: timestamp('created_at', { mode: 'string' })
+      .defaultNow()
+      .notNull(),
+    updated_at: timestamp('updated_at', { mode: 'string' })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => {
+    return {
+      filesAndDirectoriesParentIdFilesAndDirectoriesIdFk: foreignKey({
+        columns: [table.parent_id],
+        foreignColumns: [table.id],
+        name: 'files_and_directories_parent_id_files_and_directories_id_fk',
+      }).onDelete('cascade'),
+    };
+  },
+);
 
 export const filesAndDirectoriesRelations = relations(
   filesAndDirectories,

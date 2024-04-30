@@ -1,18 +1,21 @@
 import { relations } from 'drizzle-orm';
-import { date, pgEnum, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import {
+  date,
+  mysqlEnum,
+  mysqlTable,
+  serial,
+  varchar,
+} from 'drizzle-orm/mysql-core';
 import { arrivalRegistration } from './arrival_registration';
 import { departureRegistration } from './departure_registration';
 
-export const genderPersonalInfo = pgEnum('gender_personal_info', [
-  'male',
-  'female',
-]);
+export const genderPersonalInfo = mysqlEnum('gender', ['female', 'male']);
 
-export const personalInformation = pgTable('personal_information', {
+export const personalInformation = mysqlTable('personal_information', {
   id: serial('id').primaryKey().notNull(),
   family_name: varchar('family_name', { length: 255 }).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
-  gender: genderPersonalInfo('gender').notNull(),
+  gender: genderPersonalInfo.notNull(),
   date_of_birth: date('date_of_birth', { mode: 'string' }).notNull(),
   place_of_birth: varchar('place_of_birth', { length: 255 }).notNull(),
   nationality: varchar('nationality', { length: 255 }).notNull(),
