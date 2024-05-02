@@ -24,6 +24,7 @@ import { registrationModules } from './modules/registrations';
 import { UserModules } from './modules/users';
 import { visaModules } from './modules/visa';
 import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-file-upload.module';
+import { contactModules } from './modules/contacts';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-fil
     ...checkpointModules,
     ...fileAndDirectoryModules,
     ...registrationModules,
+    ...contactModules
   ],
   providers: [
     {
