@@ -4,8 +4,6 @@ import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
 import GetContactByIdQuery from "../impl/get-contact-by-id.query";
 import { NotFoundException } from "@nestjs/common";
 
-
-
 @QueryHandler(GetContactByIdQuery)
 export class GetByIdContactQueryHandler
   implements IQueryHandler<GetContactByIdQuery>

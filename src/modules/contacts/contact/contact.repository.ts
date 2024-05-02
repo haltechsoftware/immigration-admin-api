@@ -7,7 +7,6 @@ import { contacts } from "../entities/contacts";
 export class ContactRepository {
   constructor(private readonly _drizzle: DrizzleService) {}
 
-  
   private _getByIdPrepared = this._drizzle
     .db()
     .query.contacts.findFirst({

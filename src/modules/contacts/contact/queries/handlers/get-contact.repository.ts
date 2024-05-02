@@ -27,6 +27,4 @@ export class GetContactHandler implements IQueryHandler<GetContactQuery> {
         total: total[0].value,
       };
     }
-
-
 }

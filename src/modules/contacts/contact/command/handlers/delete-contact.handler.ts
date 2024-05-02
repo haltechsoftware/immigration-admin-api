@@ -3,7 +3,6 @@ import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { ContactRepository } from "../../contact.repository";
 import DeleteContactCommand from "../impl/delete-contact.command";
 
-
 @CommandHandler(DeleteContactCommand)
 export default class DeleteContactHandler
   implements ICommandHandler<DeleteContactCommand, string>
