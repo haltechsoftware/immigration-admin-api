@@ -1,0 +1,65 @@
+import { Controller, Get, Post } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { Auth } from 'src/common/decorators/auth.decorator';
+import { Permissions } from 'src/common/decorators/permission.decorator';
+import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
+import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
+import {
+  PermissionGroup,
+  PermissionName,
+} from 'src/common/enum/permission.enum';
+import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
+import { GuestCheckInCommand } from './commands/impl/guests-check-in.command';
+import {
+  GuestsCheckInDto,
+  GuestsCheckInDtoType,
+} from './dtos/guests-check-in.dto';
+import {
+  QueryGuestListDto,
+  QueryGuestListDtoType,
+} from './dtos/query-guest-list.dto';
+import { GuestListQuery } from './queries/impl/guest-list.query';
+import { GuestQuery } from './queries/impl/guest.query';
+
+@Controller('admin-hotel')
+export class AdminHotelController {
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+  ) {}
+
+  @Permissions(PermissionGroup.Hotel, PermissionName.All)
+  @Get()
+  async get(
+    @Auth() auth: IJwtPayload,
+    @Valibot({ schema: QueryGuestListDto, type: 'query' })
+    query: QueryGuestListDtoType,
+  ) {
+    return await this.queryBus.execute<GuestListQuery>(
+      new GuestListQuery(auth.hotel_id, query),
+    );
+  }
+
+  @Permissions(PermissionGroup.Hotel, PermissionName.All)
+  @Get(':id')
+  async getOne(
+    @Valibot({ schema: GetByIdDto, type: 'params' })
+    { id }: GetByIdDtoType,
+  ) {
+    return await this.queryBus.execute<GuestQuery>(new GuestQuery(id));
+  }
+
+  @Permissions(PermissionGroup.Hotel, PermissionName.All)
+  @Post()
+  async guestsCheckIn(
+    @Auth() auth: IJwtPayload,
+    @Valibot({ schema: GuestsCheckInDto })
+    data: GuestsCheckInDtoType,
+  ) {
+    const res = await this.commandBus.execute<GuestCheckInCommand>(
+      new GuestCheckInCommand(auth.hotel_id, data),
+    );
+
+    return { message: res };
+  }
+}

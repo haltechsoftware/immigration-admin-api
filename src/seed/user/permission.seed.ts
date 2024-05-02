@@ -9,7 +9,7 @@ import { db } from '../main';
 export default async () => {
   const total = await db.select({ value: count() }).from(permissions);
 
-  if (total[0].value < 36) {
+  if (total[0].value < 34) {
     await db.insert(permissions).values([
       {
         id: 1,
