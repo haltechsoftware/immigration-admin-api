@@ -18,7 +18,9 @@ export class GuestCheckInHandler
       });
 
     if (!arrival)
-      throw new NotFoundException({ message: 'ບໍ່ມີການລົງທະບຽນເຂົ້າເມືອງ!' });
+      throw new NotFoundException({
+        message: 'ກວດສອບລະຫັດລົ້ມເຫຼວ ລະຫັດບໍ່ຖືກຕ້ອງ!',
+      });
 
     const hotel = await this.drizzle.db().query.hotels.findFirst({
       with: {

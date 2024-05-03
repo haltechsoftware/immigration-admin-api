@@ -10,7 +10,7 @@ export class GuestListHandler implements IQueryHandler<GuestListQuery> {
 
   async execute({
     hotelId,
-    query: { limit, offset },
+    query: { limit, offset, room_no, check_in, check_out },
   }: GuestListQuery): Promise<any> {
     const res = await this.drizzle.db().query.intendedAddress.findMany({
       columns: {
@@ -34,7 +34,13 @@ export class GuestListHandler implements IQueryHandler<GuestListQuery> {
         },
       },
       orderBy: (f, o) => o.desc(f.check_in),
-      where: (f, o) => o.eq(f.hotel_id, hotelId),
+      where: (f, o) =>
+        o.and(
+          o.eq(f.hotel_id, hotelId),
+          room_no ? o.eq(f.room_no, room_no) : undefined,
+          check_in ? o.gte(f.check_in, check_in) : undefined,
+          check_out ? o.lte(f.check_out, check_out) : undefined,
+        ),
       limit,
       offset,
     });

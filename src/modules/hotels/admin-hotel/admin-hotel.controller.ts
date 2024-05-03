@@ -9,7 +9,12 @@ import {
   PermissionName,
 } from 'src/common/enum/permission.enum';
 import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
+import { CheckVerifyCodeCommand } from './commands/impl/check-verify-code.command';
 import { GuestCheckInCommand } from './commands/impl/guests-check-in.command';
+import {
+  CheckVerifyCodeDto,
+  CheckVerifyCodeDtoType,
+} from './dtos/check-verify-code.dto';
 import {
   GuestsCheckInDto,
   GuestsCheckInDtoType,
@@ -47,6 +52,19 @@ export class AdminHotelController {
     { id }: GetByIdDtoType,
   ) {
     return await this.queryBus.execute<GuestQuery>(new GuestQuery(id));
+  }
+
+  @Permissions(PermissionGroup.Hotel, PermissionName.All)
+  @Get(':code/verify-code')
+  async checkVerifyCode(
+    @Valibot({ schema: CheckVerifyCodeDto, type: 'params' })
+    data: CheckVerifyCodeDtoType,
+  ) {
+    const res = await this.commandBus.execute<CheckVerifyCodeCommand>(
+      new CheckVerifyCodeCommand(data),
+    );
+
+    return { message: res };
   }
 
   @Permissions(PermissionGroup.Hotel, PermissionName.All)
