@@ -1,8 +1,5 @@
-import { CreateNewsCategorytDtoType } from "../../dtos/create-news-category.dto";
+import { CreateNewsCategoryDtoType } from '../../dtos/create-news-category.dto';
 
-export class CreateNewsCategoryCommand{
-    constructor(
-        public readonly input: CreateNewsCategorytDtoType,
-
-    ){}
+export class CreateNewsCategoryCommand {
+  constructor(public readonly input: CreateNewsCategoryDtoType) {}
 }

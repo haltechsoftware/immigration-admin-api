@@ -1,34 +1,49 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CreateNewsCategoryCommand } from "../impl/create-news-category.command";
-import { NewsCategoryRepository } from "../../news-cateory.repository";
-import { generateSlug, generateSlugs } from "src/modules/news/helpers/news-category.slug";
+import { ConflictException } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import generateSlug from 'src/common/utils/generate-slug';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { NewsCategoryRepository } from '../../news-cateory.repository';
+import { CreateNewsCategoryCommand } from '../impl/create-news-category.command';
 @CommandHandler(CreateNewsCategoryCommand)
-export class CreateNewsCategoryHandler implements ICommandHandler<CreateNewsCategoryCommand> {
+export class CreateNewsCategoryHandler
+  implements ICommandHandler<CreateNewsCategoryCommand>
+{
   constructor(
-    private readonly repository: NewsCategoryRepository
-  ) { }
+    private readonly repository: NewsCategoryRepository,
+    private readonly drizzle: DrizzleService,
+  ) {}
+
   async execute({ input }: CreateNewsCategoryCommand): Promise<any> {
-    const data = generateSlugs(input)
+    const conflict = await this.drizzle
+      .db()
+      .query.newsCategoriesTranslate.findMany({
+        where: (f, o) =>
+          o.inArray(f.name, [input.lo.name, input.en.name, input.zh_cn.name]),
+      });
+
+    if (conflict.length > 0)
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
     await this.repository.create({
       translates: [
         {
-          name: input.en_name,
-          lang: 'en',
-          slug: data.en_name,
-        },
-        {
-          name: input.lo_name,
+          name: input.lo.name,
           lang: 'lo',
-          slug: data.lo_name,
+          slug: generateSlug(input.lo.name),
         },
         {
-          name: input.zh_cn_name,
+          name: input.en.name,
+          lang: 'en',
+          slug: generateSlug(input.en.name),
+        },
+        {
+          name: input.zh_cn.name,
           lang: 'zh_cn',
-          slug: data.zh_cn_name,
+          slug: generateSlug(input.zh_cn.name),
         },
       ],
-    })
-    return { message: 'ບັນທຶກຂໍ້ມູນສຳເລັດ' }
-  }
+    });
 
+    return 'ບັນທຶກຂໍ້ມູນສຳເລັດ';
+  }
 }

@@ -1,9 +1,8 @@
-import { UpdateNewsCategorytDtoType } from "../../dtos/update-news-cateory.dto";
+import { UpdateNewsCategoryDtoType } from '../../dtos/update-news-category.dto';
 
-export class UpdateNewsCategoryCommand{
-    constructor(
-        public readonly id: number,
-        public readonly input: UpdateNewsCategorytDtoType,
-
-    ){}
+export class UpdateNewsCategoryCommand {
+  constructor(
+    public readonly id: number,
+    public readonly input: UpdateNewsCategoryDtoType,
+  ) {}
 }

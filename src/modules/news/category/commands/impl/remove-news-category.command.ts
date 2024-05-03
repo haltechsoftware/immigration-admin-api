@@ -1,6 +1,3 @@
-export class RemoveNewsCategoryCommand{
-    constructor(
-        public readonly id: number,
-
-    ){}
+export class RemoveNewsCategoryCommand {
+  constructor(public readonly id: number) {}
 }

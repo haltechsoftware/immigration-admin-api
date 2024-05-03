@@ -14,9 +14,6 @@ export const newsStatus = mysqlEnum('status', [
   'private',
   'published',
   'draft',
-  'zh_cn',
-  'lo',
-  'en',
 ]);
 
 export const news = mysqlTable('news', {
@@ -29,7 +26,7 @@ export const news = mysqlTable('news', {
   }),
   thumbnail: text('thumbnail').notNull(),
   status: newsStatus.notNull(),
-  public_at: timestamp('public_at', {mode: 'string'}),
+  public_at: timestamp('public_at', { mode: 'string' }),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
     .notNull(),
