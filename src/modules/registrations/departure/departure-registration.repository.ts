@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { format } from 'date-fns';
 import { eq } from 'drizzle-orm';
+import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { departureRegistration } from '../entities';
 
@@ -19,6 +21,7 @@ export class DepartureRepository {
       .update(departureRegistration)
       .set({
         verified_at,
+        updated_at: format(new Date(), DateTimeFormat.Timestamp),
       })
       .where(eq(departureRegistration.id, id));
   }

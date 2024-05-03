@@ -1,18 +1,21 @@
 import { relations } from 'drizzle-orm';
-
-import { integer, pgTable, serial, text, varchar } from 'drizzle-orm/pg-core';
+import { bigint, mysqlTable, serial, varchar } from 'drizzle-orm/mysql-core';
 import { langCode } from 'src/modules/banners/entities';
 import { hotels } from './hotels';
 
-export const hotelTranslate = pgTable('hotel_translate', {
+export const hotelTranslate = mysqlTable('hotel_translate', {
   id: serial('id').primaryKey().notNull(),
-  hotel_id: integer('hotel_id').references(() => hotels.id, {
-    onDelete: 'cascade',
-    onUpdate: 'no action',
-  }),
-  lang: langCode('lang').notNull(),
+  hotel_id: bigint('hotel_id', { mode: 'number', unsigned: true }).references(
+    () => hotels.id,
+    {
+      onDelete: 'cascade',
+    },
+  ),
+  lang: langCode.notNull(),
   name: varchar('name', { length: 255 }),
-  address: text('address'),
+  province: varchar('province', { length: 255 }),
+  district: varchar('district', { length: 255 }),
+  village: varchar('village', { length: 255 }),
 });
 
 export const hotelTranslateRelations = relations(hotelTranslate, ({ one }) => ({
@@ -21,3 +24,6 @@ export const hotelTranslateRelations = relations(hotelTranslate, ({ one }) => ({
     references: [hotels.id],
   }),
 }));
+
+export type HotelsTranslate = typeof hotelTranslate.$inferSelect;
+export type InsertHotelsTranslate = typeof hotelTranslate.$inferInsert;

@@ -2,13 +2,13 @@ export enum PermissionName {
   Read = 'read',
   Write = 'write',
   Remove = 'remove',
+  All = 'all',
 }
 
 export enum PermissionGroup {
   User = 'user',
   Registration = 'registration',
   Banner = 'banner',
-  File = 'file',
   Feedback = 'feedback',
   AccommodationRequest = 'accommodation-request',
   Hotel = 'hotel',
@@ -17,5 +17,5 @@ export enum PermissionGroup {
   Law = 'law',
   Checkpoint = 'checkpoint',
   Contact = 'contact',
-  FileAndDirectory = 'file-and-directory'
+  Country = 'country',
 }

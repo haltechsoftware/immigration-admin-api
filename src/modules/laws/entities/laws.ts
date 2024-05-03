@@ -1,6 +1,12 @@
-import { pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import {
+  mysqlTable,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from 'drizzle-orm/mysql-core';
 
-export const laws = pgTable('laws', {
+export const laws = mysqlTable('laws', {
   id: serial('id').primaryKey().notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   file: text('file').notNull(),

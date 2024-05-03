@@ -1,9 +1,9 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, serial, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { mysqlTable, serial, timestamp } from 'drizzle-orm/mysql-core';
 import { news } from './news';
 import { newsCategoriesTranslate } from './news_categories_translate';
 
-export const newsCategories = pgTable('news_categories', {
+export const newsCategories = mysqlTable('news_categories', {
   id: serial('id').primaryKey().notNull(),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()

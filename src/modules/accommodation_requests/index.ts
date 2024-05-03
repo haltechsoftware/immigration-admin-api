@@ -1,3 +1,3 @@
-import { AccommodationRequestModule } from './accommodation_request/accommodation_request.module';
+import { AccommodationRequestModule } from './accommodation_request/accommodation-request.module';
 
 export const accommodationRequestModules = [AccommodationRequestModule];
