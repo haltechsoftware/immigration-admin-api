@@ -29,7 +29,7 @@ export const news = mysqlTable('news', {
   }),
   thumbnail: text('thumbnail').notNull(),
   status: newsStatus.notNull(),
-  public_at: timestamp('public_at'),
+  public_at: timestamp('public_at', {mode: 'string'}),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
     .notNull(),
@@ -45,3 +45,6 @@ export const newsRelations = relations(news, ({ many, one }) => ({
   }),
   translates: many(newsTranslate),
 }));
+
+export type News = typeof news.$inferSelect;
+export type InsertNews = typeof news.$inferInsert;

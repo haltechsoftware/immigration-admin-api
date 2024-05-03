@@ -29,3 +29,6 @@ export const newsTranslateRelations = relations(newsTranslate, ({ one }) => ({
     references: [news.id],
   }),
 }));
+
+export type NewsTranslate = typeof newsTranslate.$inferSelect;
+export type InsertNewsTranslate = typeof newsTranslate.$inferInsert;
