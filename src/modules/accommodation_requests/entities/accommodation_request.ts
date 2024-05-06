@@ -1,8 +1,8 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
 import { accommodationRequestTranslate } from './accommodation_request_translate';
+import { mysqlTable, serial, timestamp } from 'drizzle-orm/mysql-core';
 
-export const accommodationRequest = pgTable('accommodation_request', {
+export const accommodationRequest = mysqlTable('accommodation_request', {
   id: serial('id').primaryKey().notNull(),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()

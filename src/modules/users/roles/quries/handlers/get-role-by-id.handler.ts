@@ -18,7 +18,7 @@ export class GetRoleByIdHandler implements IQueryHandler<GetRoleByIdQuery> {
         usersToRoles: { with: { user: { columns: { password: false } } } },
       },
     })
-    .prepare('get_role_by_id');
+    .prepare();
 
   async execute({ id }: GetRoleByIdQuery): Promise<any> {
     const res = await this._prepared.execute({ id });

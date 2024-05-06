@@ -1,19 +1,25 @@
 import { MemoryStoredFile } from 'nestjs-form-data';
 import {
   Output,
+  StringSchema,
   custom,
   merge,
   object,
   omit,
   optional,
+  safeParse,
   special,
   string,
   transform,
 } from 'valibot';
 import { CreateHotelDto } from './create-hotel.dto';
+import {
+  HotelTranslateDto,
+  HotelTranslateDtoType,
+} from './hotel-translate.dto';
 
 const UpdateHotelDto = merge([
-  omit(CreateHotelDto, ['image']),
+  omit(CreateHotelDto, ['image', 'lo', 'en', 'zh_cn']),
   object({
     image: optional(
       special(
@@ -34,9 +40,21 @@ const UpdateHotelDto = merge([
         ],
       ),
     ),
-    lo_id: transform(string('ຈະຕ້ອງເປັນ string'), (input) => Number(input)),
-    en_id: transform(string('ຈະຕ້ອງເປັນ string'), (input) => Number(input)),
-    zh_cn_id: transform(string('ຈະຕ້ອງເປັນ string'), (input) => Number(input)),
+    lo: transform<StringSchema<string>, HotelTranslateDtoType>(
+      string(),
+      (input) => JSON.parse(input),
+      [custom((input) => safeParse(HotelTranslateDto, input).success)],
+    ),
+    en: transform<StringSchema<string>, HotelTranslateDtoType>(
+      string(),
+      (input) => JSON.parse(input),
+      [custom((input) => safeParse(HotelTranslateDto, input).success)],
+    ),
+    zh_cn: transform<StringSchema<string>, HotelTranslateDtoType>(
+      string(),
+      (input) => JSON.parse(input),
+      [custom((input) => safeParse(HotelTranslateDto, input).success)],
+    ),
   }),
 ]);
 

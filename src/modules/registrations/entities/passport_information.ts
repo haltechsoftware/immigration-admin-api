@@ -1,16 +1,16 @@
 import { relations } from 'drizzle-orm';
 import {
   date,
-  pgTable,
+  mysqlTable,
   serial,
   text,
   timestamp,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/mysql-core';
 import { arrivalRegistration } from './arrival_registration';
 import { departureRegistration } from './departure_registration';
 
-export const passportInformation = pgTable('passport_information', {
+export const passportInformation = mysqlTable('passport_information', {
   id: serial('id').primaryKey().notNull(),
   number: varchar('number', { length: 255 }).notNull().unique(),
   expiry_date: date('expiry_date', { mode: 'string' }).notNull(),

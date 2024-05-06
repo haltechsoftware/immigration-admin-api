@@ -1,12 +1,12 @@
 import { relations } from 'drizzle-orm';
-import { char, integer, pgTable, timestamp } from 'drizzle-orm/pg-core';
+import { bigint, char, mysqlTable, timestamp } from 'drizzle-orm/mysql-core';
 import { users } from './users';
 
-export const sessions = pgTable('sessions', {
+export const sessions = mysqlTable('sessions', {
   id: char('id', { length: 36 }).primaryKey().notNull(),
-  user_id: integer('user_id')
-    .references(() => users.id, { onDelete: 'cascade', onUpdate: 'no action' })
-    .notNull(),
+  user_id: bigint('user_id', { mode: 'number', unsigned: true })
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
   created_at: timestamp('created_at').defaultNow().notNull(),
 });
 

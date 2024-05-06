@@ -1,6 +1,12 @@
-import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  mysqlTable,
+  serial,
+  text,
+  timestamp,
+} from 'drizzle-orm/mysql-core';
 
-export const bannerPopups = pgTable('banner_popups', {
+export const bannerPopups = mysqlTable('banner_popups', {
   id: serial('id').primaryKey().notNull(),
   image: text('image').notNull(),
   link: text('link'),

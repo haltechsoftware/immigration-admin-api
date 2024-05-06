@@ -31,17 +31,11 @@ export class FileAndDirectoryRepository {
   }
 
   async create(input: InsertFileAndDirectory): Promise<void> {
-    await this._drizzle.db().transaction(async (tx) => {
-      const Insert = await tx
-        .insert(filesAndDirectories)
-        .values({
-          name: input.name,
-          size: input.size,
-          type: input.type,
-          parent_id: input.parent_id,
-        })
-        .returning();
-      return Insert;
+    await this._drizzle.db().insert(filesAndDirectories).values({
+      name: input.name,
+      size: input.size,
+      type: input.type,
+      parent_id: input.parent_id,
     });
   }
 
@@ -55,7 +49,7 @@ export class FileAndDirectoryRepository {
           o.eq(fields.type, 'directory'),
         ),
     })
-    .prepare('get_directory_by_id');
+    .prepare();
   async getOneDirectory(id: number) {
     return await this.prepared.execute({ id });
   }
@@ -69,7 +63,7 @@ export class FileAndDirectoryRepository {
           operators.eq(fields.type, 'file'),
         ),
     })
-    .prepare('get_file_by_id');
+    .prepare();
   async getOneFile(id: number) {
     return await this.getFilePrepared.execute({ id });
   }
@@ -81,13 +75,14 @@ export class FileAndDirectoryRepository {
         where: (fields, operators) => operators.eq(fields.id, id),
       });
 
-      return (
-        await tx
-          .update(filesAndDirectories)
-          .set({ size: old.size - size })
-          .where(eq(filesAndDirectories.id, id))
-          .returning()
-      )[0];
+      await tx
+        .update(filesAndDirectories)
+        .set({ size: old.size - size })
+        .where(eq(filesAndDirectories.id, id));
+
+      return await tx.query.filesAndDirectories.findFirst({
+        where: (f, o) => o.eq(f.id, id),
+      });
     });
   }
 
@@ -98,13 +93,14 @@ export class FileAndDirectoryRepository {
         where: (fields, operators) => operators.eq(fields.id, id),
       });
 
-      return (
-        await tx
-          .update(filesAndDirectories)
-          .set({ size: old.size + size })
-          .where(eq(filesAndDirectories.id, id))
-          .returning()
-      )[0];
+      await tx
+        .update(filesAndDirectories)
+        .set({ size: old.size + size })
+        .where(eq(filesAndDirectories.id, id));
+
+      return await tx.query.filesAndDirectories.findFirst({
+        where: (f, o) => o.eq(f.id, id),
+      });
     });
   }
 

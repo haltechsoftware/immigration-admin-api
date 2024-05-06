@@ -4,12 +4,8 @@ import type { Config } from 'drizzle-kit';
 export default {
   schema: './src/modules/**/entities/*',
   out: './drizzle',
-  driver: 'pg',
+  driver: 'mysql2',
   dbCredentials: {
-    host: <string>process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: <string>process.env.DB_NAME,
-    ssl: process.env.DB_SSL,
+    uri: process.env.DB_URL,
   },
 } satisfies Config;

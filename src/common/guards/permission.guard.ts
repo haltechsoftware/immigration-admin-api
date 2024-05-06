@@ -26,6 +26,14 @@ export class PermissionsGuard implements CanActivate {
     const payload = context.switchToHttp().getRequest().user as IJwtPayload;
 
     if (
+      payload.roles.includes('admin-hotel') &&
+      `${requiredPermissions.group}:${requiredPermissions.name}` ===
+        `${PermissionGroup.Hotel}:${PermissionName.All}`
+    ) {
+      return true;
+    }
+
+    if (
       payload.roles?.includes('dev') ||
       payload.roles?.includes('admin') ||
       payload.permissions?.includes(

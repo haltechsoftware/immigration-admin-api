@@ -1,6 +1,6 @@
-import { pgEnum } from 'drizzle-orm/pg-core';
+import { mysqlEnum } from 'drizzle-orm/mysql-core';
 
-export const blackListStatus = pgEnum('black_list_status', [
-  'available',
+export const blackListStatus = mysqlEnum('black_list', [
   'unavailable',
+  'available',
 ]);

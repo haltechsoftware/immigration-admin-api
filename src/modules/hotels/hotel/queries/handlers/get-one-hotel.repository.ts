@@ -17,7 +17,7 @@ export class GetOneHotelQueryHandler
         translates: true,
       },
     })
-    .prepare('find_hotel_by_id');
+    .prepare();
 
   async execute({ id }: GetOneHotelQuery): Promise<any> {
     const res = await this.prepared.execute({ id });

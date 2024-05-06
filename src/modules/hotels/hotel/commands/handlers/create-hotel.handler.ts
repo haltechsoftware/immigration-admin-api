@@ -15,7 +15,7 @@ export default class CreateHotelHandler
   ) {}
   async execute({ input }: CreateHotelCommand): Promise<any> {
     const image = await this.fileUpload.upload(
-      'hotel/',
+      'hotel/image/',
       input.image.buffer,
       input.image.originalName,
     );
@@ -23,24 +23,29 @@ export default class CreateHotelHandler
     await this.repository.create({
       image,
       link: input.link,
-      link_map: input.map_link,
       phone_number: input.phone_number,
       is_published: input.is_published,
       translates: [
         {
-          name: input.lo_name,
+          name: input.lo.name,
           lang: 'lo',
-          address: input.lo_address,
+          province: input.lo.province,
+          district: input.lo.district,
+          village: input.lo.village,
         },
         {
-          name: input.en_name,
+          name: input.en.name,
           lang: 'en',
-          address: input.en_address,
+          province: input.en.province,
+          district: input.en.district,
+          village: input.en.village,
         },
         {
-          name: input.zh_name,
+          name: input.zh_cn.name,
           lang: 'zh_cn',
-          address: input.zh_address,
+          province: input.zh_cn.province,
+          district: input.zh_cn.district,
+          village: input.zh_cn.village,
         },
       ],
     });
