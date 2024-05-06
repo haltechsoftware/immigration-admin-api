@@ -1,7 +1,7 @@
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { sql } from 'drizzle-orm';
 import { NotFoundException } from '@nestjs/common';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { sql } from 'drizzle-orm';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import GetLawByIdQuery from '../impl/get-law-by-id.query';
 
 @QueryHandler(GetLawByIdQuery)
@@ -13,7 +13,7 @@ export class GetLawByIdHandler implements IQueryHandler<GetLawByIdQuery> {
     .query.laws.findFirst({
       where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
     })
-    .prepare('get_law_by_id');
+    .prepare();
 
   async execute({ id }: GetLawByIdQuery) {
     const res = await this.prepared.execute({ id });

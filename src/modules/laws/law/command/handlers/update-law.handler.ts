@@ -1,11 +1,11 @@
-import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { format } from 'date-fns';
+import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
 import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { LawRepository } from '../../law.repository';
 import UpdateLawCommand from '../impl/update-law.command';
-import { format } from 'date-fns';
-import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 
 @CommandHandler(UpdateLawCommand)
 export default class UpdateLawHandler
@@ -28,7 +28,7 @@ export default class UpdateLawHandler
       await this.fileUpload.remove(law.file);
 
       file = await this.fileUpload.upload(
-        'law/',
+        'law/file/',
         dto.file.buffer,
         dto.file.originalName,
       );
@@ -41,6 +41,6 @@ export default class UpdateLawHandler
       updated_at: format(new Date(), DateTimeFormat.Timestamp),
     });
 
-    return 'ອັບເດດກົດລະບຽບສໍາເລັດ';
+    return 'ອັບເດດກົດໝາຍສໍາເລັດ';
   }
 }

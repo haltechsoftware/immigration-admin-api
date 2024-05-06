@@ -1,13 +1,12 @@
 import { MemoryStoredFile } from 'nestjs-form-data';
 import {
-  merge,
-  Output,
-  object,
-  optional,
-  string,
-  special,
   custom,
+  merge,
+  object,
   omit,
+  optional,
+  Output,
+  special,
 } from 'valibot';
 import { CreateLawDto } from './create-law.dto';
 
@@ -22,17 +21,15 @@ const UpdateLawDto = merge([
           custom(
             (input: MemoryStoredFile) =>
               ['application/pdf'].includes(input.mimeType),
-            'โปรดเลือกไฟล์ PDF.',
+            'ກະລຸນາເລືອກໄຟລ໌ PDF.',
           ),
           custom(
-            (input: MemoryStoredFile) => input.size <= 1024 * 1024 * 2,
-            'โปรดเลือกไฟล์ที่มีขนาดไม่เกิน 2 MB.',
+            (input: MemoryStoredFile) => input.size <= 1024 * 1024 * 100,
+            'ກະລຸນາເລືອກໄຟລ໌ທີ່ນ້ອຍກວ່າ 100 MB.',
           ),
         ],
       ),
     ),
-
-    name: optional(string('ต้องเป็นข้อความ.')),
   }),
 ]);
 

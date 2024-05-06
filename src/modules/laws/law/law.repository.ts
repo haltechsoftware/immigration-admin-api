@@ -1,5 +1,5 @@
-import { eq, sql } from 'drizzle-orm';
 import { Injectable } from '@nestjs/common';
+import { eq, sql } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { InsertLaw, laws } from '../entities';
 
@@ -8,14 +8,10 @@ export class LawRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
   async create(input: InsertLaw): Promise<void> {
-    await this.drizzle
-      .db()
-      .insert(laws)
-      .values({
-        name: input.name,
-        file: input.file,
-      })
-      .returning();
+    await this.drizzle.db().insert(laws).values({
+      name: input.name,
+      file: input.file,
+    });
   }
 
   private getByIdPrepared = this.drizzle
@@ -23,7 +19,7 @@ export class LawRepository {
     .query.laws.findFirst({
       where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
     })
-    .prepare('get_law_by_id');
+    .prepare();
   async getById(id: number) {
     return await this.getByIdPrepared.execute({ id });
   }
@@ -35,6 +31,7 @@ export class LawRepository {
       .set({
         file: input.file,
         name: input.name,
+        updated_at: input.updated_at,
       })
       .where(eq(laws.id, input.id));
   }

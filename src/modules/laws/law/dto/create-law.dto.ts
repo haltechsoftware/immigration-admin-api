@@ -1,5 +1,5 @@
 import { MemoryStoredFile } from 'nestjs-form-data';
-import { Output, minLength, object, custom, string, special } from 'valibot';
+import { Output, custom, minLength, object, special, string } from 'valibot';
 
 const CreateLawDto = object({
   file: special(
@@ -12,8 +12,8 @@ const CreateLawDto = object({
         'ກະລຸນາເລືອກໄຟລ໌ PDF.',
       ),
       custom(
-        (input: MemoryStoredFile) => input.size <= 1024 * 1024 * 2,
-        'ກະລຸນາເລືອກໄຟລ໌ທີ່ນ້ອຍກວ່າ 2 MB.',
+        (input: MemoryStoredFile) => input.size <= 1024 * 1024 * 100,
+        'ກະລຸນາເລືອກໄຟລ໌ທີ່ນ້ອຍກວ່າ 100 MB.',
       ),
     ],
   ),

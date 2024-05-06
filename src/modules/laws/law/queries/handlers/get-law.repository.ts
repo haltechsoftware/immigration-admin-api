@@ -1,8 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import GetLawQuery from '../impl/get-law.query';
-import { laws } from 'src/modules/laws/entities';
 import { count } from 'drizzle-orm';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { laws } from 'src/modules/laws/entities';
+import GetLawQuery from '../impl/get-law.query';
 
 @QueryHandler(GetLawQuery)
 export class GetLawHandler implements IQueryHandler<GetLawQuery> {
@@ -12,7 +12,7 @@ export class GetLawHandler implements IQueryHandler<GetLawQuery> {
     .db()
     .select({ value: count() })
     .from(laws)
-    .prepare('count_laws');
+    .prepare();
 
   async execute({ paginate: { offset, limit } }: GetLawQuery) {
     const res = await this.drizzle.db().query.laws.findMany({
