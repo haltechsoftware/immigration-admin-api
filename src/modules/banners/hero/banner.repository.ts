@@ -14,6 +14,7 @@ export type InsertBannerType = InsertBanners & {
 
 export type UpdateBannerType = Omit<InsertBannerType, 'image'> & {
   image?: string;
+  updated_at?: string;
 };
 
 export type UpdatePrivate = Omit<
@@ -26,21 +27,18 @@ export class BannerRepository {
 
   async create(input: InsertBannerType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
-      const banner = await tx
-        .insert(banners)
-        .values({
-          image: input.image,
-          link: input.link,
-          start_time: input.start_time,
-          end_time: input.end_time,
-          is_private: input.is_private,
-          updated_at: input.updated_at,
-        })
-        .returning();
+      const banner = await tx.insert(banners).values({
+        image: input.image,
+        link: input.link,
+        start_time: input.start_time,
+        end_time: input.end_time,
+        is_private: input.is_private,
+        updated_at: input.updated_at,
+      });
 
       await tx.insert(bannersTranslate).values(
         input.translates.map((val) => ({
-          banner_id: banner[0].id,
+          banner_id: banner[0].insertId,
           lang: val.lang,
           title: val.title,
           description: val.description,
@@ -57,7 +55,7 @@ export class BannerRepository {
         translates: true,
       },
     })
-    .prepare('find_banner_by_id');
+    .prepare();
   async findOne(id: number) {
     return await this.prepared.execute({ id });
   }
@@ -82,6 +80,7 @@ export class BannerRepository {
           start_time: input.start_time,
           end_time: input.end_time,
           is_private: input.is_private,
+          updated_at: input.updated_at,
         })
         .where(eq(banners.id, input.id));
 

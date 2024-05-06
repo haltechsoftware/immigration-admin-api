@@ -9,11 +9,7 @@ export class GetPermissionHandler
 {
   constructor(private readonly drizzle: DrizzleService) {}
 
-  private prepared = this.drizzle
-    .db()
-    .select()
-    .from(permissions)
-    .prepare('get_permission');
+  private prepared = this.drizzle.db().select().from(permissions).prepare();
 
   async execute(): Promise<Permission[]> {
     return await this.prepared.execute();

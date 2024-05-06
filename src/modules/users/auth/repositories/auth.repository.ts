@@ -28,7 +28,7 @@ export class AuthRepository {
       },
       where: (fields, { eq }) => eq(fields.email, sql.placeholder('email')),
     })
-    .prepare('check_user');
+    .prepare();
 
   async checkUser(email: string) {
     const res = await this._checkUserPrepared.execute({ email });
@@ -54,7 +54,7 @@ export class AuthRepository {
     .query.sessions.findFirst({
       where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
     })
-    .prepare('get_session');
+    .prepare();
 
   async getSession(id: string) {
     const res = await this._getPrepared.execute({ id });

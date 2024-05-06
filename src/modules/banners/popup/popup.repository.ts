@@ -8,17 +8,13 @@ export class PopupRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
   async create(input: InsertBannerPopup): Promise<void> {
-    await this.drizzle
-      .db()
-      .insert(bannerPopups)
-      .values({
-        image: input.image,
-        link: input.link,
-        is_private: input.is_private,
-        start_time: input.start_time,
-        end_time: input.end_time,
-      })
-      .returning();
+    await this.drizzle.db().insert(bannerPopups).values({
+      image: input.image,
+      link: input.link,
+      is_private: input.is_private,
+      start_time: input.start_time,
+      end_time: input.end_time,
+    });
   }
 
   private _getByIdPrepared = this.drizzle
@@ -26,7 +22,7 @@ export class PopupRepository {
     .query.bannerPopups.findFirst({
       where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
     })
-    .prepare('get_popup_by_id');
+    .prepare();
   async getById(id: number) {
     return await this._getByIdPrepared.execute({ id });
   }
@@ -41,6 +37,7 @@ export class PopupRepository {
         is_private: input.is_private,
         start_time: input.start_time,
         end_time: input.end_time,
+        updated_at: input.updated_at,
       })
       .where(eq(bannerPopups.id, input.id));
   }

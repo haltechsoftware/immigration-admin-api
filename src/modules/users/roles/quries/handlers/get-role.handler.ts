@@ -16,7 +16,7 @@ export class GetRoleHandler
     .select({ value: count() })
     .from(roles)
     .where(eq(roles.is_default, false))
-    .prepare('count_roles');
+    .prepare();
 
   async execute({ paginate: { limit, offset } }: GetRoleQuery) {
     const res = await this.drizzle.db().query.roles.findMany({

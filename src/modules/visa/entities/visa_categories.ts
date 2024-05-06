@@ -1,8 +1,8 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, serial, timestamp } from 'drizzle-orm/pg-core';
 import { visaCategoryTranslate } from './visa_category_translate';
+import { mysqlTable, serial, timestamp } from 'drizzle-orm/mysql-core';
 
-export const visaCategories = pgTable('visa_categories', {
+export const visaCategories = mysqlTable('visa_categories', {
   id: serial('id').primaryKey().notNull(),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
@@ -18,3 +18,6 @@ export const visaCategoriesRelations = relations(
     translates: many(visaCategoryTranslate),
   }),
 );
+
+export type VisaCategory = typeof visaCategories.$inferSelect;
+export type InsertVisaCategory = typeof visaCategories.$inferInsert;

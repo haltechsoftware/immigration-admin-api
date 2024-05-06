@@ -19,7 +19,7 @@ export class GetDepartureByIdHandler
         personal_information: true,
       },
     })
-    .prepare('get_departure_by_id');
+    .prepare();
 
   async execute({ id }: GetDepartureByIdQuery) {
     const res = await this.prepared.execute({ id });

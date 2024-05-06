@@ -1,23 +1,34 @@
 import { relations } from 'drizzle-orm';
-import { integer, json, pgTable, serial, varchar } from 'drizzle-orm/pg-core';
+import {
+  bigint,
+  foreignKey,
+  json,
+  mysqlTable,
+  serial,
+  varchar,
+} from 'drizzle-orm/mysql-core';
 import { langCode } from 'src/modules/banners/entities';
 import { accommodationRequest } from './accommodation_request';
 
-export const accommodationRequestTranslate = pgTable(
+export const accommodationRequestTranslate = mysqlTable(
   'accommodation_request_translate',
   {
     id: serial('id').primaryKey().notNull(),
-    accommodation_request_id: integer('accommodation_request_id').references(
-      () => accommodationRequest.id,
-      {
-        onDelete: 'cascade',
-        onUpdate: 'no action',
-      },
-    ),
+    accommodation_request_id: bigint('accommodation_request_id', {
+      mode: 'number',
+      unsigned: true,
+    }),
     title: varchar('title', { length: 255 }).notNull(),
     content: json('content'),
-    lang: langCode('lang').notNull(),
+    lang: langCode.notNull(),
   },
+  (table) => ({
+    accommodationRequestReference: foreignKey({
+      columns: [table.accommodation_request_id],
+      foreignColumns: [accommodationRequest.id],
+      name: 'acc_req_translate_id_fk',
+    }),
+  }),
 );
 
 export const accommodationRequestTranslateRelations = relations(
@@ -29,3 +40,8 @@ export const accommodationRequestTranslateRelations = relations(
     }),
   }),
 );
+
+export type AccommodationRequestTranslate =
+  typeof accommodationRequestTranslate.$inferSelect;
+export type InsertAccommodationRequestTranslate =
+  typeof accommodationRequestTranslate.$inferInsert;

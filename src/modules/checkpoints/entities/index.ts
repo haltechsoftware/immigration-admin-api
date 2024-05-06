@@ -2,3 +2,8 @@ export * from './checkpoint_categories';
 export * from './checkpoint_category_translate';
 export * from './checkpoint_translate';
 export * from './checkpoints';
+export * from './countries';
+export * from './countries_to_provinces';
+export * from './country_translate';
+export * from './province_translate';
+export * from './provinces';

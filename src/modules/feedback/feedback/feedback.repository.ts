@@ -12,7 +12,7 @@ export class FeedbackRepository {
     .query.feedbacks.findFirst({
       where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
     })
-    .prepare('get_popup_by_id');
+    .prepare();
   async getById(id: number) {
     return await this._getByIdPrepared.execute({ id });
   }

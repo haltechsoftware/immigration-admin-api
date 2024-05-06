@@ -13,7 +13,7 @@ export class GetPopupByIdHandler implements IQueryHandler<GetPopupByIdQuery> {
     .query.bannerPopups.findFirst({
       where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
     })
-    .prepare('get_popup_by_id');
+    .prepare();
 
   async execute({ id }: GetPopupByIdQuery) {
     const res = await this.prepared.execute({ id });
