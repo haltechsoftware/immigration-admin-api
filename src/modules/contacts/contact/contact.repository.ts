@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { eq, sql } from "drizzle-orm";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import { contacts } from "../entities/contacts";
+import { Injectable } from '@nestjs/common';
+import { eq, sql } from 'drizzle-orm';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { contacts } from '../entities/contacts';
 
 @Injectable()
 export class ContactRepository {
