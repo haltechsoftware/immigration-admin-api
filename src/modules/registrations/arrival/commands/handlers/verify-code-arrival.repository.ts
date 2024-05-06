@@ -22,7 +22,7 @@ export class VerifyArrivalCodeHandler
       where: (fields, { eq }) =>
         eq(fields.verification_code, sql.placeholder('verification_code')),
     })
-    .prepare('verify_arrival_code');
+    .prepare();
 
   async execute({ input: { verification_code } }: VerifyArrivalCodeCommand) {
     const res = await this.prepared.execute({ verification_code });

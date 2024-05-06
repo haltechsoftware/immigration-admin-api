@@ -1,32 +1,37 @@
 import { relations } from 'drizzle-orm';
 import {
-  integer,
-  pgTable,
+  bigint,
+  mysqlTable,
   serial,
   text,
   timestamp,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/mysql-core';
 import { checkpointCategories } from './checkpoint_categories';
 import { checkpointTranslate } from './checkpoint_translate';
 import { countries } from './countries';
 import { provinces } from './provinces';
 
-export const checkpoints = pgTable('checkpoints', {
+export const checkpoints = mysqlTable('checkpoints', {
   id: serial('id').primaryKey().notNull(),
-  category_id: integer('category_id').references(
-    () => checkpointCategories.id,
-    {
-      onDelete: 'cascade',
-      onUpdate: 'no action',
-    },
-  ),
-  country_id: integer('country_id').references(() => countries.id, {
-    onDelete: 'cascade',
+  category_id: bigint('category_id', {
+    mode: 'number',
+    unsigned: true,
+  }).references(() => checkpointCategories.id, {
+    onDelete: 'set null',
+  }),
+  country_id: bigint('country_id', {
+    mode: 'number',
+    unsigned: true,
+  }).references(() => countries.id, {
+    onDelete: 'set null',
     onUpdate: 'no action',
   }),
-  province_id: integer('province_id').references(() => provinces.id, {
-    onDelete: 'cascade',
+  province_id: bigint('province_id', {
+    mode: 'number',
+    unsigned: true,
+  }).references(() => provinces.id, {
+    onDelete: 'set null',
     onUpdate: 'no action',
   }),
   image: text('image').notNull(),

@@ -20,14 +20,11 @@ export class VisaCategoryRepository {
 
   async create(input: InsertVisaCategoryType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
-      const visa_category = await tx
-        .insert(visaCategories)
-        .values({})
-        .returning();
+      const visa_category = await tx.insert(visaCategories).values({});
 
       await tx.insert(visaCategoryTranslate).values(
         input.translates.map((val) => ({
-          visa_category_id: visa_category[0].id,
+          visa_category_id: visa_category[0].insertId,
           name: val.name,
           content: val.content,
           lang: val.lang,
@@ -44,7 +41,7 @@ export class VisaCategoryRepository {
         translates: true,
       },
     })
-    .prepare('find_visa_category_by_id');
+    .prepare();
   async findOne(id: number) {
     return await this.prepared.execute({ id });
   }

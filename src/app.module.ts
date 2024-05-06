@@ -38,7 +38,7 @@ import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-fil
     }),
     NestjsFormDataModule.config({ isGlobal: true }),
     RequestContextModule,
-    NodeFileUploadModule,
+    NodeFileUploadModule, 
     // SupabaseStorageModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),

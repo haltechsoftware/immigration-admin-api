@@ -40,7 +40,7 @@ export class ProvinceRepository {
         translates: true,
       },
     })
-    .prepare('find_province_by_id');
+    .prepare();
   async findOne(id: number) {
     return await this.prepared.execute({ id });
   }

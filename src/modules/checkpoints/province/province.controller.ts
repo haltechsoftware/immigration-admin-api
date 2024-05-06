@@ -23,6 +23,8 @@ import { UpdateProvinceCommand } from './commands/impl/update-province.command';
 import { DeleteProvinceCommand } from './commands/impl/delete-province.command';
 import { QueryProvinceDto, QueryProvinceDtoType } from './dtos/query.province.dto';
 import { GetAllProvinceCommand } from './queries/impl/get-all.province';
+import { GetOneProvinceCommand } from './queries/impl/get-one.province';
+import { QueryProvinceByIdDto, QueryProvinceByIdDtoType } from './dtos/query-province-by-id.dto';
 
 @Controller('provinces')
 export class ProvinceController {
@@ -89,16 +91,18 @@ export class ProvinceController {
     );
   }
 
-  // @Permissions(PermissionGroup.Banner, PermissionName.Read)
-  // @Get(':id')
-  // async findOne(
-  //   @Valibot({ schema: GetByIdDto, type: 'params' })
-  //   params: GetByIdDtoType,
-  // ) {
-  //   return await this._queryBus.execute<GetOneBannerQuery>(
-  //     new GetOneBannerQuery(params.id),
-  //   );
-  // }
+  @Permissions(PermissionGroup.Provinces, PermissionName.Read)
+  @Get(':id')
+  async findOne(
+    @Valibot({ schema: GetByIdDto, type: 'params' })
+    params: GetByIdDtoType,
+    @Valibot({ schema: QueryProvinceByIdDto, type: 'query' })
+    query: QueryProvinceByIdDtoType,
+  ) {
+    return await this._queryBus.execute<GetOneProvinceCommand>(
+      new GetOneProvinceCommand(params.id, query),
+    );
+  }
 
   @Permissions(PermissionGroup.Provinces, PermissionName.Remove)
   @Delete(':id')

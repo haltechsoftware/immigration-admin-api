@@ -1,17 +1,13 @@
 import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/mysql2';
+import mysql from 'mysql2/promise';
 import defaultUserSeed from './user/default-user.seed';
 import permissionSeed from './user/permission.seed';
 import roleSeed from './user/role.seed';
+import provinceSeed from './provinces/province-seed';
+import provinceTranslateSeed from './provinces/province-translate-seed';
 
-const client = postgres({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  ssl: process.env.DB_SSL ? 'require' : false,
-});
+const client = mysql.createPool(process.env.DB_URL);
 
 export const db = drizzle(client);
 
@@ -20,9 +16,11 @@ const main = async () => {
   await permissionSeed();
   await roleSeed();
   await defaultUserSeed();
+  await provinceSeed();
+  await provinceTranslateSeed()
   console.log('Seed done');
 
-  client.end();
+  await client.end();
 };
 
 main();

@@ -2,6 +2,7 @@ export enum PermissionName {
   Read = 'read',
   Write = 'write',
   Remove = 'remove',
+  All = 'all',
 }
 
 export enum PermissionGroup {
@@ -18,4 +19,5 @@ export enum PermissionGroup {
   Contact = 'contact',
   FileAndDirectory = 'file-and-directory',
   Provinces = 'provinces',
+  Country = 'country',
 }

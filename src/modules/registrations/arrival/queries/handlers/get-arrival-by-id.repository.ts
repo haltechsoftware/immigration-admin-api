@@ -21,7 +21,7 @@ export class GetArrivalByIdHandler
         intended_address: true,
       },
     })
-    .prepare('get_arrival_by_id');
+    .prepare();
 
   async execute({ id }: GetArrivalByIdQuery) {
     const res = await this.prepared.execute({ id });

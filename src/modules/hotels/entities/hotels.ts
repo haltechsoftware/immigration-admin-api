@@ -1,16 +1,17 @@
 import { relations } from 'drizzle-orm';
-
 import {
   boolean,
-  pgTable,
+  mysqlTable,
   serial,
   text,
   timestamp,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/mysql-core';
+import { intendedAddress } from 'src/modules/registrations/entities';
+import { users } from 'src/modules/users/entities';
 import { hotelTranslate } from './hotel_translate';
 
-export const hotels = pgTable('hotels', {
+export const hotels = mysqlTable('hotels', {
   id: serial('id').primaryKey().notNull(),
   link_map: text('link_map').notNull(),
   image: text('image').notNull(),
@@ -25,8 +26,13 @@ export const hotels = pgTable('hotels', {
     .notNull(),
 });
 
-export const hotelsRelations = relations(hotels, ({ many }) => ({
+export const hotelsRelations = relations(hotels, ({ many, one }) => ({
   translates: many(hotelTranslate),
+  user: one(users, {
+    fields: [hotels.id],
+    references: [users.hotel_id],
+  }),
+  intended_address: many(intendedAddress),
 }));
 
 export type hotels = typeof hotels.$inferSelect;

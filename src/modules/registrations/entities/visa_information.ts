@@ -1,15 +1,15 @@
 import { relations } from 'drizzle-orm';
 import {
   date,
-  pgTable,
+  mysqlTable,
   serial,
   text,
   timestamp,
   varchar,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/mysql-core';
 import { arrivalRegistration } from './arrival_registration';
 
-export const visaInformation = pgTable('visa_information', {
+export const visaInformation = mysqlTable('visa_information', {
   id: serial('id').primaryKey().notNull(),
   number: varchar('number', { length: 255 }).notNull().unique(),
   date_issue: date('date_issue', { mode: 'string' }).notNull(),

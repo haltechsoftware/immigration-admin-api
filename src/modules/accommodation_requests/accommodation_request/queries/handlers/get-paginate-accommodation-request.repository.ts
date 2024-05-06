@@ -14,7 +14,7 @@ export class GetPaginateAccommodationRequestHandler
     .db()
     .select({ value: count() })
     .from(accommodationRequest)
-    .prepare('count-accommodation_request');
+    .prepare();
 
   async execute({
     paginate: { cursor, limit, lang },

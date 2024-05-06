@@ -22,12 +22,11 @@ export class AccommodationRequestRepository {
     await this._drizzle.db().transaction(async (tx) => {
       const accommodation_request = await tx
         .insert(accommodationRequest)
-        .values({})
-        .returning();
+        .values({});
 
       await tx.insert(accommodationRequestTranslate).values(
         data.translates.map((val) => ({
-          accommodation_request_id: accommodation_request[0].id,
+          accommodation_request_id: accommodation_request[0].insertId,
           lang: val.lang,
           title: val.title,
           content: val.content,
@@ -44,7 +43,7 @@ export class AccommodationRequestRepository {
         translates: true,
       },
     })
-    .prepare('find_banner_by_id');
+    .prepare();
   async findOne(id: number) {
     return await this.prepared.execute({ id });
   }
