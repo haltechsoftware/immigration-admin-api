@@ -1,8 +1,5 @@
-import { IOffsetBasePaginate } from "src/common/interface/pagination/pagination.interface";
-import { News } from "src/modules/news/entities";
+import { QueryNewsDtoType } from '../../dtos/query-news.dto';
 
 export class GetNewsOffsetBasePaginateQuery {
-    constructor(
-        public readonly paginate: IOffsetBasePaginate<News>
-    ){}
+  constructor(public readonly paginate: QueryNewsDtoType) {}
 }

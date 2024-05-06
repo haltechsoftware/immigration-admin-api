@@ -1,16 +1,26 @@
 import { MemoryStoredFile } from 'nestjs-form-data';
-import { RequestContext } from 'nestjs-request-context';
-import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { Output, custom, customAsync, enum_, maxLength, minLength, objectAsync, special, string, stringAsync, transform } from 'valibot';
+import {
+  Output,
+  StringSchema,
+  custom,
+  enum_,
+  object,
+  omit,
+  safeParse,
+  special,
+  string,
+  transform,
+} from 'valibot';
+import { NewsTranslateDto, NewsTranslateDtoType } from './news-translate.dto';
 
-enum Type {
+enum NewsStatus {
   Draft = 'draft',
   Public = 'published',
   Private = 'private',
 }
-const CreateNewsDto = objectAsync({
+const CreateNewsDto = object({
   category_id: transform(string('ຈະຕ້ອງເປັນ string'), (input) => Number(input)),
-  thumbail: special(
+  thumbnail: special(
     (input) => input instanceof MemoryStoredFile,
     'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ',
     [
@@ -25,67 +35,42 @@ const CreateNewsDto = objectAsync({
       ),
     ],
   ),
-  status: enum_(Type, 'ຕ້ອງເປັນ draft ຫຼື published ແລະ private ເທົ່ານັ້ນ'),
-  lo_title: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    customAsync(async (input: string) => {
-      const drizzle: DrizzleService = RequestContext.currentContext.req.drizzle;
+  status: enum_(
+    NewsStatus,
+    'ຕ້ອງເປັນ draft ຫຼື published ແລະ private ເທົ່ານັ້ນ',
+  ),
 
-      const res = await drizzle.db().query.newsTranslate.findFirst({
-        where: ({ title }, { eq }) => eq(title, input),
-      });
+  lo: transform<StringSchema<string>, Omit<NewsTranslateDtoType, 'id'>>(
+    string(),
+    (input) => JSON.parse(input),
+    [
+      custom(
+        (input) => safeParse(omit(NewsTranslateDto, ['id']), input).success,
+      ),
+    ],
+  ),
 
-      return res ? false : true;
-    }, 'ຊື່ນີ້ມີໃນລະບົບແລ້ວ'),
-    minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
-    maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
-  ]),
-  lo_description: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(3, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.')
-  ]),
-  lo_content: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(3, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.')
-  ]),
-  en_title: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    customAsync(async (input: string) => {
-      const drizzle: DrizzleService = RequestContext.currentContext.req.drizzle;
+  en: transform<StringSchema<string>, Omit<NewsTranslateDtoType, 'id'>>(
+    string(),
+    (input) => JSON.parse(input),
+    [
+      custom(
+        (input) => safeParse(omit(NewsTranslateDto, ['id']), input).success,
+      ),
+    ],
+  ),
 
-      const res = await drizzle.db().query.newsTranslate.findFirst({
-        where: ({ title }, { eq }) => eq(title, input),
-      });
-
-      return res ? false : true;
-    }, 'ຊື່ນີ້ມີໃນລະບົບແລ້ວ'),
-    minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
-    maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
-  ]),
-  en_description: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(3, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.')
-  ]),
-  en_content: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(3, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.')
-  ]),
-  zh_cn_title: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    customAsync(async (input: string) => {
-      const drizzle: DrizzleService = RequestContext.currentContext.req.drizzle;
-
-      const res = await drizzle.db().query.newsTranslate.findFirst({
-        where: ({ title }, { eq }) => eq(title, input),
-      });
-
-      return res ? false : true;
-    }, 'ຊື່ນີ້ມີໃນລະບົບແລ້ວ'),
-    minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
-    maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
-  ]),
-  zh_cn_description: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(3, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.')
-  ]),
-  zh_cn_content: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(3, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.')
-  ]),
-  
+  zh_cn: transform<StringSchema<string>, Omit<NewsTranslateDtoType, 'id'>>(
+    string(),
+    (input) => JSON.parse(input),
+    [
+      custom(
+        (input) => safeParse(omit(NewsTranslateDto, ['id']), input).success,
+      ),
+    ],
+  ),
 });
 
 type CreateNewsDtoType = Output<typeof CreateNewsDto>;
 
-export { CreateNewsDto, CreateNewsDtoType, Type };
+export { CreateNewsDto, CreateNewsDtoType, NewsStatus };

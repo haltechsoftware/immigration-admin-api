@@ -1,10 +1,10 @@
 import { Output, object } from 'valibot';
-import { NewTranslateDto } from './new_translate.dto';
+import { NewCategoryTranslateDto } from './new_category_translate.dto';
 
 const UpdateNewsCategoryDto = object({
-  en: NewTranslateDto,
-  lo: NewTranslateDto,
-  zh_cn: NewTranslateDto,
+  en: NewCategoryTranslateDto,
+  lo: NewCategoryTranslateDto,
+  zh_cn: NewCategoryTranslateDto,
 });
 
 type UpdateNewsCategoryDtoType = Output<typeof UpdateNewsCategoryDto>;

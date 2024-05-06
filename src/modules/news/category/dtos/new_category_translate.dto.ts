@@ -1,6 +1,6 @@
 import { maxLength, minLength, number, object, string } from 'valibot';
 
-export const NewTranslateDto = object({
+export const NewCategoryTranslateDto = object({
   id: number('ຈະຕ້ອງເປັນ number'),
   name: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
     minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),

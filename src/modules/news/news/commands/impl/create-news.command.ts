@@ -1,7 +1,5 @@
-import { CreateNewsDtoType } from "../../dtos/create-news.dto";
+import { CreateNewsDtoType } from '../../dtos/create-news.dto';
 
 export class CreateNewsCommand {
-    constructor(
-        public readonly input: CreateNewsDtoType
-    ){}
+  constructor(public readonly input: CreateNewsDtoType) {}
 }

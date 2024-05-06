@@ -35,8 +35,6 @@ export class UpdateNewsCategoryHandler
           ),
       });
 
-    console.log(conflict);
-
     if (conflict.length > 0)
       throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
 

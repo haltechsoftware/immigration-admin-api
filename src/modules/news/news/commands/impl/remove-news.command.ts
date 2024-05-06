@@ -1,5 +1,3 @@
 export class RemoveNewsCommand {
-    constructor(
-        public readonly id: number
-    ){}
+  constructor(public readonly id: number) {}
 }
