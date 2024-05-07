@@ -1,5 +1,5 @@
 import { NumberDtoType } from '../../../dtos/number.dto';
 
-export class IncrementTouristExitCommand {
+export class IncrementRegisterExitCommand {
   constructor(public readonly input: NumberDtoType) {}
 }

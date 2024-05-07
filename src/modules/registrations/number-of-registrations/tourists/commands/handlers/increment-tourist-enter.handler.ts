@@ -17,6 +17,6 @@ export class IncrementTouristEnterHandler
   }: IncrementTouristEnterCommand): Promise<any> {
     await this.redis.ts.add('tourists_enter', new Date(), number);
 
-    return 'ເພີ່ມຈຳນວນການເຂົ້າເມື່ອງຂອງນັກທ່ອງທ່ຽວສຳເລັດ';
+    return 'ເພີ່ມຈຳນວນການລົງທະບຽນເຂົ້າເມືອງຂອງນັກທ່ອງທ່ຽວສຳເລັດ';
   }
 }

@@ -19,6 +19,7 @@ export default class CreateLawHandler
       'law/file/',
       dto.file.buffer,
       dto.file.originalName,
+      dto.file.mimeType,
     );
 
     await this.repository.create({

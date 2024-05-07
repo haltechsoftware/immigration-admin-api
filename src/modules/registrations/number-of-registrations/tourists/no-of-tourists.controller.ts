@@ -6,14 +6,11 @@ import {
   PermissionGroup,
   PermissionName,
 } from 'src/common/enum/permission.enum';
+import { NumberDto, NumberDtoType } from '../dtos/number.dto';
 import { DecrementTouristEnterCommand } from './commands/impl/decrement-tourist-enter.command';
 import { DecrementTouristExitCommand } from './commands/impl/decrement-tourist-exit.command';
 import { IncrementTouristEnterCommand } from './commands/impl/increment-tourist-enter.command';
 import { IncrementTouristExitCommand } from './commands/impl/increment-tourist-exit.command';
-import {
-  NumberTouristDto,
-  NumberTouristDtoType,
-} from './dto/number-tourist.dto';
 import { NumberTouristEnterQuery } from './queries/impl/number-tourist-enter.query';
 import { NumberTouristExitQuery } from './queries/impl/number-tourist-exit.query';
 
@@ -27,7 +24,7 @@ export class NoOfTouristsController {
   @Permissions(PermissionGroup.Registration, PermissionName.Write)
   @Post('enter/increment')
   async incrementTouristEnter(
-    @Valibot({ schema: NumberTouristDto }) body: NumberTouristDtoType,
+    @Valibot({ schema: NumberDto }) body: NumberDtoType,
   ): Promise<any> {
     const message = await this.commandBus.execute<IncrementTouristEnterCommand>(
       new IncrementTouristEnterCommand(body),
@@ -39,7 +36,7 @@ export class NoOfTouristsController {
   @Permissions(PermissionGroup.Registration, PermissionName.Write)
   @Post('enter/decrement')
   async decrementTouristEnter(
-    @Valibot({ schema: NumberTouristDto }) body: NumberTouristDtoType,
+    @Valibot({ schema: NumberDto }) body: NumberDtoType,
   ): Promise<any> {
     const message = await this.commandBus.execute<DecrementTouristEnterCommand>(
       new DecrementTouristEnterCommand(body),
@@ -59,7 +56,7 @@ export class NoOfTouristsController {
   @Permissions(PermissionGroup.Registration, PermissionName.Write)
   @Post('exit/increment')
   async incrementTouristExit(
-    @Valibot({ schema: NumberTouristDto }) body: NumberTouristDtoType,
+    @Valibot({ schema: NumberDto }) body: NumberDtoType,
   ): Promise<any> {
     const message = await this.commandBus.execute<IncrementTouristExitCommand>(
       new IncrementTouristExitCommand(body),
@@ -71,7 +68,7 @@ export class NoOfTouristsController {
   @Permissions(PermissionGroup.Registration, PermissionName.Write)
   @Post('exit/decrement')
   async decrementTouristExit(
-    @Valibot({ schema: NumberTouristDto }) body: NumberTouristDtoType,
+    @Valibot({ schema: NumberDto }) body: NumberDtoType,
   ): Promise<any> {
     const message = await this.commandBus.execute<DecrementTouristExitCommand>(
       new DecrementTouristExitCommand(body),

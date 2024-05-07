@@ -15,8 +15,8 @@ export class DecrementTouristEnterHandler
   async execute({
     input: { number },
   }: DecrementTouristEnterCommand): Promise<any> {
-    await this.redis.ts.decrBy('tourists_enter', number);
+    await this.redis.ts.add('tourists_enter', new Date(), -number);
 
-    return 'ລົບຈຳນວນການເຂົ້າເມື່ອງຂອງນັກທ່ອງທ່ຽວສຳເລັດ';
+    return 'ລົບຈຳນວນການລົງທະບຽນເຂົ້າເມືອງຂອງນັກທ່ອງທ່ຽວສຳເລັດ';
   }
 }
