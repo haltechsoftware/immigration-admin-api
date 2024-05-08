@@ -12,9 +12,11 @@ import { PermissionsGuard } from './common/guards/permission.guard';
 import IEnv from './common/interface/env.interface';
 import { DrizzleModule } from './infrastructure/drizzle/drizzle.module';
 import { SupabaseStorageModule } from './infrastructure/file-upload/supabase/supabase-storage.module';
+import { RedisModule } from './infrastructure/redis/redis.module';
 import { accommodationRequestModules } from './modules/accommodation_requests';
 import { BannerModules } from './modules/banners';
 import { checkpointModules } from './modules/checkpoints';
+import { contactModules } from './modules/contacts';
 import { feedbackModules } from './modules/feedback';
 import { fileAndDirectoryModules } from './modules/files_and_directories';
 import { HotelModules } from './modules/hotels';
@@ -23,8 +25,6 @@ import { NewsModules } from './modules/news';
 import { registrationModules } from './modules/registrations';
 import { UserModules } from './modules/users';
 import { visaModules } from './modules/visa';
-import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-file-upload.module';
-import { contactModules } from './modules/contacts';
 
 @Module({
   imports: [
@@ -45,6 +45,7 @@ import { contactModules } from './modules/contacts';
       rootPath: join(__dirname, '..', 'client'),
     }),
     DrizzleModule,
+    RedisModule,
     ...UserModules,
     ...BannerModules,
     ...feedbackModules,
@@ -56,7 +57,7 @@ import { contactModules } from './modules/contacts';
     ...checkpointModules,
     ...fileAndDirectoryModules,
     ...registrationModules,
-    ...contactModules
+    ...contactModules,
   ],
   providers: [
     {

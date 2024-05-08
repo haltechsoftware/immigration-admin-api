@@ -31,6 +31,7 @@ export default class UpdateLawHandler
         'law/file/',
         dto.file.buffer,
         dto.file.originalName,
+        dto.file.mimeType,
       );
     }
 
