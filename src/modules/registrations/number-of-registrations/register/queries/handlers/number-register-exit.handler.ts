@@ -20,9 +20,9 @@ export class NumberRegisterExitHandler
         })
       )?.value ?? 0;
 
-    const perWeek =
+    const perMouth =
       (
-        await this.redis.ts.GET('register_exit_per_week', {
+        await this.redis.ts.GET('register_exit_per_mouth', {
           LATEST: true,
         })
       )?.value ?? 0;
@@ -36,7 +36,7 @@ export class NumberRegisterExitHandler
 
     return {
       per_day: perDay,
-      per_week: perWeek,
+      per_mouth: perMouth,
       per_year: perYear,
     };
   }

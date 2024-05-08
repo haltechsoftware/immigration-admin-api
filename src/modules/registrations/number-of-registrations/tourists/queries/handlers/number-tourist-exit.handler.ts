@@ -20,9 +20,9 @@ export class NumberTouristExitHandler
         })
       )?.value ?? 0;
 
-    const touristPerWeek =
+    const touristPerMouth =
       (
-        await this.redis.ts.GET('tourists_exit_per_week', {
+        await this.redis.ts.GET('tourists_exit_per_mouth', {
           LATEST: true,
         })
       )?.value ?? 0;
@@ -36,7 +36,7 @@ export class NumberTouristExitHandler
 
     return {
       per_day: touristPerDay,
-      per_week: touristPerWeek,
+      per_mouth: touristPerMouth,
       per_year: touristPerYear,
     };
   }

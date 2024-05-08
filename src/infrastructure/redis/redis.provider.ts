@@ -70,9 +70,9 @@ async function createTourists(conn: RedisClientType) {
     }
   }
 
-  const touristEnterPerWeek = await conn.exists('tourists_enter_per_week');
-  if (!touristEnterPerWeek) {
-    const created = await conn.ts.create('tourists_enter_per_week', {
+  const touristEnterPerMouth = await conn.exists('tourists_enter_per_mouth');
+  if (!touristEnterPerMouth) {
+    const created = await conn.ts.create('tourists_enter_per_mouth', {
       RETENTION: 0,
       ENCODING: TimeSeriesEncoding.UNCOMPRESSED,
       DUPLICATE_POLICY: TimeSeriesDuplicatePolicies.BLOCK,
@@ -81,15 +81,15 @@ async function createTourists(conn: RedisClientType) {
     if (created === 'OK') {
       const created = await conn.ts.createRule(
         'tourists_enter',
-        'tourists_enter_per_week',
+        'tourists_enter_per_mouth',
         TimeSeriesAggregationType.SUM,
-        7 * oneDayInMilliSeconds,
+        30 * oneDayInMilliSeconds,
       );
 
       if (created === 'OK') {
-        console.log('Created tourists_enter_per_week timeseries.');
+        console.log('Created tourists_enter_per_mouth timeseries.');
       } else {
-        console.log('Error creating tourists_enter_per_week timeseries :(');
+        console.log('Error creating tourists_enter_per_mouth timeseries :(');
         process.exit(1);
       }
     }
@@ -162,9 +162,9 @@ async function createTourists(conn: RedisClientType) {
     }
   }
 
-  const touristExitPerWeek = await conn.exists('tourists_exit_per_week');
-  if (!touristExitPerWeek) {
-    const created = await conn.ts.create('tourists_exit_per_week', {
+  const touristExitPerMouth = await conn.exists('tourists_exit_per_mouth');
+  if (!touristExitPerMouth) {
+    const created = await conn.ts.create('tourists_exit_per_mouth', {
       RETENTION: 0,
       ENCODING: TimeSeriesEncoding.UNCOMPRESSED,
       DUPLICATE_POLICY: TimeSeriesDuplicatePolicies.BLOCK,
@@ -173,15 +173,15 @@ async function createTourists(conn: RedisClientType) {
     if (created === 'OK') {
       const created = await conn.ts.createRule(
         'tourists_exit',
-        'tourists_exit_per_week',
+        'tourists_exit_per_mouth',
         TimeSeriesAggregationType.SUM,
-        7 * oneDayInMilliSeconds,
+        30 * oneDayInMilliSeconds,
       );
 
       if (created === 'OK') {
-        console.log('Created tourists_exit_per_week timeseries.');
+        console.log('Created tourists_exit_per_mouth timeseries.');
       } else {
-        console.log('Error creating tourists_exit_per_week timeseries :(');
+        console.log('Error creating tourists_exit_per_mouth timeseries :(');
         process.exit(1);
       }
     }
@@ -256,9 +256,9 @@ async function createRegister(conn: RedisClientType) {
     }
   }
 
-  const registerEnterPerWeek = await conn.exists('register_enter_per_week');
-  if (!registerEnterPerWeek) {
-    const created = await conn.ts.create('register_enter_per_week', {
+  const registerEnterPerMouth = await conn.exists('register_enter_per_mouth');
+  if (!registerEnterPerMouth) {
+    const created = await conn.ts.create('register_enter_per_mouth', {
       RETENTION: 0,
       ENCODING: TimeSeriesEncoding.UNCOMPRESSED,
       DUPLICATE_POLICY: TimeSeriesDuplicatePolicies.BLOCK,
@@ -267,15 +267,15 @@ async function createRegister(conn: RedisClientType) {
     if (created === 'OK') {
       const created = await conn.ts.createRule(
         'register_enter',
-        'register_enter_per_week',
+        'register_enter_per_mouth',
         TimeSeriesAggregationType.SUM,
-        7 * oneDayInMilliSeconds,
+        30 * oneDayInMilliSeconds,
       );
 
       if (created === 'OK') {
-        console.log('Created register_enter_per_week timeseries.');
+        console.log('Created register_enter_per_mouth timeseries.');
       } else {
-        console.log('Error creating register_enter_per_week timeseries :(');
+        console.log('Error creating register_enter_per_mouth timeseries :(');
         process.exit(1);
       }
     }
@@ -348,9 +348,9 @@ async function createRegister(conn: RedisClientType) {
     }
   }
 
-  const registerExitPerWeek = await conn.exists('register_exit_per_week');
-  if (!registerExitPerWeek) {
-    const created = await conn.ts.create('register_exit_per_week', {
+  const registerExitPerMouth = await conn.exists('register_exit_per_mouth');
+  if (!registerExitPerMouth) {
+    const created = await conn.ts.create('register_exit_per_mouth', {
       RETENTION: 0,
       ENCODING: TimeSeriesEncoding.UNCOMPRESSED,
       DUPLICATE_POLICY: TimeSeriesDuplicatePolicies.BLOCK,
@@ -359,15 +359,15 @@ async function createRegister(conn: RedisClientType) {
     if (created === 'OK') {
       const created = await conn.ts.createRule(
         'register_exit',
-        'register_exit_per_week',
+        'register_exit_per_mouth',
         TimeSeriesAggregationType.SUM,
-        7 * oneDayInMilliSeconds,
+        30 * oneDayInMilliSeconds,
       );
 
       if (created === 'OK') {
-        console.log('Created register_exit_per_week timeseries.');
+        console.log('Created register_exit_per_mouth timeseries.');
       } else {
-        console.log('Error creating register_exit_per_week timeseries :(');
+        console.log('Error creating register_exit_per_mouth timeseries :(');
         process.exit(1);
       }
     }
