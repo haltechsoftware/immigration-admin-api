@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Permissions } from 'src/common/decorators/permission.decorator';
@@ -10,6 +10,7 @@ import {
   PermissionName,
 } from 'src/common/enum/permission.enum';
 import { Output } from 'valibot';
+import ScanArrivalCodeCommand from './commands/impl/scan-arrival-code.command';
 import { UploadPassportImageCommand } from './commands/impl/upload-passport-image.command';
 import { UploadVisaImageCommand } from './commands/impl/upload-visa-image.command';
 import VerifyArrivalCodeCommand from './commands/impl/verify-arrival-code.command';
@@ -81,12 +82,24 @@ export class ArrivalRegistrationController {
   }
 
   @Permissions(PermissionGroup.Registration, PermissionName.Write)
-  @Post()
+  @HttpCode(200)
+  @Post('scan')
+  async scanQR(
+    @Valibot({ schema: VerifyArrivalCodeDto })
+    body: VerifyArrivalCodeDtoType,
+  ) {
+    return await this.commandBus.execute<ScanArrivalCodeCommand>(
+      new ScanArrivalCodeCommand(body),
+    );
+  }
+
+  @Permissions(PermissionGroup.Registration, PermissionName.Write)
+  @Put(':id')
   async verifyCode(
-    @Valibot({ schema: VerifyArrivalCodeDto }) body: VerifyArrivalCodeDtoType,
+    @Valibot({ schema: GetByIdDto, type: 'params' }) { id }: GetByIdDtoType,
   ): Promise<any> {
     const result = await this.commandBus.execute<VerifyArrivalCodeCommand>(
-      new VerifyArrivalCodeCommand(body),
+      new VerifyArrivalCodeCommand(id),
     );
 
     return { message: result };
