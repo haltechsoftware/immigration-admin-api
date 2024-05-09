@@ -1,10 +1,10 @@
 import { LanguageDto } from "src/common/dtos/language.dto";
-import { Output, merge, object, partial, string } from "valibot";
+import { Output, merge, object, optional, partial, string } from "valibot";
 
 const QueryProvinceDto = merge([
     partial(LanguageDto),
     object({
-        name: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
+        name: optional(string()),
     })
 ])
 

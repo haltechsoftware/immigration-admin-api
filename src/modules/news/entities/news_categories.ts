@@ -20,3 +20,6 @@ export const newsCategoriesRelations = relations(
     news: many(news),
   }),
 );
+
+export type NewsCategories = typeof newsCategories.$inferSelect;
+export type InsertNewsCategories = typeof newsCategories.$inferInsert;

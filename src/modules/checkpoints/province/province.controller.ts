@@ -25,6 +25,7 @@ import { QueryProvinceDto, QueryProvinceDtoType } from './dtos/query.province.dt
 import { GetAllProvinceCommand } from './queries/impl/get-all.province';
 import { GetOneProvinceCommand } from './queries/impl/get-one.province';
 import { QueryProvinceByIdDto, QueryProvinceByIdDtoType } from './dtos/query-province-by-id.dto';
+import { OffsetBasePaginateDto, OffsetBasePaginateDtoType } from 'src/common/dtos/offset-base-paginate.dto';
 
 @Controller('provinces')
 export class ProvinceController {
@@ -56,38 +57,16 @@ export class ProvinceController {
     return { message: result };
   }
 
-  // @Permissions(PermissionGroup.Banner, PermissionName.Write)
-  // @Put(':id/private')
-  // @UseInterceptors(MergeParamToBodyInterceptor)
-  // async private(
-  //   @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
-  // ) {
-  //   const result = await this._commandBus.execute<PrivateBannerCommand>(
-  //     new PrivateBannerCommand(params.id),
-  //   );
-  //   return { message: result };
-  // }
-
-  // @Permissions(PermissionGroup.Banner, PermissionName.Write)
-  // @Put(':id/public')
-  // @UseInterceptors(MergeParamToBodyInterceptor)
-  // async public(
-  //   @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
-  // ) {
-  //   const result = await this._commandBus.execute<PublicBannerCommand>(
-  //     new PublicBannerCommand(params.id),
-  //   );
-  //   return { message: result };
-  // }
-
   @Permissions(PermissionGroup.Provinces, PermissionName.Read)
   @Get()
   async get(
     @Valibot({ schema: QueryProvinceDto, type: 'query' })
     query: QueryProvinceDtoType,
+    @Valibot({ schema: OffsetBasePaginateDto, type: 'query' })
+    paginate: OffsetBasePaginateDtoType,
   ) {
     return await this._queryBus.execute<GetAllProvinceCommand>(
-      new GetAllProvinceCommand(query),
+      new GetAllProvinceCommand(query, paginate),
     );
   }
 

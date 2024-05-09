@@ -33,3 +33,5 @@ export const countryTranslateRelations = relations(
     }),
   }),
 );
+export type CountryTranslate = typeof countryTranslate.$inferSelect;
+export type InsertCountriesTranslate = typeof countryTranslate.$inferInsert;

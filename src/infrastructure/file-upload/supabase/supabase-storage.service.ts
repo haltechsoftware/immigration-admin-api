@@ -15,6 +15,7 @@ export class SupabaseStorageService implements IFileUpload {
     path: string,
     buffer: Buffer,
     fileName: string,
+    contentType?: string,
   ): Promise<string> {
     const [name] = fileName.split('.');
     const extension = extname(fileName);
@@ -25,7 +26,7 @@ export class SupabaseStorageService implements IFileUpload {
 
     const { data, error } = await this.supabase.storage
       .from('immigration')
-      .upload(filePath, buffer);
+      .upload(filePath, buffer, { contentType });
 
     if (error) console.log(error);
 

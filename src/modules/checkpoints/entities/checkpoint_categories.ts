@@ -20,3 +20,5 @@ export const checkpointCategoriesRelations = relations(
     checkpoints: many(checkpoints),
   }),
 );
+export type CheckpointCategory = typeof checkpointCategories.$inferSelect;
+export type InsertCheckpointCategory = typeof checkpointCategories.$inferInsert;

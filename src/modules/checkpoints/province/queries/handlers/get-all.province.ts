@@ -13,7 +13,7 @@ export class QueryGetAllProvinceHandler implements IQueryHandler<any> {
     .select({ value: count() })
     .from(provinces)
     .prepare();
-    async execute({query: {lang}}): Promise<any> {
+    async execute({query: {lang}, paginated: {limit, offset}}): Promise<any> {
         const res = await this._drizzle.db().query.provinces.findMany({
             with: {
               translates: {
@@ -22,6 +22,7 @@ export class QueryGetAllProvinceHandler implements IQueryHandler<any> {
                   : undefined,
               },
             },
+            limit, offset,
             orderBy: (fields, operators) => operators.asc(fields.created_at),
           });
       
@@ -29,7 +30,8 @@ export class QueryGetAllProvinceHandler implements IQueryHandler<any> {
       
           return {
             data: res,
-            count: total[0].value
+            count: total[0].value,
+            limit, offset
           };
     }
 }

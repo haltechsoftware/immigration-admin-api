@@ -1,8 +1,8 @@
-import { QueryAccommodationRequestByIdDtoType } from "src/modules/accommodation_requests/accommodation_request/dtos/query-accommodation-request-by-id.dto";
+import { QueryProvinceDtoType } from "../../dtos/query.province.dto";
 
 export class GetOneProvinceCommand {
     constructor(
         public readonly id: number,
-        public readonly query: QueryAccommodationRequestByIdDtoType,
+        public readonly query: QueryProvinceDtoType,
     ){}
 }

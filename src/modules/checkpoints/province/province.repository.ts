@@ -18,11 +18,9 @@ export class ProvinceRepository {
       const Provinces = await tx
         .insert(provinces)
         .values({})
-        .returning();
-
       await tx.insert(provinceTranslate).values(
         input.translates.map((val) => ({
-          province_id: Provinces[0].id,
+          province_id: Provinces[0].insertId,
           name: val.name,
           slug: val.slug,
           description: val.description,

@@ -11,8 +11,6 @@ export class RoleRepository {
     await this.drizzle.db().transaction(async (tx) => {
       const roleRes = await tx.insert(roles).values(role);
 
-      console.log(roleRes);
-
       if (perIds.length > 0) {
         await tx.insert(rolesToPermissions).values(
           perIds.map((id) => ({

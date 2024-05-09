@@ -13,7 +13,7 @@ export const newsCategoriesTranslate = mysqlTable('news_categories_translate', {
   }),
   lang: langCode.notNull(),
   slug: varchar('slug', { length: 255 }).notNull().unique(),
-  name: varchar('name', { length: 255 }).notNull(),
+  name: varchar('name', { length: 255 }).notNull().unique(),
 });
 
 export const newsCategoriesTranslateRelations = relations(
@@ -25,3 +25,8 @@ export const newsCategoriesTranslateRelations = relations(
     }),
   }),
 );
+
+export type NewsCategoriesTranslate =
+  typeof newsCategoriesTranslate.$inferSelect;
+export type InsertNewsCategoriesTranslate =
+  typeof newsCategoriesTranslate.$inferInsert;

@@ -1,15 +1,22 @@
 import { MemoryStoredFile } from 'nestjs-form-data';
 import {
   Output,
+  StringSchema,
   custom,
   maxLength,
   minLength,
   object,
+  omit,
   regex,
+  safeParse,
   special,
   string,
   transform,
 } from 'valibot';
+import {
+  HotelTranslateDto,
+  HotelTranslateDtoType,
+} from './hotel-translate.dto';
 
 const CreateHotelDto = object({
   image: special(
@@ -28,8 +35,6 @@ const CreateHotelDto = object({
     ],
   ),
 
-  map_link: string('ຈະຕ້ອງເປັນ string.', [minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ')]),
-
   phone_number: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
     minLength(6, 'ຄວາມຍາວຕໍ່າສຸດທີ່ຕ້ອງການແມ່ນ 6 ຕົວເລກ.'),
     maxLength(50, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 50 ຕົວເລກ.'),
@@ -42,26 +47,35 @@ const CreateHotelDto = object({
     (input) => Boolean(Number(input)),
   ),
 
-  lo_name: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(3, 'ຄວາມຍາວຕໍ່າສຸດທີ່ຕ້ອງການແມ່ນ 3 ຕົວອັກສອນ.'),
-    maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
-  ]),
+  lo: transform<StringSchema<string>, Omit<HotelTranslateDtoType, 'id'>>(
+    string(),
+    (input) => JSON.parse(input),
+    [
+      custom(
+        (input) => safeParse(omit(HotelTranslateDto, ['id']), input).success,
+      ),
+    ],
+  ),
 
-  en_name: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(3, 'ຄວາມຍາວຕໍ່າສຸດທີ່ຕ້ອງການແມ່ນ 3 ຕົວອັກສອນ.'),
-    maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
-  ]),
+  en: transform<StringSchema<string>, Omit<HotelTranslateDtoType, 'id'>>(
+    string(),
+    (input) => JSON.parse(input),
+    [
+      custom(
+        (input) => safeParse(omit(HotelTranslateDto, ['id']), input).success,
+      ),
+    ],
+  ),
 
-  zh_name: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(3, 'ຄວາມຍາວຕໍ່າສຸດທີ່ຕ້ອງການແມ່ນ 3 ຕົວອັກສອນ.'),
-    maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
-  ]),
-
-  lo_address: string('ຈະຕ້ອງເປັນ string.'),
-
-  en_address: string('ຈະຕ້ອງເປັນ string.'),
-
-  zh_address: string('ຈະຕ້ອງເປັນ string.'),
+  zh_cn: transform<StringSchema<string>, Omit<HotelTranslateDtoType, 'id'>>(
+    string(),
+    (input) => JSON.parse(input),
+    [
+      custom(
+        (input) => safeParse(omit(HotelTranslateDto, ['id']), input).success,
+      ),
+    ],
+  ),
 });
 
 type CreateHotelDtoType = Output<typeof CreateHotelDto>;

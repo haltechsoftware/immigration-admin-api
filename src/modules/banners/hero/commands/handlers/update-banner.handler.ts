@@ -17,8 +17,6 @@ export class UpdateBannerHandler
   ) {}
 
   async execute({ id, input }: UpdateBannerCommand): Promise<any> {
-    console.log(input);
-
     const banner = await this._repository.findOne(id);
 
     if (!banner)

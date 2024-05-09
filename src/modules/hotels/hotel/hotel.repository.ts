@@ -33,7 +33,6 @@ export class HotelRepository {
   async create(input: InsertHotelType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
       const hotel = await tx.insert(hotels).values({
-        link_map: input.link_map,
         image: input.image,
         link: input.link,
         phone_number: input.phone_number,
@@ -42,10 +41,8 @@ export class HotelRepository {
 
       await tx.insert(hotelTranslate).values(
         input.translates.map((val) => ({
+          ...val,
           hotel_id: hotel[0].insertId,
-          lang: val.lang,
-          name: val.name,
-          address: val.address,
         })),
       );
     });
@@ -69,7 +66,6 @@ export class HotelRepository {
       await tx
         .update(hotels)
         .set({
-          link_map: input.link_map,
           image: input.image,
           link: input.link,
           phone_number: input.phone_number,
@@ -83,7 +79,6 @@ export class HotelRepository {
           .update(hotelTranslate)
           .set({
             name: val.name,
-            address: val.address,
           })
           .where(eq(hotelTranslate.id, val.id));
       });

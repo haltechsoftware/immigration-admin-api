@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { count, eq } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { hotels, hotelTranslate } from 'src/modules/hotels/entities';
+import { hotels } from 'src/modules/hotels/entities';
 import { GetAllHotelQuery } from '../imp/get-all.query';
 
 @QueryHandler(GetAllHotelQuery)
@@ -19,7 +19,11 @@ export class GetAllHotelQueryHandler
     const res = await this._drizzle.db().query.hotels.findMany({
       with: {
         translates: {
-          where: eq(hotelTranslate.lang, 'lo'),
+          columns: {
+            id: true,
+            lang: true,
+            name: true,
+          },
         },
       },
       where: isPrivateCondition,
@@ -34,11 +38,7 @@ export class GetAllHotelQueryHandler
       .where(isPrivateCondition);
 
     return {
-      data: res.map((val) => ({
-        ...val,
-        name: val.translates[0].name,
-        translates: undefined,
-      })),
+      data: res,
       total: total[0].value,
     };
   }

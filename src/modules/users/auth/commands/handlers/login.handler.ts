@@ -47,6 +47,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
     const payload: IJwtPayload = {
       token_id: token_id,
       sub: String(user.id),
+      hotel_id: user.hotel_id,
       roles: user.roles.map((val) => val.name),
       permissions: permissionNames,
     };
