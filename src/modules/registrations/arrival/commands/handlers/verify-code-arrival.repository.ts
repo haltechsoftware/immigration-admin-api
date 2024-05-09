@@ -19,13 +19,12 @@ export class VerifyArrivalCodeHandler
   private prepared = this.drizzle
     .db()
     .query.arrivalRegistration.findFirst({
-      where: (fields, { eq }) =>
-        eq(fields.verification_code, sql.placeholder('verification_code')),
+      where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
     })
     .prepare();
 
-  async execute({ input: { verification_code } }: VerifyArrivalCodeCommand) {
-    const res = await this.prepared.execute({ verification_code });
+  async execute({ id }: VerifyArrivalCodeCommand) {
+    const res = await this.prepared.execute({ id });
 
     if (!res) throw new NotFoundException({ message: 'ລະຫັດບໍ່ມີໃນລະບົບ' });
 

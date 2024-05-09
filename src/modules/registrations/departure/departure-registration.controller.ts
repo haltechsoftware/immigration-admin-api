@@ -1,23 +1,24 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Permissions } from 'src/common/decorators/permission.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
 import {
+  PermissionGroup,
+  PermissionName,
+} from 'src/common/enum/permission.enum';
+import ScanDepartureCodeCommand from './commands/impl/scan-departure-code.command';
+import VerifyDepartureCodeCommand from './commands/impl/verify-departure-code.command';
+import {
   QueryDepartureDto,
   QueryDepartureDtoType,
 } from './dto/query-departure.dto';
-import DepartureRegisterQuery from './queries/impl/departure.query';
-import GetDepartureByIdQuery from './queries/impl/get-departure-by-id.query';
 import {
   VerifyDepartureCodeDto,
   VerifyDepartureCodeDtoType,
 } from './dto/verify-departure-code.dto';
-import VerifyDepartureCodeCommand from './commands/impl/verify-departure-code.command';
-import {
-  PermissionGroup,
-  PermissionName,
-} from 'src/common/enum/permission.enum';
+import DepartureRegisterQuery from './queries/impl/departure.query';
+import GetDepartureByIdQuery from './queries/impl/get-departure-by-id.query';
 
 @Controller('departure')
 export class DepartureRegistrationController {
@@ -48,15 +49,26 @@ export class DepartureRegistrationController {
   }
 
   @Permissions(PermissionGroup.Registration, PermissionName.Write)
-  @Post()
-  async verifyCode(
+  @HttpCode(200)
+  @Post('scan')
+  async scanQR(
     @Valibot({ schema: VerifyDepartureCodeDto })
     body: VerifyDepartureCodeDtoType,
+  ) {
+    return await this.commandBus.execute<ScanDepartureCodeCommand>(
+      new ScanDepartureCodeCommand(body),
+    );
+  }
+
+  @Permissions(PermissionGroup.Registration, PermissionName.Write)
+  @Put(':id')
+  async verifyCode(
+    @Valibot({ schema: GetByIdDto, type: 'params' }) { id }: GetByIdDtoType,
   ): Promise<any> {
-    const result = await this.commandBus.execute<VerifyDepartureCodeCommand>(
-      new VerifyDepartureCodeCommand(body),
+    const message = await this.commandBus.execute<VerifyDepartureCodeCommand>(
+      new VerifyDepartureCodeCommand(id),
     );
 
-    return { message: result };
+    return { message };
   }
 }
