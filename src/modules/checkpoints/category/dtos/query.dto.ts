@@ -1,12 +1,7 @@
-import { LanguageDto } from "src/common/dtos/language.dto";
-import { Output, merge, object, optional, partial, string } from "valibot";
+import { OffsetBasePaginateDto } from 'src/common/dtos/offset-base-paginate.dto';
+import { Output } from 'valibot';
 
-const QueryCheckpointCategoryDto = merge([
-    partial(LanguageDto),
-    object({
-        name: optional(string()),
-    })
-])
+const QueryCheckpointCategoryDto = OffsetBasePaginateDto;
 
 type QueryCheckpointCategoryDtoType = Output<typeof QueryCheckpointCategoryDto>;
 

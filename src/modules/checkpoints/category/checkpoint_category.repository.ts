@@ -1,23 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { InsertCheckpointCategory, InsertCheckpointCategoryTranslate,  checkpointCategories,  checkpointCategoryTranslate,  countries, countryTranslate } from '../entities';
+import {
+  InsertCheckpointCategory,
+  InsertCheckpointCategoryTranslate,
+  checkpointCategories,
+  checkpointCategoryTranslate,
+} from '../entities';
 
 export type InsertCheckpointType = InsertCheckpointCategory & {
   translates: InsertCheckpointCategoryTranslate[];
 };
 
-export type UpdateCheckpointType = InsertCheckpointType
+export type UpdateCheckpointType = InsertCheckpointType;
 
 @Injectable()
 export class CheckpointCategoryRepository {
-  constructor(private readonly _drizzle: DrizzleService) { }
+  constructor(private readonly _drizzle: DrizzleService) {}
 
   async create(input: InsertCheckpointType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
       const checkPointCategories = await tx
         .insert(checkpointCategories)
-        .values({})
+        .values({});
 
       await tx.insert(checkpointCategoryTranslate).values(
         input.translates.map((val) => ({
@@ -57,7 +62,6 @@ export class CheckpointCategoryRepository {
         await tx
           .update(checkpointCategoryTranslate)
           .set({
-            category_id: val.category_id,
             title: val.title,
             slug: val.slug,
             description: val.description,
@@ -68,6 +72,9 @@ export class CheckpointCategoryRepository {
   }
 
   async remove(id: number): Promise<any> {
-    await this._drizzle.db().delete(checkpointCategories).where(eq(checkpointCategories.id, id));
+    await this._drizzle
+      .db()
+      .delete(checkpointCategories)
+      .where(eq(checkpointCategories.id, id));
   }
 }

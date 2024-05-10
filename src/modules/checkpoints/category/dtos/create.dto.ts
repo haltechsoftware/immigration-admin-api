@@ -1,11 +1,13 @@
-import { Output, objectAsync, omitAsync, } from "valibot";
-import { CheckpointTranslateSchema } from "./checkpoint-category-translate.schema";
+import { Output, object, omit } from 'valibot';
+import { CheckpointTranslateDto } from './checkpoint-category-translate.dto';
 
-const CreateCheckpointCategoryDto = objectAsync({
-  lo: omitAsync(CheckpointTranslateSchema, ['id']),
-  en: omitAsync(CheckpointTranslateSchema, ['id']),
-  zh_cn: omitAsync(CheckpointTranslateSchema, ['id'])
-})
-type CreateCreateCheckpointCategoryDtoType = Output<typeof CreateCheckpointCategoryDto>;
+const CreateCheckpointCategoryDto = object({
+  lo: omit(CheckpointTranslateDto, ['id']),
+  en: omit(CheckpointTranslateDto, ['id']),
+  zh_cn: omit(CheckpointTranslateDto, ['id']),
+});
+type CreateCreateCheckpointCategoryDtoType = Output<
+  typeof CreateCheckpointCategoryDto
+>;
 
 export { CreateCheckpointCategoryDto, CreateCreateCheckpointCategoryDtoType };
