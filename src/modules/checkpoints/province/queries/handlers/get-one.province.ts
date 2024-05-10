@@ -1,28 +1,27 @@
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import { GetOneProvinceCommand } from "../impl/get-one.province";
-import { NotFoundException } from "@nestjs/common";
+import { NotFoundException } from '@nestjs/common';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { GetOneProvinceCommand } from '../impl/get-one.province';
 
 @QueryHandler(GetOneProvinceCommand)
-export class QueryGetOneProvinceHandler implements IQueryHandler<GetOneProvinceCommand> {
-    constructor(
-        private readonly _drizzle: DrizzleService
-    ) { }
-    async execute({ id, query: { lang } }: GetOneProvinceCommand): Promise<any> {
-        const res = await this._drizzle.db().query.provinces.findFirst({
-            where: (fields, { eq }) => eq(fields.id, id),
-            with: {
-                translates: {
-                    where: (fields, { eq }) => (lang ? eq(fields.lang, lang) : undefined),
-                },
-            },
-        });
+export class QueryGetOneProvinceHandler
+  implements IQueryHandler<GetOneProvinceCommand>
+{
+  constructor(private readonly _drizzle: DrizzleService) {}
+  async execute({ id }: GetOneProvinceCommand): Promise<any> {
+    const res = await this._drizzle.db().query.provinces.findFirst({
+      where: (fields, { eq }) => eq(fields.id, id),
+      with: {
+        translates: {
+          columns: {
+            province_id: false,
+          },
+        },
+      },
+    });
 
-        if (!res)
-            throw new NotFoundException({ message: 'ບໍ່ພົບຂໍ້ມູນແຂວງນີ້' });
+    if (!res) throw new NotFoundException({ message: 'ບໍ່ພົບຂໍ້ມູນແຂວງນີ້' });
 
-        return {
-            data: res
-        };
-    }
+    return res;
+  }
 }

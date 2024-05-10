@@ -1,10 +1,10 @@
-import { Output, objectAsync, omitAsync } from "valibot";
-import { ProvinceTranslateSchema } from "./province-translate.schema";
+import { Output, objectAsync, omitAsync } from 'valibot';
+import { ProvinceTranslateDto } from './province-translate.dto';
 
 const CreateProvinceDto = objectAsync({
-  lo: omitAsync(ProvinceTranslateSchema, ['id']),
-  en: omitAsync(ProvinceTranslateSchema, ['id']),
-  zh_cn: omitAsync(ProvinceTranslateSchema, ['id']),
+  lo: omitAsync(ProvinceTranslateDto, ['id']),
+  en: omitAsync(ProvinceTranslateDto, ['id']),
+  zh_cn: omitAsync(ProvinceTranslateDto, ['id']),
 });
 
 type CreateProvinceDtoType = Output<typeof CreateProvinceDto>;

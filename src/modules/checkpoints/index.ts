@@ -7,5 +7,5 @@ export const checkpointModules = [
   CheckpointCategoryModule,
   // CheckpointModule,
   CountryModule,
-  // ProvinceModule,
+  ProvinceModule,
 ];

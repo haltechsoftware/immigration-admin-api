@@ -1,10 +1,10 @@
-import { Output, objectAsync } from "valibot";
-import { ProvinceTranslateSchema } from "./province-translate.schema";
+import { Output, object } from 'valibot';
+import { ProvinceTranslateDto } from './province-translate.dto';
 
-const UpdateProvinceDto = objectAsync({
-    lo: ProvinceTranslateSchema,
-    en: ProvinceTranslateSchema,
-    zh_cn: ProvinceTranslateSchema,
+const UpdateProvinceDto = object({
+  lo: ProvinceTranslateDto,
+  en: ProvinceTranslateDto,
+  zh_cn: ProvinceTranslateDto,
 });
 
 type UpdateProvinceDtoType = Output<typeof UpdateProvinceDto>;
