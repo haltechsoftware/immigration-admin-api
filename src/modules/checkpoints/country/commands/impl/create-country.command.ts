@@ -1,7 +1,5 @@
-import { CreateCountryDtoType } from "../../dtos/create-country.dto";
+import { CreateCountryDtoType } from '../../dtos/create-country.dto';
 
 export class CreateCountryCommand {
-    constructor(
-        public readonly input: CreateCountryDtoType
-    ){}
+  constructor(public readonly input: CreateCountryDtoType) {}
 }

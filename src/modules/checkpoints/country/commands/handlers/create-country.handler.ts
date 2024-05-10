@@ -1,56 +1,65 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CreateCountryCommand } from "../impl/create-country.command";
-import { generateSlugs } from "src/modules/checkpoints/helpers/slug-name";
-import { CountryRepository } from "../../country.repository";
-import { Inject } from "@nestjs/common";
-import { FILE_UPLOAD_SERVICE } from "src/infrastructure/file-upload/inject-key";
-import { IFileUpload } from "src/infrastructure/file-upload/file-upload.interface";
-
+import { ConflictException, Inject } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import generateSlug from 'src/common/utils/generate-slug';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
+import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
+import { CountryRepository } from '../../country.repository';
+import { CreateCountryCommand } from '../impl/create-country.command';
 
 @CommandHandler(CreateCountryCommand)
-export class CreateCountryHandler implements ICommandHandler<CreateCountryCommand> {
-    constructor(
-        private readonly countryRepository: CountryRepository,
-        @Inject(FILE_UPLOAD_SERVICE) private readonly fileUpload: IFileUpload,
-    ) { }
-    async execute({ input }: CreateCountryCommand): Promise<any> {
-        const provinceIdsArray: number[] = JSON.parse(input.province_ids);
-        const slug = generateSlugs(input);
-        let image: string | undefined;
+export class CreateCountryHandler
+  implements ICommandHandler<CreateCountryCommand>
+{
+  constructor(
+    private readonly countryRepository: CountryRepository,
+    private readonly drizzle: DrizzleService,
+    @Inject(FILE_UPLOAD_SERVICE) private readonly fileUpload: IFileUpload,
+  ) {}
 
-        if (input.image) {
-            image = await this.fileUpload.upload(
-                'country/',
-                input.image.buffer,
-                input.image.originalName,
-            );
-        }
-        await this.countryRepository.create({
-            image: image,
-            is_except_visa: input.is_except_visa,
-            translates: [
-                {
-                    name: input.en_name,
-                    description: input.en_description,
-                    lang: 'en',
-                    slug: slug.en_name
-                },
-                {
-                    name: input.lo_name,
-                    description: input.lo_description,
-                    lang: 'lo',
-                    slug: slug.lo_name
-                },
-                {
-                    name: input.zh_cn_name,
-                    description: input.zh_cn_description,
-                    lang: 'zh_cn',
-                    slug: slug.zh_cn_name
-                },
-            ]
-        },
-            provinceIdsArray,
-        )
-        return { message: 'ເພີ່ມຂໍ້ມູນສຳເລັດ' }
+  async execute({ input }: CreateCountryCommand): Promise<any> {
+    const conflict = await this.drizzle.db().query.countryTranslate.findMany({
+      where: (f, o) =>
+        o.inArray(f.name, [input.lo.name, input.en.name, input.zh_cn.name]),
+    });
+
+    if (conflict.length > 0)
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
+    let image: string | undefined;
+
+    if (input.image) {
+      image = await this.fileUpload.upload(
+        'country/image/',
+        input.image.buffer,
+        input.image.originalName,
+      );
     }
+
+    await this.countryRepository.create({
+      image: image,
+      is_except_visa: input.is_except_visa,
+      translates: [
+        {
+          name: input.lo.name,
+          description: input.lo.description,
+          lang: 'lo',
+          slug: generateSlug(input.lo.name),
+        },
+        {
+          name: input.en.name,
+          description: input.en.description,
+          lang: 'en',
+          slug: generateSlug(input.en.name),
+        },
+        {
+          name: input.zh_cn.name,
+          description: input.zh_cn.description,
+          lang: 'zh_cn',
+          slug: generateSlug(input.zh_cn.name),
+        },
+      ],
+    });
+    return 'ເພີ່ມຂໍ້ມູນສຳເລັດ';
+  }
 }

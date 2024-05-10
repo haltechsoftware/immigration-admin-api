@@ -12,7 +12,7 @@ import { countryTranslate } from './country_translate';
 
 export const countries = mysqlTable('countries', {
   id: serial('id').primaryKey().notNull(),
-  image: text('image').notNull(),
+  image: text('image'),
   is_except_visa: boolean('is_except_visa').notNull(),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()

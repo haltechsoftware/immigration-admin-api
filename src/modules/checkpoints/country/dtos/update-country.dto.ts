@@ -1,15 +1,40 @@
-import { Output, mergeAsync, minLength, objectAsync, string, transform } from "valibot";
-import { CreateCountryDto } from "./create-country.dto";
+import {
+  Output,
+  StringSchema,
+  custom,
+  merge,
+  object,
+  omit,
+  safeParse,
+  string,
+  transform,
+} from 'valibot';
+import {
+  CountryTranslateDto,
+  CountryTranslateDtoType,
+} from './country-translate.dto';
+import { CreateCountryDto } from './create-country.dto';
 
-const UpdateCountryDto = mergeAsync([
-    CreateCountryDto,
-    objectAsync({
-        lo_id: transform(string([minLength(1, 'ບໍ່ຄວນວ່າງເປົ່າ')]), (input) => Number(input)),
-        en_id: transform(string([minLength(1, 'ບໍ່ຄວນວ່າງເປົ່າ')]), (input) => Number(input)),
-        zh_cn_id: transform(string([minLength(1, 'ບໍ່ຄວນວ່າງເປົ່າ')]), (input) => Number(input)),
-    })
-])
-
+const UpdateCountryDto = merge([
+  omit(CreateCountryDto, ['lo', 'en', 'zh_cn']),
+  object({
+    lo: transform<StringSchema<string>, CountryTranslateDtoType>(
+      string(),
+      (input) => JSON.parse(input),
+      [custom((input) => safeParse(CountryTranslateDto, input).success)],
+    ),
+    en: transform<StringSchema<string>, CountryTranslateDtoType>(
+      string(),
+      (input) => JSON.parse(input),
+      [custom((input) => safeParse(CountryTranslateDto, input).success)],
+    ),
+    zh_cn: transform<StringSchema<string>, CountryTranslateDtoType>(
+      string(),
+      (input) => JSON.parse(input),
+      [custom((input) => safeParse(CountryTranslateDto, input).success)],
+    ),
+  }),
+]);
 
 type UpdateCountryDtoType = Output<typeof UpdateCountryDto>;
 
