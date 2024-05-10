@@ -1,7 +1,6 @@
 import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Permissions } from 'src/common/decorators/permission.decorator';
-import { ValibotAsync } from 'src/common/decorators/valibot/valibot-async.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
 import {
@@ -34,7 +33,7 @@ export class ProvinceController {
   @Permissions(PermissionGroup.Provinces, PermissionName.Write)
   @Post()
   async create(
-    @ValibotAsync({ schema: CreateProvinceDto }) input: CreateProvinceDtoType,
+    @Valibot({ schema: CreateProvinceDto }) input: CreateProvinceDtoType,
   ) {
     const message = await this._commandBus.execute<CreateProvinceCommand>(
       new CreateProvinceCommand(input),

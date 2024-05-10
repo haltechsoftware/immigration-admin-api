@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import generateSlug from 'src/common/utils/generate-slug';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
@@ -23,7 +23,19 @@ export class CreateProvinceHandler
     if (conflict.length > 0)
       throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
 
+    if (input.country_ids.length > 0) {
+      const countries = await this.drizzle.db().query.countries.findMany({
+        where: (f, o) => o.inArray(f.id, input.country_ids),
+      });
+
+      if (countries.length !== input.country_ids.length)
+        throw new NotFoundException({
+          message: 'ຂໍ້ມູນບາງລາຍການບໍ່ມີໃນລະບົບ!',
+        });
+    }
+
     await this.provinceRepository.create({
+      countryIds: input.country_ids,
       translates: [
         {
           name: input.lo.name,

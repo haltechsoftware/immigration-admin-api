@@ -17,6 +17,42 @@ export class QueryGetOneProvinceHandler
             province_id: false,
           },
         },
+        countries: {
+          columns: {
+            country_id: false,
+            province_id: false,
+          },
+          with: {
+            country: {
+              columns: {
+                id: true,
+                image: true,
+              },
+              with: {
+                translates: {
+                  columns: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        checkpoints: {
+          columns: {
+            id: true,
+            image: true,
+          },
+          with: {
+            translates: {
+              columns: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
 

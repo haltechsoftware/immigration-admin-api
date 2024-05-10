@@ -4,12 +4,14 @@ import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
   InsertProvinces,
   InsertTranslateProvinces,
+  countriesToProvinces,
   provinceTranslate,
   provinces,
 } from '../entities';
 
 export type InsertProvinceType = InsertProvinces & {
   translates: InsertTranslateProvinces[];
+  countryIds: number[];
 };
 
 export type UpdateProvinceType = InsertProvinceType;
@@ -20,16 +22,24 @@ export class ProvinceRepository {
 
   async create(input: InsertProvinceType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
-      const Provinces = await tx.insert(provinces).values({});
+      const res = await tx.insert(provinces).values({});
 
       await tx.insert(provinceTranslate).values(
         input.translates.map((val) => ({
-          province_id: Provinces[0].insertId,
+          province_id: res[0].insertId,
           name: val.name,
           slug: val.slug,
           lang: val.lang,
         })),
       );
+
+      if (input.countryIds.length > 0)
+        await tx.insert(countriesToProvinces).values(
+          input.countryIds.map((val) => ({
+            country_id: val,
+            province_id: res[0].insertId,
+          })),
+        );
     });
   }
 
@@ -65,6 +75,19 @@ export class ProvinceRepository {
           })
           .where(eq(provinceTranslate.id, val.id));
       });
+
+      if (input.countryIds.length > 0) {
+        await tx
+          .delete(countriesToProvinces)
+          .where(eq(countriesToProvinces.province_id, input.id));
+
+        await tx.insert(countriesToProvinces).values(
+          input.countryIds.map((val) => ({
+            country_id: val,
+            province_id: input.id,
+          })),
+        );
+      }
     });
   }
 

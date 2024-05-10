@@ -37,8 +37,20 @@ export class UpdateProvinceHandler
     if (conflict.length > 0)
       throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
 
+    if (input.country_ids.length > 0) {
+      const countries = await this.drizzle.db().query.countries.findMany({
+        where: (f, o) => o.inArray(f.id, input.country_ids),
+      });
+
+      if (countries.length !== input.country_ids.length)
+        throw new NotFoundException({
+          message: 'ຂໍ້ມູນບາງລາຍການບໍ່ມີໃນລະບົບ!',
+        });
+    }
+
     await this.provinceRepository.update({
       id: province.id,
+      countryIds: input.country_ids,
       updated_at: format(new Date(), DateTimeFormat.Timestamp),
       translates: [
         {

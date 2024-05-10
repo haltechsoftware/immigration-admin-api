@@ -1,10 +1,11 @@
-import { Output, objectAsync, omitAsync } from 'valibot';
+import { Output, array, number, object, omit } from 'valibot';
 import { ProvinceTranslateDto } from './province-translate.dto';
 
-const CreateProvinceDto = objectAsync({
-  lo: omitAsync(ProvinceTranslateDto, ['id']),
-  en: omitAsync(ProvinceTranslateDto, ['id']),
-  zh_cn: omitAsync(ProvinceTranslateDto, ['id']),
+const CreateProvinceDto = object({
+  country_ids: array(number()),
+  lo: omit(ProvinceTranslateDto, ['id']),
+  en: omit(ProvinceTranslateDto, ['id']),
+  zh_cn: omit(ProvinceTranslateDto, ['id']),
 });
 
 type CreateProvinceDtoType = Output<typeof CreateProvinceDto>;
