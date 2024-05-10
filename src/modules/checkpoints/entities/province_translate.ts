@@ -33,3 +33,6 @@ export const provinceTranslateRelations = relations(
     }),
   }),
 );
+
+export type TranslateProvinces = typeof provinceTranslate.$inferSelect;
+export type InsertTranslateProvinces = typeof provinceTranslate.$inferInsert;

@@ -41,3 +41,6 @@ export const checkpointCategoryTranslateRelations = relations(
     }),
   }),
 );
+
+export type CheckpointCategoryTranslate = typeof checkpointCategoryTranslate.$inferSelect;
+export type InsertCheckpointCategoryTranslate = typeof checkpointCategoryTranslate.$inferInsert;

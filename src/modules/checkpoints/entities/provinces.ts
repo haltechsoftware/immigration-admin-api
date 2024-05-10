@@ -12,10 +12,13 @@ export const provinces = mysqlTable('provinces', {
   updated_at: timestamp('updated_at', { mode: 'string' })
     .defaultNow()
     .notNull(),
-});
+}); 
 
 export const provincesRelations = relations(provinces, ({ many }) => ({
   checkpoints: many(checkpoints),
   translates: many(provinceTranslate),
   countries: many(countriesToProvinces),
 }));
+
+export type Provinces = typeof provinces.$inferSelect;
+export type InsertProvinces = typeof provinces.$inferInsert;

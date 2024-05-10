@@ -27,3 +27,5 @@ export const countriesRelations = relations(countries, ({ many }) => ({
   translates: many(countryTranslate),
   provinces: many(countriesToProvinces),
 }));
+export type Countries = typeof countries.$inferSelect;
+export type InsertCountries = typeof countries.$inferInsert;
