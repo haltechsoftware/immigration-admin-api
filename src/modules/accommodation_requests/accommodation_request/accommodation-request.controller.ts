@@ -37,7 +37,7 @@ export class AccommodationRequestController {
   @Permissions(PermissionGroup.AccommodationRequest, PermissionName.Write)
   @Post()
   async created(
-    @Valibot({ schema: CreateAccommodationRequestDto })
+    @Valibot({ schema: CreateAccommodationRequestDto })  
     input: CreateAccommodationRequestDtoType,
   ) {
     const result =

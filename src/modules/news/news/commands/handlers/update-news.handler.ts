@@ -23,6 +23,13 @@ export class UpdateNewsCategoryHandler
     private readonly drizzle: DrizzleService,
   ) {}
   async execute({ id, input }: UpdateNewsCommand): Promise<any> {
+    if (
+      input.lo.title === input.en.title ||
+      input.zh_cn.title === input.en.title ||
+      input.zh_cn.title === input.lo.title
+    )
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
     const news = await this.newsRepository.findOne(id);
 
     if (!news) throw new NotFoundException({ message: 'ຂ່າວນີ້ບໍ່ມີ' });

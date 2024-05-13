@@ -33,3 +33,6 @@ export const checkpointTranslateRelations = relations(
     }),
   }),
 );
+
+export type CheckPointTranslate = typeof checkpointTranslate.$inferSelect;
+export type InsertCheckPointTranslate = typeof checkpointTranslate.$inferInsert;
