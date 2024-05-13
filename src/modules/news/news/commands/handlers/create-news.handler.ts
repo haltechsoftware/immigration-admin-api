@@ -1,8 +1,9 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import generateSlug from 'src/common/utils/generate-slug';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
 import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { NewsCategoryRepository } from 'src/modules/news/category/news-cateory.repository';
@@ -16,16 +17,32 @@ export class CreateNewsHandler implements ICommandHandler<CreateNewsCommand> {
     @Inject(FILE_UPLOAD_SERVICE)
     private readonly fileUpload: IFileUpload,
     private readonly newsRepository: NewsRepository,
+    private readonly drizzle: DrizzleService,
     private readonly newsCategoryRepository: NewsCategoryRepository,
   ) {}
 
   async execute({ input }: CreateNewsCommand): Promise<any> {
+    if (
+      input.lo.title === input.en.title ||
+      input.zh_cn.title === input.en.title ||
+      input.zh_cn.title === input.lo.title
+    )
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
     const newsCategory = await this.newsCategoryRepository.findOne(
       input.category_id,
     );
 
     if (!newsCategory)
       throw new NotFoundException({ message: 'ປະເພດຂ່າວບໍ່ມີ' });
+
+    const conflict = await this.drizzle.db().query.newsTranslate.findMany({
+      where: (f, o) =>
+        o.inArray(f.title, [input.lo.title, input.en.title, input.zh_cn.title]),
+    });
+
+    if (conflict.length > 0)
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
 
     const image = await this.fileUpload.upload(
       'news/image/',

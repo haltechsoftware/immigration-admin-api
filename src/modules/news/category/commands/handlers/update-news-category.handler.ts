@@ -17,6 +17,13 @@ export class UpdateNewsCategoryHandler
   ) {}
 
   async execute({ id, input }: UpdateNewsCategoryCommand): Promise<any> {
+    if (
+      input.lo.name === input.en.name ||
+      input.zh_cn.name === input.en.name ||
+      input.zh_cn.name === input.lo.name
+    )
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
     const newsCategory = await this._repository.findOne(id);
 
     if (!newsCategory) throw new NotFoundException({ message: 'ບໍ່ພົບຂໍ້ມູນ' });

@@ -24,6 +24,13 @@ export class UpdateCheckpointCategoryHandler
         message: 'ຂໍ້ມູນນີ້ບໍ່ມີໃນລະບົບ',
       });
 
+    if (
+      input.lo.title === input.en.title ||
+      input.zh_cn.title === input.en.title ||
+      input.zh_cn.title === input.lo.title
+    )
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
     const conflict = await this.drizzle
       .db()
       .query.checkpointCategoryTranslate.findMany({

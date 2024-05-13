@@ -17,6 +17,13 @@ export class UpdateProvinceHandler
   ) {}
 
   async execute({ input, id }: UpdateProvinceCommand): Promise<any> {
+    if (
+      input.lo.name === input.en.name ||
+      input.zh_cn.name === input.en.name ||
+      input.zh_cn.name === input.lo.name
+    )
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
     const province = await this.provinceRepository.findOne(id);
 
     if (!province)

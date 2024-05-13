@@ -15,6 +15,13 @@ export class CreateCheckpointCategoryHandler
   ) {}
 
   async execute({ input }: CreateCheckPointCategoryCommand): Promise<any> {
+    if (
+      input.lo.title === input.en.title ||
+      input.zh_cn.title === input.en.title ||
+      input.zh_cn.title === input.lo.title
+    )
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
     const conflict = await this.drizzle
       .db()
       .query.checkpointCategoryTranslate.findMany({

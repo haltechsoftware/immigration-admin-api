@@ -24,6 +24,13 @@ export class UpdateCountryHandler
     if (!country)
       throw new NotFoundException({ message: 'ປະເທດນີ້ບໍ່ມີໃນລະບົບ' });
 
+    if (
+      input.lo.name === input.en.name ||
+      input.zh_cn.name === input.en.name ||
+      input.zh_cn.name === input.lo.name
+    )
+      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
     const conflict = await this.drizzle.db().query.countryTranslate.findMany({
       where: (f, o) =>
         o.or(
