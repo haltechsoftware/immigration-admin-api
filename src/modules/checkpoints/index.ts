@@ -5,7 +5,7 @@ import { ProvinceModule } from './province/province.module';
 
 export const checkpointModules = [
   CheckpointCategoryModule,
-  // CheckpointModule,
+  CheckpointModule,
   CountryModule,
   ProvinceModule,
 ];

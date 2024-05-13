@@ -1,68 +1,52 @@
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import { count } from "drizzle-orm/sql";
-import { checkpoints, countries } from "src/modules/checkpoints/entities";
-import { GetAllCheckpointCommand } from "../impl/get-all";
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { and, count, eq } from 'drizzle-orm/sql';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { checkpoints } from 'src/modules/checkpoints/entities';
+import { GetAllCheckpointCommand } from '../impl/get-all';
 
 @QueryHandler(GetAllCheckpointCommand)
 export class QueryGetAllCheckpointHandler implements IQueryHandler<any> {
+  constructor(private readonly _drizzle: DrizzleService) {}
 
-  constructor(private readonly _drizzle: DrizzleService) { }
-  private _prepared = this._drizzle
-    .db()
-    .select({ value: count() })
-    .from(checkpoints)
-    .prepare();
-  async execute({ query: { lang }, paginated: { limit, offset } }: GetAllCheckpointCommand): Promise<any> {
+  async execute({
+    query: { category_id, limit, offset, province_id },
+  }: GetAllCheckpointCommand): Promise<any> {
+    const conditional = and(
+      category_id ? eq(checkpoints.category_id, category_id) : undefined,
+      province_id ? eq(checkpoints.province_id, province_id) : undefined,
+    );
+
     const res = await this._drizzle.db().query.checkpoints.findMany({
-      columns: { category_id: false, province_id: false, country_id: false },
+      columns: {
+        category_id: false,
+        province_id: false,
+        country_id: false,
+        link_map: false,
+        created_at: false,
+        updated_at: false,
+      },
       with: {
         translates: {
-          where: lang
-            ? (fields, operators) => operators.eq(fields.lang, lang)
-            : undefined,
+          columns: {
+            id: true,
+            name: true,
+          },
         },
-        category: {
-          with: {
-            translates: { where: lang ? (fields, operators) => operators.eq(fields.lang, lang) : undefined }
-          }
-        },
-        province: {
-          with: {
-            translates: { where: lang ? (fields, operators) => operators.eq(fields.lang, lang) : undefined }
-          }
-        },
-        country: {
-          with: {
-            provinces: {
-              columns: { country_id: false, province_id: false },
-              with: {
-                province: {
-                  with: {
-                    translates: {
-                      where: lang
-                        ? (fields, operators) => operators.eq(fields.lang, lang) : undefined,
-                    }
-                  }
-                }
-              }
-
-            },
-            translates: { where: lang ? (fields, operators) => operators.eq(fields.lang, lang) : undefined }
-          }
-        }, 
       },
-      offset, limit,
-      orderBy: (fields, operators) => operators.asc(fields.created_at),
+      offset,
+      limit,
+      where: conditional,
     });
 
-    const total = await this._prepared.execute();
+    const total = await this._drizzle
+      .db()
+      .select({ value: count() })
+      .from(checkpoints)
+      .where(conditional);
 
     return {
       data: res,
       count: total[0].value,
-      limit,
-      offset
     };
   }
 }

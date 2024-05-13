@@ -1,31 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { InsertCheckPointTranslate, InsertCheckPoints, checkpointCategories,  checkpointCategoryTranslate, checkpointTranslate, checkpoints} from '../entities';
+import {
+  InsertCheckPointTranslate,
+  InsertCheckPoints,
+  checkpointTranslate,
+  checkpoints,
+} from '../entities';
 
 export type InsertCheckpointType = InsertCheckPoints & {
   translates: InsertCheckPointTranslate[];
 };
 
-export type UpdateCheckpointType = InsertCheckpointType
+export type UpdateCheckpointType = InsertCheckpointType;
 
 @Injectable()
 export class CheckpointRepository {
-  constructor(private readonly _drizzle: DrizzleService) { }
+  constructor(private readonly _drizzle: DrizzleService) {}
 
   async create(input: InsertCheckpointType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
-      const checkPoint = await tx
-        .insert(checkpoints)
-        .values({
-          category_id: input.category_id,
-          country_id: input.country_id,
-          province_id: input.province_id,
-          image: input.image,
-          link_map: input.link_map,
-          phone_number: input.phone_number,
-          email: input.email,
-        })
+      const checkPoint = await tx.insert(checkpoints).values({
+        category_id: input.category_id,
+        province_id: input.province_id,
+        image: input.image,
+        link_map: input.link_map,
+        phone_number: input.phone_number,
+        email: input.email,
+      });
 
       await tx.insert(checkpointTranslate).values(
         input.translates.map((val) => ({
@@ -59,7 +61,6 @@ export class CheckpointRepository {
         .update(checkpoints)
         .set({
           category_id: input.category_id,
-          country_id: input.country_id,
           province_id: input.province_id,
           image: input.image,
           link_map: input.link_map,
