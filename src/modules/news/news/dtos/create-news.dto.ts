@@ -6,6 +6,7 @@ import {
   enum_,
   object,
   omit,
+  optional,
   safeParse,
   special,
   string,
@@ -19,7 +20,9 @@ enum NewsStatus {
   Private = 'private',
 }
 const CreateNewsDto = object({
-  category_id: transform(string('ຈະຕ້ອງເປັນ string'), (input) => Number(input)),
+  category_id: transform(optional(string('ຈະຕ້ອງເປັນ string')), (input) =>
+    input ? Number(input) : undefined,
+  ),
   thumbnail: special(
     (input) => input instanceof MemoryStoredFile,
     'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ',

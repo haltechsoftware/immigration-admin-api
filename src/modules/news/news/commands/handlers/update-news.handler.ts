@@ -34,12 +34,14 @@ export class UpdateNewsCategoryHandler
 
     if (!news) throw new NotFoundException({ message: 'ຂ່າວນີ້ບໍ່ມີ' });
 
-    const newsCategory = await this.newsCategoryRepository.findOne(
-      input.category_id,
-    );
+    if (input.category_id) {
+      const newsCategory = await this.newsCategoryRepository.findOne(
+        input.category_id,
+      );
 
-    if (!newsCategory)
-      throw new NotFoundException({ message: 'ປະເພດຂ່າວບໍ່ມີ' });
+      if (!newsCategory)
+        throw new NotFoundException({ message: 'ປະເພດຂ່າວບໍ່ມີ' });
+    }
 
     const conflict = await this.drizzle.db().query.newsTranslate.findMany({
       where: (f, o) =>
@@ -69,7 +71,7 @@ export class UpdateNewsCategoryHandler
 
     await this.newsRepository.update({
       id: news.id,
-      category_id: newsCategory.id,
+      category_id: input.category_id,
       thumbnail: imageUrl,
       status: input.status,
       public_at:
