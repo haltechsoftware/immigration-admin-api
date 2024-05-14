@@ -39,19 +39,34 @@ const UpdateNewsDto = merge([
 
     lo: transform<StringSchema<string>, NewsTranslateDtoType>(
       string(),
-      (input) => JSON.parse(input),
+      (input) => {
+        const res = safeParse(NewsTranslateDto, JSON.parse(input));
+        if (res.success) {
+          return res.output;
+        }
+      },
       [custom((input) => safeParse(NewsTranslateDto, input).success)],
     ),
 
     en: transform<StringSchema<string>, NewsTranslateDtoType>(
       string(),
-      (input) => JSON.parse(input),
+      (input) => {
+        const res = safeParse(NewsTranslateDto, JSON.parse(input));
+        if (res.success) {
+          return res.output;
+        }
+      },
       [custom((input) => safeParse(NewsTranslateDto, input).success)],
     ),
 
     zh_cn: transform<StringSchema<string>, NewsTranslateDtoType>(
       string(),
-      (input) => JSON.parse(input),
+      (input) => {
+        const res = safeParse(NewsTranslateDto, JSON.parse(input));
+        if (res.success) {
+          return res.output;
+        }
+      },
       [custom((input) => safeParse(NewsTranslateDto, input).success)],
     ),
   }),

@@ -14,17 +14,17 @@ export default async () => {
       {
         id: 1,
         email: 'dev@gmail.com',
-        password: hashSync('devPassword', 10),
+        password: hashSync('DevAdm1n@2024', 10),
       },
       {
         id: 2,
         email: 'admin@gmail.com',
-        password: hashSync('adminPassword', 10),
+        password: hashSync('AdmD3v!2024', 10),
       },
       {
         id: 3,
-        email: 'adminHotel@gmail.com',
-        password: hashSync('password', 10),
+        email: 'adminhotel@gmail.com',
+        password: hashSync('H0t3lAdm!n#24', 10),
       },
     ]);
 

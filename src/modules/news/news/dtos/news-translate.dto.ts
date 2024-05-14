@@ -1,6 +1,7 @@
 import getJsonStringSize from 'src/common/utils/get-json-string-size';
 import isValidJson from 'src/common/utils/is-valid-json';
 import {
+  any,
   custom,
   maxLength,
   minLength,
@@ -19,15 +20,20 @@ export const NewsTranslateDto = object({
   ]),
   description: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
   content: transform(
-    string('ຈະຕ້ອງເປັນ string.', [
-      minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
-      custom((input) => isValidJson(input), 'ຕ້ອງເປັນ string json'),
+    any([
       custom(
-        (input) => getJsonStringSize(input) < 5 * 1024 * 1024,
+        (input) => (typeof input === 'string' ? isValidJson(input) : true),
+        'ຕ້ອງເປັນ string json',
+      ),
+      custom(
+        (input) =>
+          typeof input === 'string'
+            ? getJsonStringSize(input) < 5 * 1024 * 1024
+            : true,
         'ຂະໜາດຂອງຂໍ້ມູນຕ້ອງບໍ່ເກີນ 5MB',
       ),
     ]),
-    (input) => JSON.parse(input),
+    (input) => (typeof input === 'string' ? JSON.parse(input) : input),
   ),
 });
 
