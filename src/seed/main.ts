@@ -16,8 +16,8 @@ const main = async () => {
   await permissionSeed();
   await roleSeed();
   await defaultUserSeed();
-  await provinceSeed();
-  await provinceTranslateSeed()
+  // await provinceSeed();
+  // await provinceTranslateSeed()
   console.log('Seed done');
 
   await client.end();

@@ -6,7 +6,6 @@ import {
   enum_,
   object,
   omit,
-  optional,
   safeParse,
   special,
   string,
@@ -20,8 +19,8 @@ enum NewsStatus {
   Private = 'private',
 }
 const CreateNewsDto = object({
-  category_id: transform(optional(string('ຈະຕ້ອງເປັນ string')), (input) =>
-    input ? Number(input) : undefined,
+  category_id: transform(string('ຈະຕ້ອງເປັນ string'), (input) =>
+    Number(input) <= 0 ? undefined : Number(input),
   ),
   thumbnail: special(
     (input) => input instanceof MemoryStoredFile,
@@ -45,7 +44,12 @@ const CreateNewsDto = object({
 
   lo: transform<StringSchema<string>, Omit<NewsTranslateDtoType, 'id'>>(
     string(),
-    (input) => JSON.parse(input),
+    (input) => {
+      const res = safeParse(omit(NewsTranslateDto, ['id']), JSON.parse(input));
+      if (res.success) {
+        return res.output;
+      }
+    },
     [
       custom(
         (input) => safeParse(omit(NewsTranslateDto, ['id']), input).success,
@@ -55,7 +59,13 @@ const CreateNewsDto = object({
 
   en: transform<StringSchema<string>, Omit<NewsTranslateDtoType, 'id'>>(
     string(),
-    (input) => JSON.parse(input),
+    (input) => {
+      const res = safeParse(omit(NewsTranslateDto, ['id']), JSON.parse(input));
+
+      if (res.success) {
+        return res.output;
+      }
+    },
     [
       custom(
         (input) => safeParse(omit(NewsTranslateDto, ['id']), input).success,
@@ -65,7 +75,12 @@ const CreateNewsDto = object({
 
   zh_cn: transform<StringSchema<string>, Omit<NewsTranslateDtoType, 'id'>>(
     string(),
-    (input) => JSON.parse(input),
+    (input) => {
+      const res = safeParse(omit(NewsTranslateDto, ['id']), JSON.parse(input));
+      if (res.success) {
+        return res.output;
+      }
+    },
     [
       custom(
         (input) => safeParse(omit(NewsTranslateDto, ['id']), input).success,
