@@ -30,7 +30,7 @@ import { GetOneProvinceCommand } from './queries/impl/get-one.province';
 export class ProvinceController {
   constructor(private _commandBus: CommandBus, private _queryBus: QueryBus) {}
 
-  @Permissions(PermissionGroup.Provinces, PermissionName.Write)
+  @Permissions(PermissionGroup.Checkpoint, PermissionName.Write)
   @Post()
   async create(
     @Valibot({ schema: CreateProvinceDto }) input: CreateProvinceDtoType,
@@ -42,7 +42,7 @@ export class ProvinceController {
     return { message };
   }
 
-  @Permissions(PermissionGroup.Provinces, PermissionName.Write)
+  @Permissions(PermissionGroup.Checkpoint, PermissionName.Write)
   @Put(':id')
   async update(
     @Valibot({ schema: UpdateProvinceDto }) input: UpdateProvinceDtoType,
@@ -54,7 +54,7 @@ export class ProvinceController {
     return { message };
   }
 
-  @Permissions(PermissionGroup.Provinces, PermissionName.Read)
+  @Permissions(PermissionGroup.Checkpoint, PermissionName.Read)
   @Get()
   async get(
     @Valibot({ schema: QueryProvinceDto, type: 'query' })
@@ -65,7 +65,7 @@ export class ProvinceController {
     );
   }
 
-  @Permissions(PermissionGroup.Provinces, PermissionName.Read)
+  @Permissions(PermissionGroup.Checkpoint, PermissionName.Read)
   @Get(':id')
   async findOne(
     @Valibot({ schema: GetByIdDto, type: 'params' })
@@ -76,7 +76,7 @@ export class ProvinceController {
     );
   }
 
-  @Permissions(PermissionGroup.Provinces, PermissionName.Remove)
+  @Permissions(PermissionGroup.Checkpoint, PermissionName.Remove)
   @Delete(':id')
   async remove(
     @Valibot({ schema: GetByIdDto, type: 'params' })
