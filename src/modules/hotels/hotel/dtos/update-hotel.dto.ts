@@ -1,9 +1,15 @@
 import { MemoryStoredFile } from 'nestjs-form-data';
 import {
+  CreateUserDto,
+  CreateUserDtoType,
+} from 'src/modules/users/users/dtos/create-user.dto';
+import {
+  OptionalSchema,
   Output,
   StringSchema,
   custom,
   merge,
+  number,
   object,
   omit,
   optional,
@@ -19,7 +25,7 @@ import {
 } from './hotel-translate.dto';
 
 const UpdateHotelDto = merge([
-  omit(CreateHotelDto, ['image', 'lo', 'en', 'zh_cn']),
+  omit(CreateHotelDto, ['image', 'lo', 'en', 'zh_cn', 'user']),
   object({
     image: optional(
       special(
@@ -55,6 +61,35 @@ const UpdateHotelDto = merge([
       (input) => JSON.parse(input),
       [custom((input) => safeParse(HotelTranslateDto, input).success)],
     ),
+
+    user: transform<
+      OptionalSchema<StringSchema<string>>,
+      Omit<
+        CreateUserDtoType,
+        'image' | 'role_ids' | 'first_name' | 'last_name' | 'password'
+      > & { id?: number; password?: string }
+    >(optional(string()), (input) => (input ? JSON.parse(input) : undefined), [
+      custom((input) =>
+        input
+          ? safeParse(
+              merge([
+                omit(CreateUserDto, [
+                  'image',
+                  'role_ids',
+                  'first_name',
+                  'last_name',
+                  'password',
+                ]),
+                object({
+                  id: optional(number()),
+                  password: optional(string()),
+                }),
+              ]),
+              input,
+            ).success
+          : true,
+      ),
+    ]),
   }),
 ]);
 

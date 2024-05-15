@@ -1,8 +1,9 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { hash } from 'bcrypt';
 import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
 import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { UserRepository } from '../../user.repository';
@@ -15,9 +16,24 @@ export default class UpdateUserHandler
   constructor(
     private readonly repository: UserRepository,
     @Inject(FILE_UPLOAD_SERVICE) private readonly fileUpload: IFileUpload,
+    private readonly drizzle: DrizzleService,
   ) {}
 
   async execute({ id, dto }: UpdateUserCommand): Promise<string> {
+    const conflict = await this.drizzle.db().query.users.findFirst({
+      where: (f, { eq, and, not }) =>
+        and(not(eq(f.id, id)), eq(f.email, dto.email)),
+    });
+
+    if (conflict) throw new ConflictException({ message: 'ອີເມວຊ້ຳກັນ!' });
+
+    const roles = await this.drizzle.db().query.roles.findMany({
+      where: ({ id }, { inArray }) => inArray(id, dto.role_ids),
+    });
+
+    if (roles.length !== dto.role_ids.length)
+      throw new ConflictException({ message: 'ບົດບາດບາງລາຍການບໍ່ມີໃນລະບົບ' });
+
     const user = await this.repository.getById(id);
 
     if (!user)

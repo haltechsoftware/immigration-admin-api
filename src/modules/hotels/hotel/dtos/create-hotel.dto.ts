@@ -1,5 +1,10 @@
 import { MemoryStoredFile } from 'nestjs-form-data';
 import {
+  CreateUserDto,
+  CreateUserDtoType,
+} from 'src/modules/users/users/dtos/create-user.dto';
+import {
+  OptionalSchema,
   Output,
   StringSchema,
   custom,
@@ -7,6 +12,7 @@ import {
   minLength,
   object,
   omit,
+  optional,
   regex,
   safeParse,
   special,
@@ -76,6 +82,25 @@ const CreateHotelDto = object({
       ),
     ],
   ),
+
+  user: transform<
+    OptionalSchema<StringSchema<string>>,
+    Omit<CreateUserDtoType, 'image' | 'role_ids' | 'first_name' | 'last_name'>
+  >(optional(string()), (input) => (input ? JSON.parse(input) : undefined), [
+    custom((input) =>
+      input
+        ? safeParse(
+            omit(CreateUserDto, [
+              'image',
+              'role_ids',
+              'first_name',
+              'last_name',
+            ]),
+            input,
+          ).success
+        : true,
+    ),
+  ]),
 });
 
 type CreateHotelDtoType = Output<typeof CreateHotelDto>;

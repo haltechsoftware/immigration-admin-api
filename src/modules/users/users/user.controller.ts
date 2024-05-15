@@ -1,21 +1,12 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  Post,
-  Put,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FormDataRequest } from 'nestjs-form-data';
-import { ValibotAsync } from 'src/common/decorators/valibot/valibot-async.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
 import {
   OffsetBasePaginateDto,
   OffsetBasePaginateDtoType,
 } from 'src/common/dtos/offset-base-paginate.dto';
-import { MergeDrizzleToReqInterceptor } from 'src/common/interceptor/merge-drizzle-to-req/merge-drizzle-to-req.interceptor';
 import CreateUserCommand from './commands/impl/create-user.command';
 import DeleteUserCommand from './commands/impl/delete-user.command';
 import UpdateUserCommand from './commands/impl/update-user.command';
@@ -39,12 +30,9 @@ export class UserController {
     return await this.queryBus.execute<GetUserQuery>(new GetUserQuery(query));
   }
 
-  @UseInterceptors(MergeDrizzleToReqInterceptor)
   @FormDataRequest()
   @Post()
-  async create(
-    @ValibotAsync({ schema: CreateUserDto }) body: CreateUserDtoType,
-  ) {
+  async create(@Valibot({ schema: CreateUserDto }) body: CreateUserDtoType) {
     const res = await this.commandBus.execute<CreateUserCommand>(
       new CreateUserCommand(body),
     );
@@ -62,12 +50,11 @@ export class UserController {
     );
   }
 
-  @UseInterceptors(MergeDrizzleToReqInterceptor)
   @FormDataRequest()
   @Put(':id')
   async update(
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
-    @ValibotAsync({ schema: UpdateUserDto }) body: UpdateUserDtoType,
+    @Valibot({ schema: UpdateUserDto }) body: UpdateUserDtoType,
   ) {
     const res = await this.commandBus.execute<UpdateUserCommand>(
       new UpdateUserCommand(params.id, body),
