@@ -1,22 +1,18 @@
 import { MemoryStoredFile } from 'nestjs-form-data';
-import { RequestContext } from 'nestjs-request-context';
-import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
   Output,
   custom,
-  customAsync,
   email,
   maxLength,
   minLength,
-  objectAsync,
+  object,
   optional,
   special,
   string,
-  stringAsync,
-  transformAsync,
+  transform,
 } from 'valibot';
 
-const CreateUserDto = objectAsync({
+const CreateUserDto = object({
   first_name: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
     minLength(3, 'ຄວາມຍາວຕໍ່າສຸດທີ່ຕ້ອງການແມ່ນ 3 ຕົວອັກສອນ.'),
     maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
@@ -38,38 +34,15 @@ const CreateUserDto = objectAsync({
       ),
     ]),
   ),
-  email: stringAsync('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
+  email: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
     email('ຕ້ອງເປັນຮູບແບບອີເມວທີ່ຖືກຕ້ອງ.'),
-    customAsync(async (input: string) => {
-      const drizzle: DrizzleService = RequestContext.currentContext.req.drizzle;
-
-      const res = await drizzle.db().query.users.findFirst({
-        where: ({ email }, { eq }) => eq(email, input),
-      });
-
-      return res ? false : true;
-    }, 'ອີເມວນີ້ມີໃນລະບົບແລ້ວ'),
   ]),
   password: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
     minLength(8, 'ຄວາມຍາວຕໍ່າສຸດທີ່ຕ້ອງການແມ່ນ 8 ຕົວອັກສອນ.'),
   ]),
-  role_ids: transformAsync(
-    stringAsync([
-      customAsync(async (input) => {
-        const drizzle: DrizzleService =
-          RequestContext.currentContext.req.drizzle;
-
-        if (!input) return true;
-
-        const ids = input.split(',').map((val) => Number(val));
-
-        const res = await drizzle.db().query.roles.findMany({
-          where: ({ id }, { inArray }) => inArray(id, ids),
-        });
-
-        return res.length === ids.length;
-      }, 'ບົດບາດບາງລາຍການບໍ່ມີໃນລະບົບ'),
-      customAsync(async (input) => {
+  role_ids: transform(
+    string([
+      custom((input) => {
         if (!input) return true;
 
         return /^\d+(,\d+)*$/.test(input);

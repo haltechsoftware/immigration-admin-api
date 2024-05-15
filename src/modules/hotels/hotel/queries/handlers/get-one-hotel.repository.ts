@@ -15,6 +15,7 @@ export class GetOneHotelQueryHandler
       where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
       with: {
         translates: true,
+        user: true,
       },
     })
     .prepare();

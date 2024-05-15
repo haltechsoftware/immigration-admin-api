@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { InsertUser, users } from 'src/modules/users/entities';
 import {
   InsertHotels,
   InsertHotelsTranslate,
@@ -30,7 +31,7 @@ export type UpdatePublic = Omit<
 export class HotelRepository {
   constructor(private readonly _drizzle: DrizzleService) {}
 
-  async create(input: InsertHotelType): Promise<void> {
+  async create(input: InsertHotelType, user?: InsertUser): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
       const hotel = await tx.insert(hotels).values({
         image: input.image,
@@ -45,6 +46,13 @@ export class HotelRepository {
           hotel_id: hotel[0].insertId,
         })),
       );
+
+      if (user)
+        await tx.insert(users).values({
+          email: user.email,
+          password: user.password,
+          hotel_id: hotel[0].insertId,
+        });
     });
   }
 
@@ -61,7 +69,7 @@ export class HotelRepository {
     return await this.prepared.execute({ id });
   }
 
-  async update(input: UpdateHotelType): Promise<void> {
+  async update(input: UpdateHotelType, user?: InsertUser): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
       await tx
         .update(hotels)
@@ -82,6 +90,14 @@ export class HotelRepository {
           })
           .where(eq(hotelTranslate.id, val.id));
       });
+
+      if (user) {
+        if (user.id) {
+          await tx.update(users).set(user).where(eq(users.id, user.id));
+        } else {
+          await tx.insert(users).values({ hotel_id: input.id, ...user });
+        }
+      }
     });
   }
 
