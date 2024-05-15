@@ -12,7 +12,6 @@ export class QueryGetOneCheckpointHandler
   async execute({ id }: GetOneCheckpointCommand): Promise<any> {
     const res = await this._drizzle.db().query.checkpoints.findFirst({
       where: (fields, { eq }) => eq(fields.id, id),
-      columns: { category_id: false, province_id: false, country_id: false },
       with: {
         translates: {
           columns: {
