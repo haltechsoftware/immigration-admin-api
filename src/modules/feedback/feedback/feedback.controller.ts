@@ -1,6 +1,8 @@
-import { Controller, Delete, Get, Put } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { FormDataRequest } from 'nestjs-form-data';
 import { Permissions } from 'src/common/decorators/permission.decorator';
+import { Public } from 'src/common/decorators/public.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
 import {
@@ -9,6 +11,7 @@ import {
 } from '../../../common/enum/permission.enum';
 import DeleteFeedbackCommand from './command/impl/delete-feedback.command';
 import UpdateStatusCommand from './command/impl/update-status.command';
+import { UploadFeedbackMediaCommand } from './command/impl/upload-feedback-media.command';
 import {
   QueryFeedbackDto,
   QueryFeedbackDtoType,
@@ -17,6 +20,10 @@ import {
   UpdatePublishedDto,
   UpdatePublishedDtoType,
 } from './dto/update-status.dto';
+import {
+  UploadFeedbackMediaDto,
+  UploadFeedbackMediaDtoType,
+} from './dto/upload-feedback-media.dto';
 import GetFeedbackByIdQuery from './queries/impl/get-feedback-by-id.query';
 import GetFeedbackQuery from './queries/impl/get-feedback.query';
 
@@ -26,6 +33,21 @@ export class FeedbackController {
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
   ) {}
+
+  @Public()
+  @Post('upload-media')
+  @FormDataRequest()
+  async uploadMedia(
+    @Valibot({ schema: UploadFeedbackMediaDto })
+    dto: UploadFeedbackMediaDtoType,
+  ): Promise<{ url: string }> {
+    const url = await this.commandBus.execute<
+      UploadFeedbackMediaCommand,
+      string
+    >(new UploadFeedbackMediaCommand(dto));
+
+    return { url };
+  }
 
   @Permissions(PermissionGroup.Feedback, PermissionName.Read)
   @Get()
