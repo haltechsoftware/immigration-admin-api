@@ -30,8 +30,6 @@ export class GetCategoryOffsetBasePaginateQueryHandler
     return {
       data: res,
       total: total[0].value,
-      limit,
-      offset,
     };
   }
 }
