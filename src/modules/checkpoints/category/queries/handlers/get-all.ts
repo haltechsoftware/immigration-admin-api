@@ -36,7 +36,7 @@ export class QueryGetAllCheckpointCategoryHandler
 
     return {
       data: res,
-      count: total[0].value,
+      total: total[0].value,
     };
   }
 }

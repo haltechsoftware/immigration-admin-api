@@ -46,7 +46,7 @@ export class QueryGetAllCheckpointHandler implements IQueryHandler<any> {
 
     return {
       data: res,
-      count: total[0].value,
+      total: total[0].value,
     };
   }
 }
