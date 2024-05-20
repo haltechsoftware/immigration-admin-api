@@ -21,6 +21,7 @@ export class DepartureRepository {
       .update(departureRegistration)
       .set({
         verified_at,
+        verification_code: null,
         updated_at: format(new Date(), DateTimeFormat.Timestamp),
       })
       .where(eq(departureRegistration.id, id));
