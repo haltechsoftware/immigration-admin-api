@@ -20,6 +20,9 @@ import {
 const CreateCheckpointDto = object({
   category_id: transform(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ'), (input) => Number(input)),
   province_id: transform(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ'), (input) => Number(input)),
+  country_id: transform(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ'), (input) =>
+    input === '0' ? null : Number(input),
+  ),
   image: special(
     (input) => input instanceof MemoryStoredFile,
     'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ',
