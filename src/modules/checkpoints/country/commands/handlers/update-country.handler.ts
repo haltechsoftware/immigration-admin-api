@@ -49,9 +49,12 @@ export class UpdateCountryHandler
     let image: string | undefined;
 
     if (input.image) {
-      await this.fileUpload.remove(country.image);
+      if (country.image) {
+        await this.fileUpload.remove(country.image);
+      }
+
       image = await this.fileUpload.upload(
-        'country/image',
+        'country/image/',
         input.image.buffer,
         input.image.originalName,
       );

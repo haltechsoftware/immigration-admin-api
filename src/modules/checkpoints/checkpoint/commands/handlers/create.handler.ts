@@ -43,6 +43,7 @@ export class CreateCheckpointHandler
     await this.checkPointRepository.create({
       category_id: input.category_id,
       province_id: input.province_id,
+      country_id: input.country_id,
       image,
       link_map: input.link_map,
       phone_number: input.phone_number,

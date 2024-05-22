@@ -9,6 +9,7 @@ import {
 } from 'drizzle-orm/mysql-core';
 import { checkpointCategories } from './checkpoint_categories';
 import { checkpointTranslate } from './checkpoint_translate';
+import { countries } from './countries';
 import { provinces } from './provinces';
 
 export const checkpoints = mysqlTable('checkpoints', {
@@ -23,6 +24,13 @@ export const checkpoints = mysqlTable('checkpoints', {
     mode: 'number',
     unsigned: true,
   }).references(() => provinces.id, {
+    onDelete: 'set null',
+    onUpdate: 'no action',
+  }),
+  country_id: bigint('country_id', {
+    mode: 'number',
+    unsigned: true,
+  }).references(() => countries.id, {
     onDelete: 'set null',
     onUpdate: 'no action',
   }),
@@ -46,6 +54,10 @@ export const checkpointRelations = relations(checkpoints, ({ one, many }) => ({
   province: one(provinces, {
     fields: [checkpoints.province_id],
     references: [provinces.id],
+  }),
+  country: one(countries, {
+    fields: [checkpoints.country_id],
+    references: [countries.id],
   }),
   translates: many(checkpointTranslate),
 }));

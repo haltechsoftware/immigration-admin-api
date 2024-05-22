@@ -6,6 +6,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/mysql-core';
+import { checkpoints } from './checkpoints';
 import { countriesToProvinces } from './countries_to_provinces';
 import { countryTranslate } from './country_translate';
 
@@ -24,6 +25,8 @@ export const countries = mysqlTable('countries', {
 export const countriesRelations = relations(countries, ({ many }) => ({
   translates: many(countryTranslate),
   provinces: many(countriesToProvinces),
+  checkpoints: many(checkpoints),
 }));
+
 export type Countries = typeof countries.$inferSelect;
 export type InsertCountries = typeof countries.$inferInsert;

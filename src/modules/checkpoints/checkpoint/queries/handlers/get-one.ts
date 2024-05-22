@@ -40,22 +40,18 @@ export class QueryGetOneCheckpointHandler
                 lang: true,
               },
             },
-            countries: {
-              with: {
-                country: {
-                  columns: {
-                    id: true,
-                    image: true,
-                  },
-                  with: {
-                    translates: {
-                      columns: {
-                        id: true,
-                        name: true,
-                      },
-                    },
-                  },
-                },
+          },
+        },
+        country: {
+          columns: {
+            id: true,
+          },
+          with: {
+            translates: {
+              columns: {
+                id: true,
+                name: true,
+                lang: true,
               },
             },
           },

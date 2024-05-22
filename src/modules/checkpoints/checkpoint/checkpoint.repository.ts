@@ -23,6 +23,7 @@ export class CheckpointRepository {
       const checkPoint = await tx.insert(checkpoints).values({
         category_id: input.category_id,
         province_id: input.province_id,
+        country_id: input.country_id,
         image: input.image,
         link_map: input.link_map,
         phone_number: input.phone_number,
@@ -62,6 +63,7 @@ export class CheckpointRepository {
         .set({
           category_id: input.category_id,
           province_id: input.province_id,
+          country_id: input.country_id,
           image: input.image,
           link_map: input.link_map,
           phone_number: input.phone_number,
