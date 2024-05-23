@@ -33,7 +33,6 @@ export class ArrivalRegistrationRepository {
       .update(arrivalRegistration)
       .set({
         verified_at,
-        verification_code: null,
         updated_at: format(new Date(), DateTimeFormat.Timestamp),
       })
       .where(eq(arrivalRegistration.id, id))
