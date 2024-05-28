@@ -9,7 +9,7 @@ import { db } from '../main';
 export default async () => {
   const total = await db.select({ value: count() }).from(permissions);
 
-  if (total[0].value < 34) {
+  if (total[0].value < 37) {
     await db.insert(permissions).values([
       {
         id: 1,
@@ -226,6 +226,25 @@ export default async () => {
         name: `${PermissionGroup.Country}:${PermissionName.Remove}`,
         group_name: PermissionGroup.Country,
         description: 'ສາມາດລຶບຂໍ້ມູນປະເທດໄດ້',
+      },
+
+      {
+        id: 35,
+        name: `${PermissionGroup.LostPassport}:${PermissionName.Read}`,
+        group_name: PermissionGroup.LostPassport,
+        description: 'ສາມາດເບິ່ງຂໍ້ມູນການເຮັດປຶ້ມຜ່ານແດນເສຍ',
+      },
+      {
+        id: 36,
+        name: `${PermissionGroup.LostPassport}:${PermissionName.Write}`,
+        group_name: PermissionGroup.LostPassport,
+        description: 'ສາມາດເພີ່ມ ຫຼື ແກ້ໄຂຂໍ້ມູນການເຮັດປຶ້ມຜ່ານແດນເສຍ',
+      },
+      {
+        id: 37,
+        name: `${PermissionGroup.LostPassport}:${PermissionName.Remove}`,
+        group_name: PermissionGroup.LostPassport,
+        description: 'ສາມາດລຶບຂໍ້ມູນການເຮັດປຶ້ມຜ່ານແດນເສຍ',
       },
     ]);
   }

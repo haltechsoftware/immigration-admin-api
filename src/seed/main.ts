@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/mysql2';
 import mysql from 'mysql2/promise';
-import provinceTranslateSeed from './provinces/province-translate-seed';
+import permissionSeed from './user/permission.seed';
 
 const client = mysql.createPool(process.env.DB_URL);
 
@@ -9,11 +9,11 @@ export const db = drizzle(client);
 
 const main = async () => {
   console.log('Seed start');
-  // await permissionSeed();
+  await permissionSeed();
   // await roleSeed();
   // await defaultUserSeed();
   // await provinceSeed();
-  await provinceTranslateSeed();
+  // await provinceTranslateSeed();
   console.log('Seed done');
 
   await client.end();

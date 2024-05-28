@@ -11,6 +11,7 @@ import { AuthGuard } from './common/guards/auth.guard';
 import { PermissionsGuard } from './common/guards/permission.guard';
 import IEnv from './common/interface/env.interface';
 import { DrizzleModule } from './infrastructure/drizzle/drizzle.module';
+// import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-file-upload.module';
 import { SupabaseStorageModule } from './infrastructure/file-upload/supabase/supabase-storage.module';
 import { RedisModule } from './infrastructure/redis/redis.module';
 import { accommodationRequestModules } from './modules/accommodation_requests';
@@ -21,11 +22,11 @@ import { feedbackModules } from './modules/feedback';
 import { fileAndDirectoryModules } from './modules/files_and_directories';
 import { HotelModules } from './modules/hotels';
 import { lawModules } from './modules/laws';
+import { LostPassportModule } from './modules/lost_passport/lost_passport.module';
 import { NewsModules } from './modules/news';
 import { registrationModules } from './modules/registrations';
 import { UserModules } from './modules/users';
 import { visaModules } from './modules/visa';
-import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-file-upload.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-fil
     ...fileAndDirectoryModules,
     ...registrationModules,
     ...contactModules,
+    LostPassportModule,
   ],
   providers: [
     {

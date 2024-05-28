@@ -11,6 +11,7 @@ import * as feedbackSchema from 'src/modules/feedback/entities';
 import * as fileAndDirectorySchema from 'src/modules/files_and_directories/entities';
 import * as hotelSchema from 'src/modules/hotels/entities';
 import * as lawsSchema from 'src/modules/laws/entities';
+import * as lostPassportSchema from 'src/modules/lost_passport/entities';
 import * as newsSchema from 'src/modules/news/entities';
 import * as registrationSchema from 'src/modules/registrations/entities';
 import * as userSchema from 'src/modules/users/entities';
@@ -35,6 +36,7 @@ export class DrizzleService {
     ...fileAndDirectorySchema,
     ...registrationSchema,
     contacts,
+    ...lostPassportSchema,
   };
 
   db() {
