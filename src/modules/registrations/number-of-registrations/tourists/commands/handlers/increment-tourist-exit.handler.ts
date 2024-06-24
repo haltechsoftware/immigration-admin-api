@@ -1,21 +1,21 @@
-import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { RedisClientType } from 'redis';
-import { REDIS_PROVIDER } from 'src/infrastructure/redis/inject-key';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { timeSeries } from 'src/modules/registrations/entities';
 import { IncrementTouristExitCommand } from '../impl/increment-tourist-exit.command';
 
 @CommandHandler(IncrementTouristExitCommand)
 export class IncrementTouristExitHandler
   implements ICommandHandler<IncrementTouristExitCommand>
 {
-  constructor(
-    @Inject(REDIS_PROVIDER) private readonly redis: RedisClientType,
-  ) {}
+  constructor(private readonly drizzle: DrizzleService) {}
 
   async execute({
     input: { number },
   }: IncrementTouristExitCommand): Promise<any> {
-    await this.redis.ts.add('tourists_exit', new Date(), number);
+    await this.drizzle
+      .db()
+      .insert(timeSeries)
+      .values({ number: number, type: 'tourists-exit' });
 
     return 'ເພີ່ມຈຳນວນການລົງທະບຽນອອກເມື່ອງຂອງນັກທ່ອງທ່ຽວສຳເລັດ';
   }

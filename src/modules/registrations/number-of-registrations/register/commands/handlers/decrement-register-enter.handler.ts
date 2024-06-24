@@ -1,21 +1,21 @@
-import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { RedisClientType } from 'redis';
-import { REDIS_PROVIDER } from 'src/infrastructure/redis/inject-key';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import { timeSeries } from 'src/modules/registrations/entities';
 import { DecrementRegisterEnterCommand } from '../impl/decrement-register-enter.command';
 
 @CommandHandler(DecrementRegisterEnterCommand)
 export class DecrementRegisterEnterHandler
   implements ICommandHandler<DecrementRegisterEnterCommand>
 {
-  constructor(
-    @Inject(REDIS_PROVIDER) private readonly redis: RedisClientType,
-  ) {}
+  constructor(private readonly drizzle: DrizzleService) {}
 
   async execute({
     input: { number },
   }: DecrementRegisterEnterCommand): Promise<any> {
-    await this.redis.ts.add('register_enter', new Date(), -number);
+    await this.drizzle
+      .db()
+      .insert(timeSeries)
+      .values({ number: -number, type: 'register-enter' });
 
     return 'ລົບຈຳນວນການລົງທະບຽນເຂົ້າເມືອງສຳເລັດ';
   }
