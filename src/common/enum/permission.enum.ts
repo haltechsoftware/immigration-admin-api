@@ -10,8 +10,6 @@ export enum PermissionGroup {
   Registration = 'registration',
   Banner = 'banner',
   Feedback = 'feedback',
-  AccommodationRequest = 'accommodation-request',
-  LostPassport = 'lost-passport',
   Hotel = 'hotel',
   News = 'news',
   Visa = 'visa',
@@ -21,4 +19,5 @@ export enum PermissionGroup {
   FileAndDirectory = 'file-and-directory',
   Provinces = 'provinces',
   Country = 'country',
+  Service = 'service',
 }

@@ -5,8 +5,7 @@ export const CheckpointTranslateDto = object({
   name: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.')]),
   content: string('ຈະຕ້ອງເປັນ string'),
   address: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
-    minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
-    maxLength(255, 'ບໍ່ສາມາດປ້ອນເບີຫຼາຍກວ່າ 20 ຫຼັກ.'),
+    maxLength(1000, 'ບໍ່ສາມາດປ້ອນເບີຫຼາຍກວ່າ 1000 ຫຼັກ.'),
   ]),
 });
 

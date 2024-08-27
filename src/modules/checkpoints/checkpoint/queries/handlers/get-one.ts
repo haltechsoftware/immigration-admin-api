@@ -42,20 +42,6 @@ export class QueryGetOneCheckpointHandler
             },
           },
         },
-        country: {
-          columns: {
-            id: true,
-          },
-          with: {
-            translates: {
-              columns: {
-                id: true,
-                name: true,
-                lang: true,
-              },
-            },
-          },
-        },
       },
     });
 

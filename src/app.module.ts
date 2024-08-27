@@ -11,8 +11,7 @@ import { AuthGuard } from './common/guards/auth.guard';
 import { PermissionsGuard } from './common/guards/permission.guard';
 import IEnv from './common/interface/env.interface';
 import { DrizzleModule } from './infrastructure/drizzle/drizzle.module';
-import { SupabaseStorageModule } from './infrastructure/file-upload/supabase/supabase-storage.module';
-import { accommodationRequestModules } from './modules/accommodation_requests';
+import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-file-upload.module';
 import { BannerModules } from './modules/banners';
 import { checkpointModules } from './modules/checkpoints';
 import { contactModules } from './modules/contacts';
@@ -20,9 +19,9 @@ import { feedbackModules } from './modules/feedback';
 import { fileAndDirectoryModules } from './modules/files_and_directories';
 import { HotelModules } from './modules/hotels';
 import { lawModules } from './modules/laws';
-import { LostPassportModule } from './modules/lost_passport/lost_passport.module';
 import { NewsModules } from './modules/news';
 import { registrationModules } from './modules/registrations';
+import { serviceModules } from './modules/services';
 import { UserModules } from './modules/users';
 import { visaModules } from './modules/visa';
 
@@ -39,8 +38,8 @@ import { visaModules } from './modules/visa';
     }),
     NestjsFormDataModule.config({ isGlobal: true }),
     RequestContextModule,
-    // NodeFileUploadModule,
-    SupabaseStorageModule,
+    NodeFileUploadModule,
+    // SupabaseStorageModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),
@@ -50,14 +49,13 @@ import { visaModules } from './modules/visa';
     ...feedbackModules,
     ...HotelModules,
     ...NewsModules,
-    ...accommodationRequestModules,
     ...visaModules,
     ...lawModules,
     ...checkpointModules,
     ...fileAndDirectoryModules,
     ...registrationModules,
     ...contactModules,
-    LostPassportModule,
+    ...serviceModules,
   ],
   providers: [
     {

@@ -20,9 +20,7 @@ import {
 const CreateCheckpointDto = object({
   category_id: transform(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ'), (input) => Number(input)),
   province_id: transform(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ'), (input) => Number(input)),
-  country_id: transform(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ'), (input) =>
-    input === '0' ? null : Number(input),
-  ),
+  country: string(),
   image: special(
     (input) => input instanceof MemoryStoredFile,
     'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ',
@@ -45,6 +43,8 @@ const CreateCheckpointDto = object({
     maxLength(20, 'ບໍ່ສາມາດປ້ອນເບີຫຼາຍກວ່າ 20 ຫຼັກ.'),
   ]),
   email: string(),
+  visa: transform(string(), (input) => (input === 'true' ? true : false)),
+  e_visa: transform(string(), (input) => (input === 'true' ? true : false)),
 
   lo: transform<StringSchema<string>, Omit<CheckpointTranslateDtoType, 'id'>>(
     string(),

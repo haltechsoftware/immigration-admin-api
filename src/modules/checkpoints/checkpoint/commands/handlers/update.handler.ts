@@ -63,12 +63,14 @@ export class UpdateCheckpointHandler
       id: checkpoint.id,
       category_id: input.category_id,
       province_id: input.province_id,
-      country_id: input.country_id,
+      country: input.country as any,
       image,
       link_map: input.link_map,
       phone_number: input.phone_number,
       email: input.email,
       updated_at: format(new Date(), DateTimeFormat.Timestamp),
+      visa: input.visa,
+      e_visa: input.e_visa,
       translates: [
         {
           id: input.lo.id,

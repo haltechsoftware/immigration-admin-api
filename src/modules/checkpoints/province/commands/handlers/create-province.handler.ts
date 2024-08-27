@@ -1,7 +1,6 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import generateSlug from 'src/common/utils/generate-slug';
-import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { ProvinceRepository } from '../../province.repository';
 import { CreateProvinceCommand } from '../impl/create-province.command';
 
@@ -9,10 +8,7 @@ import { CreateProvinceCommand } from '../impl/create-province.command';
 export class CreateProvinceHandler
   implements ICommandHandler<CreateProvinceCommand>
 {
-  constructor(
-    private readonly provinceRepository: ProvinceRepository,
-    private readonly drizzle: DrizzleService,
-  ) {}
+  constructor(private readonly provinceRepository: ProvinceRepository) {}
 
   async execute({ input }: CreateProvinceCommand): Promise<any> {
     if (
@@ -22,27 +18,8 @@ export class CreateProvinceHandler
     )
       throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
 
-    const conflict = await this.drizzle.db().query.provinceTranslate.findMany({
-      where: (f, o) =>
-        o.inArray(f.name, [input.lo.name, input.en.name, input.zh_cn.name]),
-    });
-
-    if (conflict.length > 0)
-      throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
-
-    if (input.country_ids.length > 0) {
-      const countries = await this.drizzle.db().query.countries.findMany({
-        where: (f, o) => o.inArray(f.id, input.country_ids),
-      });
-
-      if (countries.length !== input.country_ids.length)
-        throw new NotFoundException({
-          message: 'ຂໍ້ມູນບາງລາຍການບໍ່ມີໃນລະບົບ!',
-        });
-    }
-
     await this.provinceRepository.create({
-      countryIds: input.country_ids,
+      countries: input.countries,
       translates: [
         {
           name: input.lo.name,
