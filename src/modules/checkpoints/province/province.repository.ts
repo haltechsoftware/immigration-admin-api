@@ -4,14 +4,14 @@ import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
   InsertProvinces,
   InsertTranslateProvinces,
-  countriesToProvinces,
   provinceTranslate,
   provinces,
 } from '../entities';
+import { provinceCountry } from '../entities/province_country';
 
 export type InsertProvinceType = InsertProvinces & {
   translates: InsertTranslateProvinces[];
-  countryIds: number[];
+  countries: string[];
 };
 
 export type UpdateProvinceType = InsertProvinceType;
@@ -24,6 +24,14 @@ export class ProvinceRepository {
     await this._drizzle.db().transaction(async (tx) => {
       const res = await tx.insert(provinces).values({});
 
+      if (input.countries.length > 0)
+        await tx.insert(provinceCountry).values(
+          input.countries.map((_) => ({
+            country: _ as any,
+            provinceId: res[0].insertId,
+          })),
+        );
+
       await tx.insert(provinceTranslate).values(
         input.translates.map((val) => ({
           province_id: res[0].insertId,
@@ -32,14 +40,6 @@ export class ProvinceRepository {
           lang: val.lang,
         })),
       );
-
-      if (input.countryIds.length > 0)
-        await tx.insert(countriesToProvinces).values(
-          input.countryIds.map((val) => ({
-            country_id: val,
-            province_id: res[0].insertId,
-          })),
-        );
     });
   }
 
@@ -65,6 +65,19 @@ export class ProvinceRepository {
         })
         .where(eq(provinces.id, input.id));
 
+      if (input.countries.length > 0) {
+        await tx
+          .delete(provinceCountry)
+          .where(eq(provinceCountry.provinceId, input.id));
+
+        await tx.insert(provinceCountry).values(
+          input.countries.map((_) => ({
+            country: _ as any,
+            provinceId: input.id,
+          })),
+        );
+      }
+
       input.translates.forEach(async (val) => {
         await tx
           .update(provinceTranslate)
@@ -75,19 +88,6 @@ export class ProvinceRepository {
           })
           .where(eq(provinceTranslate.id, val.id));
       });
-
-      if (input.countryIds.length > 0) {
-        await tx
-          .delete(countriesToProvinces)
-          .where(eq(countriesToProvinces.province_id, input.id));
-
-        await tx.insert(countriesToProvinces).values(
-          input.countryIds.map((val) => ({
-            country_id: val,
-            province_id: input.id,
-          })),
-        );
-      }
     });
   }
 

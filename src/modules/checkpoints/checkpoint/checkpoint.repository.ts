@@ -23,11 +23,13 @@ export class CheckpointRepository {
       const checkPoint = await tx.insert(checkpoints).values({
         category_id: input.category_id,
         province_id: input.province_id,
-        country_id: input.country_id,
+        country: input.country,
         image: input.image,
         link_map: input.link_map,
         phone_number: input.phone_number,
         email: input.email,
+        visa: input.visa,
+        e_visa: input.e_visa,
       });
 
       await tx.insert(checkpointTranslate).values(
@@ -63,12 +65,14 @@ export class CheckpointRepository {
         .set({
           category_id: input.category_id,
           province_id: input.province_id,
-          country_id: input.country_id,
+          country: input.country,
           image: input.image,
           link_map: input.link_map,
           phone_number: input.phone_number,
           email: input.email,
           updated_at: input.updated_at,
+          visa: input.visa,
+          e_visa: input.e_visa,
         })
         .where(eq(checkpoints.id, input.id));
 

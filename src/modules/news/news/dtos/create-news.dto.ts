@@ -20,7 +20,7 @@ enum NewsStatus {
 }
 const CreateNewsDto = object({
   category_id: transform(string('ຈະຕ້ອງເປັນ string'), (input) =>
-    Number(input) <= 0 ? undefined : Number(input),
+    Number(input) <= 0 || input === 'null' ? undefined : Number(input),
   ),
   thumbnail: special(
     (input) => input instanceof MemoryStoredFile,

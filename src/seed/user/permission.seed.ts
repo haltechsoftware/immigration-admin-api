@@ -9,7 +9,7 @@ import { db } from '../main';
 export default async () => {
   const total = await db.select({ value: count() }).from(permissions);
 
-  if (total[0].value < 37) {
+  if (total[0].value < 34) {
     await db.insert(permissions).values([
       {
         id: 1,
@@ -80,25 +80,6 @@ export default async () => {
         name: `${PermissionGroup.Feedback}:${PermissionName.Remove}`,
         group_name: PermissionGroup.Feedback,
         description: 'ສາມາດລຶບຄຳຕິຊົມໄດ້',
-      },
-
-      {
-        id: 12,
-        name: `${PermissionGroup.AccommodationRequest}:${PermissionName.Read}`,
-        group_name: PermissionGroup.AccommodationRequest,
-        description: 'ສາມາດເບິ່ງຂໍ້ມູນການຮ້ອງຂໍທີ່ພັກໄດ້',
-      },
-      {
-        id: 13,
-        name: `${PermissionGroup.AccommodationRequest}:${PermissionName.Write}`,
-        group_name: PermissionGroup.AccommodationRequest,
-        description: 'ສາມາດເພີ່ມ ຫຼື ແກ້ໄຂຂໍ້ມູນການຮ້ອງຂໍທີ່ພັກໄດ້',
-      },
-      {
-        id: 14,
-        name: `${PermissionGroup.AccommodationRequest}:${PermissionName.Remove}`,
-        group_name: PermissionGroup.AccommodationRequest,
-        description: 'ສາມາດລຶບຂໍ້ມູນການຮ້ອງຂໍທີ່ພັກໄດ້',
       },
 
       {
@@ -229,22 +210,22 @@ export default async () => {
       },
 
       {
-        id: 35,
-        name: `${PermissionGroup.LostPassport}:${PermissionName.Read}`,
-        group_name: PermissionGroup.LostPassport,
-        description: 'ສາມາດເບິ່ງຂໍ້ມູນການເຮັດປຶ້ມຜ່ານແດນເສຍ',
+        id: 38,
+        name: `${PermissionGroup.Service}:${PermissionName.Read}`,
+        group_name: PermissionGroup.Service,
+        description: 'ສາມາດເບິ່ງຂໍ້ມູນການບໍລິການ',
       },
       {
-        id: 36,
-        name: `${PermissionGroup.LostPassport}:${PermissionName.Write}`,
-        group_name: PermissionGroup.LostPassport,
-        description: 'ສາມາດເພີ່ມ ຫຼື ແກ້ໄຂຂໍ້ມູນການເຮັດປຶ້ມຜ່ານແດນເສຍ',
+        id: 39,
+        name: `${PermissionGroup.Service}:${PermissionName.Write}`,
+        group_name: PermissionGroup.Service,
+        description: 'ສາມາດເພີ່ມ ຫຼື ແກ້ໄຂຂໍ້ມູນການບໍລິການ',
       },
       {
-        id: 37,
-        name: `${PermissionGroup.LostPassport}:${PermissionName.Remove}`,
-        group_name: PermissionGroup.LostPassport,
-        description: 'ສາມາດລຶບຂໍ້ມູນການເຮັດປຶ້ມຜ່ານແດນເສຍ',
+        id: 40,
+        name: `${PermissionGroup.Service}:${PermissionName.Remove}`,
+        group_name: PermissionGroup.Service,
+        description: 'ສາມາດລຶບຂໍ້ມູນການບໍລິການ',
       },
     ]);
   }
