@@ -7,6 +7,7 @@ import {
   minLength,
   object,
   omit,
+  optional,
   safeParse,
   special,
   string,
@@ -20,7 +21,7 @@ import {
 const CreateCheckpointDto = object({
   category_id: transform(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ'), (input) => Number(input)),
   province_id: transform(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ'), (input) => Number(input)),
-  country: string(),
+  country: optional(string()),
   image: special(
     (input) => input instanceof MemoryStoredFile,
     'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ',
