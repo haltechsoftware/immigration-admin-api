@@ -227,6 +227,12 @@ export default async () => {
         group_name: PermissionGroup.Service,
         description: 'ສາມາດລຶບຂໍ້ມູນການບໍລິການ',
       },
+      {
+        id: 41,
+        name: `${PermissionGroup.Blacklist}:${PermissionName.Read}`,
+        group_name: PermissionGroup.Blacklist,
+        description: 'ສາມາດເບິ່ງຂໍ້ມູນໃນບັນຊີດຳ',
+      },
     ]);
   }
 };
