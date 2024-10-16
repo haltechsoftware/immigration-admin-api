@@ -24,6 +24,7 @@ import { registrationModules } from './modules/registrations';
 import { serviceModules } from './modules/services';
 import { UserModules } from './modules/users';
 import { visaModules } from './modules/visa';
+import { NodeFileUploadModule } from './infrastructure/file-upload/node/node-file-upload.module';
 
 @Module({
   imports: [
@@ -38,8 +39,8 @@ import { visaModules } from './modules/visa';
     }),
     NestjsFormDataModule.config({ isGlobal: true }),
     RequestContextModule,
-    // NodeFileUploadModule,
-    SupabaseStorageModule,
+    NodeFileUploadModule,
+    // SupabaseStorageModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),

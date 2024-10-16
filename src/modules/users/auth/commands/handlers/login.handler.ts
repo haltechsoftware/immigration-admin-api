@@ -1,7 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
-import { compareSync } from 'bcrypt';
+import { compareSync } from 'bcryptjs';
 import * as crypto from 'node:crypto';
 import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
 import { LoginDtoType } from '../../dtos/login.dto';

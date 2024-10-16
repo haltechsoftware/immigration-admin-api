@@ -1,11 +1,11 @@
 import { ConflictException, Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { hash } from 'bcrypt';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
 import { FILE_UPLOAD_SERVICE } from '../../../../../infrastructure/file-upload/inject-key';
 import { HotelRepository } from '../../hotel.repository';
 import CreateHotelCommand from '../imp/create-hotel.command';
+import { hash } from 'bcryptjs';
 
 @CommandHandler(CreateHotelCommand)
 export default class CreateHotelHandler

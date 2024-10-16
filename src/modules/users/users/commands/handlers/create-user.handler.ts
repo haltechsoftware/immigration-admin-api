@@ -1,6 +1,6 @@
 import { ConflictException, Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
 import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
