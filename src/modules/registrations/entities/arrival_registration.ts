@@ -1,7 +1,6 @@
 import { relations } from 'drizzle-orm';
 import {
   bigint,
-  boolean,
   char,
   foreignKey,
   mysqlEnum,
@@ -56,7 +55,7 @@ export const arrivalRegistration = mysqlTable(
     purpose: purpose.notNull(),
     traveling_by_type: travelingByType.notNull(),
     traveling_by_no: varchar('traveling_by_no', { length: 255 }).notNull(),
-    is_traveling_in_tour: boolean('is_traveling_in_tour').notNull(),
+    is_traveling_in_tour: varchar('is_traveling_in_tour', { length: 255 }),
     verification_code: char('verification_code', { length: 10 }).unique(),
     verified_at: timestamp('verified_at', { mode: 'string' }),
     black_list: blackListStatus.notNull(),

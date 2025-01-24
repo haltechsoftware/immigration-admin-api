@@ -21,11 +21,11 @@ export default async () => {
         email: 'admin@gmail.com',
         password: hashSync('AdmD3v!2024', 10),
       },
-      {
-        id: 3,
-        email: 'adminhotel@gmail.com',
-        password: hashSync('H0t3lAdm!n#24', 10),
-      },
+      // {
+      //   id: 3,
+      //   email: 'adminhotel@gmail.com',
+      //   password: hashSync('H0t3lAdm!n#24', 10),
+      // },
     ]);
 
     const res = await db

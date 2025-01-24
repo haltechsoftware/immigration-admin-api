@@ -12,12 +12,12 @@ export default async () => {
     await db.insert(roles).values([
       { id: 1, name: 'dev', description: 'ນັກພັດທະນາ', is_default: true },
       { id: 2, name: 'admin', description: 'ຜູ້ດູແລລະບົບ', is_default: true },
-      {
-        id: 3,
-        name: 'admin-hotel',
-        description: 'ຜູ້ດູແລໂຮງແຮມ',
-        is_default: true,
-      },
+      // {
+      //   id: 3,
+      //   name: 'admin-hotel',
+      //   description: 'ຜູ້ດູແລໂຮງແຮມ',
+      //   is_default: true,
+      // },
     ]);
   }
 };

@@ -11,7 +11,8 @@ import { arrivalRegistration } from './arrival_registration';
 
 export const visaInformation = mysqlTable('visa_information', {
   id: serial('id').primaryKey().notNull(),
-  number: varchar('number', { length: 255 }).notNull().unique(),
+  visaCategory: varchar('visa_category', { length: 255 }).notNull(),
+  number: varchar('number', { length: 255 }).notNull(),
   date_issue: date('date_issue', { mode: 'string' }).notNull(),
   place_issue: varchar('place_issue', { length: 255 }).notNull(),
   image: text('image').notNull(),

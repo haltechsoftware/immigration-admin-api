@@ -12,11 +12,12 @@ import { departureRegistration } from './departure_registration';
 
 export const passportInformation = mysqlTable('passport_information', {
   id: serial('id').primaryKey().notNull(),
-  number: varchar('number', { length: 255 }).notNull().unique(),
+  number: varchar('number', { length: 255 }).notNull(),
   expiry_date: date('expiry_date', { mode: 'string' }).notNull(),
   date_issue: date('date_issue', { mode: 'string' }).notNull(),
   place_issue: varchar('place_issue', { length: 255 }).notNull(),
   image: text('image').notNull(),
+  people_image: text('people_image').notNull(),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
     .notNull(),

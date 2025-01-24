@@ -4,6 +4,7 @@
 /build
 /drizzle
 /client 
+/deploy
 
 # Logs
 logs
