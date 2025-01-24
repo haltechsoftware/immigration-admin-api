@@ -1,7 +1,8 @@
-import { hashSync } from 'bcrypt';
+
 import { inArray, sql } from 'drizzle-orm';
 import { profiles, users, usersToRoles } from 'src/modules/users/entities';
 import { db } from '../main';
+import { hashSync } from 'bcryptjs';
 
 export default async () => {
   const existUser = await db

@@ -31,7 +31,7 @@
     "@nestjs/platform-express": "^10.3.7",
     "@nestjs/serve-static": "^4.0.2",
     "@supabase/supabase-js": "^2.42.3",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "date-fns": "^3.6.0",
     "drizzle-orm": "^0.30.8",
     "mysql2": "^3.9.7",

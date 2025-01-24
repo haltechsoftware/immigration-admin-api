@@ -1,6 +1,6 @@
 import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';

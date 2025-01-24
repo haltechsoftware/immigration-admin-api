@@ -227,24 +227,11 @@ export default async () => {
         group_name: PermissionGroup.Service,
         description: 'ສາມາດລຶບຂໍ້ມູນການບໍລິການ',
       },
-
       {
         id: 41,
-        name: `${PermissionGroup.BlackList}:${PermissionName.Read}`,
-        group_name: PermissionGroup.BlackList,
-        description: 'ສາມາດເບິ່ງຂໍ້ມູນ blacklist',
-      },
-      {
-        id: 42,
-        name: `${PermissionGroup.BlackList}:${PermissionName.Write}`,
-        group_name: PermissionGroup.BlackList,
-        description: 'ສາມາດເພີ່ມ ຫຼື ແກ້ໄຂຂໍ້ມູນ blacklist',
-      },
-      {
-        id: 43,
-        name: `${PermissionGroup.BlackList}:${PermissionName.Remove}`,
-        group_name: PermissionGroup.BlackList,
-        description: 'ສາມາດລຶບຂໍ້ມູນ blacklist',
+        name: `${PermissionGroup.Blacklist}:${PermissionName.Read}`,
+        group_name: PermissionGroup.Blacklist,
+        description: 'ສາມາດເບິ່ງຂໍ້ມູນໃນບັນຊີດຳ',
       },
     ]);
   }

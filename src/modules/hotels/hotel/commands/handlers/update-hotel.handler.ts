@@ -1,6 +1,5 @@
 import { ConflictException, Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { hash } from 'bcrypt';
 import { format } from 'date-fns';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
@@ -8,6 +7,7 @@ import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { DateTimeFormat } from '../../../../../common/enum/date-time-fomat.enum';
 import { HotelRepository } from '../../hotel.repository';
 import UpdateHotelCommand from '../imp/update-hotel.command';
+import { hash } from 'bcryptjs';
 
 @CommandHandler(UpdateHotelCommand)
 export class UpdateHotelHandler implements ICommandHandler<UpdateHotelCommand> {
