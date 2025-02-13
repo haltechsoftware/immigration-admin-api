@@ -13,22 +13,6 @@ export class QueryGetOneCountryHandler
       where: (fields, { eq }) => eq(fields.id, id),
       with: {
         translates: { columns: { country_id: false } },
-        provinces: {
-          columns: { country_id: false, province_id: false },
-          with: {
-            province: {
-              with: {
-                translates: true,
-                checkpoints: {
-                  columns: { id: true, image: true },
-                  with: {
-                    translates: { columns: { name: true } },
-                  },
-                },
-              },
-            },
-          },
-        },
       },
     });
 
