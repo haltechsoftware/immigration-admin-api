@@ -51,7 +51,7 @@ export class UpdateCheckpointHandler
     let image: string | undefined;
 
     if (input.image) {
-      await this.fileUpload.remove(checkpoint.image);
+      if (checkpoint.image) await this.fileUpload.remove(checkpoint.image);
       image = await this.fileUpload.upload(
         'checkpoint/image/',
         input.image.buffer,

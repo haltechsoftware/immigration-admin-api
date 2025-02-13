@@ -1,0 +1,56 @@
+name: Build and Deploy App Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Create .env file
+        uses: ozaytsev86/create-env-file@v1
+        with:
+          DB_URL: mysql://admin:T@pL7x!ZqM2r#9KdV@localhost:3306/immigration
+          JWT_SECRET: '5b27f8373d2aa2bf72c0f53514960d0756bdc56d9bc9773daa02158473dc883687dbc0eaa46fb41806b68178db4565b5ebfb055032a3a643f642163492bba9dc1ba937fe815e38ff03629400dd555cf625eb58be9cc77f5c9c150f45530d4fef9e5fb2a8518873fc578b7316f7e518d198df68dad19302a03bb9fff0d84361d3f45f241c2bd983ecabcc366e571a005abec57059f3e1fbf5f8f547bf65d4e684fa74ebd9fd256288390ce74a8f8a878f473ffbb1d4075633bd07c21185402a344759e5002e7968d58c8ac87ed40eabd7b036267c7c0c66a73569e66dd5dcbe6a622ae1227db7d32ab0e69705c587c461ae07f8bb8e2f8a75ed89b11edfe436f4'
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Remove node_modules
+        run: rm -rf node_modules
+
+      - name: Install production dependencies
+        run: npm install --omit=dev
+
+      - name: Deploy to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          key: ${{ secrets.PROD_SERVER_SSH_KEY }}
+          source: 'dist/*,package.json,node_modules,.env'
+          target: '/var/www/admin.immigration.gov'
+
+      # - name: Restart Server
+      #   uses: appleboy/ssh-action@v1.2.0
+      #   with:
+      #     host: ${{ secrets.SERVER_HOST }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SERVER_SSH_KEY }}
+      #     script: |
+      #       cd /var/www/admin.immigration.gov
+      #       pm2 restart all

@@ -29,7 +29,7 @@ export const checkpoints = mysqlTable('checkpoints', {
     onUpdate: 'no action',
   }),
   country: country,
-  image: text('image').notNull(),
+  image: text('image'),
   link_map: text('link_map').notNull(),
   phone_number: varchar('phone_number', { length: 50 }),
   email: varchar('email', { length: 255 }),

@@ -20,7 +20,8 @@
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
     "drizzle:generate": "drizzle-kit generate:mysql",
     "drizzle:push": "drizzle-kit push:mysql",
-    "drizzle:seed": "node dist/seed/main.js"
+    "drizzle:seed": "node dist/seed/main.js",
+    "deploy": "scp -r dist package.json ubuntu@157.119.183.230:/var/www/api.immigration.gov"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.7",
