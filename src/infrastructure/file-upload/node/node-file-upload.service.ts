@@ -15,7 +15,8 @@ export class NodeFileUploadService implements IFileUpload {
     const [name] = fileName.split('.');
     const extension = extname(fileName);
 
-    const newFileName = this.generateUniqueFilename(name, extension);
+    const truncatedName = name.substring(0, 25);
+    const newFileName = this.generateUniqueFilename(truncatedName, extension);
 
     let existsPath = 'client/';
 
