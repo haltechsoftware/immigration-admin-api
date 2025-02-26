@@ -18,9 +18,18 @@ import * as visaCategorySchema from 'src/modules/visa/entities';
 
 @Injectable()
 export class DrizzleService {
-  constructor(private readonly config?: ConfigService<IEnv>) {}
+  constructor(private readonly config?: ConfigService<IEnv>) {
 
-  private readonly client = mysql.createPool(this.config.get('DB_URL'));
+  }
+
+  private readonly client = mysql.createPool({
+    host: this.config.get('DB_HOST'),
+    user: this.config.get('DB_USER'),
+    password: this.config.get('DB_PASS'), 
+    database: this.config.get('DB_DATABASE')
+  });
+
+   
 
   private readonly schema = {
     ...userSchema,
@@ -38,6 +47,7 @@ export class DrizzleService {
   };
 
   db() {
+   
     return drizzle(this.client, {
       schema: this.schema,
       mode: 'default',

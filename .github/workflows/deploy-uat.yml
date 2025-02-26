@@ -1,0 +1,50 @@
+name: Build and Deploy App
+
+on:
+  push:
+    branches:
+      - uat
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Create .env file
+        uses: ozaytsev86/create-env-file@v1
+        with:
+          DB_URL: mysql://admin:password@localhost:3306/immigration
+          JWT_SECRET: 'dba67af3714602321c83b89a4cdfdb1cb81b4891132b566f83f18fe61bacff665525e869c2b7700faa5f7a94f1acab6534b4a5660b8056c0dc399c2a96bb037a19031b2d13f4db732ade00dc68767de42b7a3bf308a38262e9d67ee04d096f356ca49d4999a3d70f9d597eb96ed7a025c25a807d0db7227bb4a6c18feabf9e27d76fa79acfda0ceb5f1bb634f209f0b8f663b133ea2b30b9f5c2705b13900ba0cb70f5586da26362041aa70342b0fcc70c6fe12a0a606a124c774ea3caa21b3031057f42192248de4af55a491f8f4483b704664fa40e8d51af6473fe662a5ed73fa4ab7e57e89a410e6a7e28d55362c0fb1bac766333fe3402137b9114098270'
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Deploy to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: 'dist/*,package.json,node_modules,.env'
+          target: '/var/www/admin.immigration.gov'
+
+      # - name: Restart Server
+      #   uses: appleboy/ssh-action@v1.2.0
+      #   with:
+      #     host: ${{ secrets.SERVER_HOST }}
+      #     username: ${{ secrets.SERVER_USER }}
+      #     key: ${{ secrets.SERVER_SSH_KEY }}
+      #     script: |
+      #       cd /var/www/admin.immigration.gov
+      #       pm2 restart all

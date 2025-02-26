@@ -15,21 +15,26 @@ export class NodeFileUploadService implements IFileUpload {
     const [name] = fileName.split('.');
     const extension = extname(fileName);
 
-    const newFileName = this.generateUniqueFilename(name, extension);
+    const truncatedName = name.substring(0, 25);
+    const newFileName = this.generateUniqueFilename(truncatedName, extension);
 
     let existsPath = 'client/';
 
-    path.split('/').forEach(async (val) => {
+    for (const val of path.split('/')) {
       existsPath = existsPath + val + '/';
       if (val && !existsSync(existsPath)) {
-        await mkdir(existsPath);
+        try {
+          await mkdir(existsPath, { recursive: true });
+        } catch (err) {
+          console.error('Error creating directory:', err);
+        }
       }
-    });
+    }
 
-    const filePath = path + newFileName;
+    const filePath = `client/${path}${newFileName}`;
 
     try {
-      await writeFile(`client/${filePath}`, buffer);
+      await writeFile(filePath, buffer);
       return filePath;
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -38,7 +43,7 @@ export class NodeFileUploadService implements IFileUpload {
   }
 
   async remove(path: string): Promise<void> {
-    await unlink('client/' + path);
+    await unlink(path);
   }
 
   private generateUniqueFilename(base: string, extension: string): string {
