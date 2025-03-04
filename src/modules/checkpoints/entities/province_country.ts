@@ -8,6 +8,7 @@ export const country = mysqlEnum('country', [
   'thailand',
   'myanmar',
   'china',
+  'airport',
 ]);
 
 export const provinceCountry = mysqlTable('province_country', {

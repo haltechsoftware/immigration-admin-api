@@ -1,13 +1,8 @@
 import { Controller, Get, Post } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Auth } from 'src/common/decorators/auth.decorator';
-import { Permissions } from 'src/common/decorators/permission.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import { GetByIdDto, GetByIdDtoType } from 'src/common/dtos/get-by-id.dto';
-import {
-  PermissionGroup,
-  PermissionName,
-} from 'src/common/enum/permission.enum';
 import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
 import { CheckVerifyCodeCommand } from './commands/impl/check-verify-code.command';
 import { GuestCheckInCommand } from './commands/impl/guests-check-in.command';
@@ -33,7 +28,6 @@ export class AdminHotelController {
     private readonly commandBus: CommandBus,
   ) {}
 
-  @Permissions(PermissionGroup.Hotel, PermissionName.All)
   @Get()
   async get(
     @Auth() auth: IJwtPayload,
@@ -45,7 +39,6 @@ export class AdminHotelController {
     );
   }
 
-  @Permissions(PermissionGroup.Hotel, PermissionName.All)
   @Get(':id')
   async getOne(
     @Valibot({ schema: GetByIdDto, type: 'params' })
@@ -54,7 +47,6 @@ export class AdminHotelController {
     return await this.queryBus.execute<GuestQuery>(new GuestQuery(id));
   }
 
-  @Permissions(PermissionGroup.Hotel, PermissionName.All)
   @Get(':code/verify-code')
   async checkVerifyCode(
     @Valibot({ schema: CheckVerifyCodeDto, type: 'params' })
@@ -67,7 +59,6 @@ export class AdminHotelController {
     return { message: res };
   }
 
-  @Permissions(PermissionGroup.Hotel, PermissionName.All)
   @Post()
   async guestsCheckIn(
     @Auth() auth: IJwtPayload,
