@@ -229,8 +229,8 @@ export default async () => {
       },
       {
         id: 41,
-        name: `${PermissionGroup.Blacklist}:${PermissionName.Read}`,
-        group_name: PermissionGroup.Blacklist,
+        name: `${PermissionGroup.BlackList}:${PermissionName.Read}`,
+        group_name: PermissionGroup.BlackList,
         description: 'ສາມາດເບິ່ງຂໍ້ມູນໃນບັນຊີດຳ',
       },
     ]);
