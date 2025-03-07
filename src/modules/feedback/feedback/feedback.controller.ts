@@ -26,6 +26,8 @@ import {
 } from './dto/upload-feedback-media.dto';
 import GetFeedbackByIdQuery from './queries/impl/get-feedback-by-id.query';
 import GetFeedbackQuery from './queries/impl/get-feedback.query';
+import { CreateFeedbackDto, CreateFeedbackDtoType } from './dto/create-feedback.dto';
+import CreateFeedbackCommand from './command/impl/create-feedback-command';
 
 @Controller('feedback')
 export class FeedbackController {
@@ -47,6 +49,16 @@ export class FeedbackController {
     >(new UploadFeedbackMediaCommand(dto));
 
     return { url };
+  }
+
+  @Public()
+  @FormDataRequest()
+  @Post()
+  async created(@Valibot({ schema: CreateFeedbackDto }) input: CreateFeedbackDtoType) {
+    const res = await this.commandBus.execute<CreateFeedbackCommand>(
+      new CreateFeedbackCommand(input),
+    );
+    return { message: res };
   }
 
   @Permissions(PermissionGroup.Feedback, PermissionName.Read)
