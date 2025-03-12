@@ -13,6 +13,8 @@ import { IncrementRegisterEnterCommand } from './commands/impl/increment-registe
 import { IncrementRegisterExitCommand } from './commands/impl/increment-register-exit.command';
 import { NumberRegisterEnterQuery } from './queries/impl/number-register-enter.query';
 import { NumberRegisterExitQuery } from './queries/impl/number-register-exit.query';
+import { Public } from 'src/common/decorators/public.decorator';
+import { NumberRegisterEnterClientQuery } from './queries/impl/number-register-enter-client.query';
 
 @Controller('no-of-register')
 export class NoOfRegisterController {
@@ -52,6 +54,14 @@ export class NoOfRegisterController {
   async numberEnter(): Promise<any> {
     return await this.queryBus.execute<NumberRegisterEnterQuery>(
       new NumberRegisterEnterQuery(),
+    );
+  }
+
+  @Public()
+  @Get('client')
+  async numberEnterClient(): Promise<any> {
+    return await this.queryBus.execute<NumberRegisterEnterClientQuery>(
+      new NumberRegisterEnterClientQuery(),
     );
   }
 

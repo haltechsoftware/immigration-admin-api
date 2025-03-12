@@ -16,6 +16,8 @@ import { QueryNewsDto, QueryNewsDtoType } from './dtos/query-news.dto';
 import { UpdateNewsDto, UpdateNewsDtoType } from './dtos/update-news.dto';
 import { GetNewsDetailQuery } from './queries/impl/get-news-detail.query';
 import { GetNewsOffsetBasePaginateQuery } from './queries/impl/get-news-offset-base-paginate.query';
+import { Public } from 'src/common/decorators/public.decorator';
+import { GetNewsOffsetBasePaginateClientQuery } from './queries/impl/get-new-offset-base-paginate-client.query';
 
 @Controller('news')
 export class NewsController {
@@ -52,6 +54,17 @@ export class NewsController {
   ) {
     return await this._queryBus.execute<GetNewsOffsetBasePaginateQuery>(
       new GetNewsOffsetBasePaginateQuery(query),
+    );
+  }
+
+  @Public()
+  @Get('client')
+  async getOfClient(
+    @Valibot({ schema: QueryNewsDto, type: 'query' })
+    query: QueryNewsDtoType,
+  ) {
+    return await this._queryBus.execute<GetNewsOffsetBasePaginateClientQuery>(
+      new GetNewsOffsetBasePaginateClientQuery(query),
     );
   }
 

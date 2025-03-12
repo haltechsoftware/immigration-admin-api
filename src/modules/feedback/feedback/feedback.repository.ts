@@ -1,11 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { eq, sql } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { feedbacks } from '../entities';
+import { feedbacks, InsertFeedback } from '../entities';
+
+export type InsertFeedbackType = InsertFeedback;
 
 @Injectable()
 export class FeedbackRepository {
   constructor(private readonly drizzle: DrizzleService) {}
+
+  async create(input: InsertFeedbackType): Promise<void> {
+    await this.drizzle.db().transaction(async (tx) => {
+      await tx.insert(feedbacks).values({
+        name: input.name,
+        email: input.email,
+        tel: input.tel,
+        message: input.message,
+        is_published: false,
+        media: input.media,
+      });
+    });
+  }
 
   private _getByIdPrepared = this.drizzle
     .db()

@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Put,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -32,10 +33,23 @@ import {
 } from './dtos/update-banner.dto';
 import { GetAllBannerQuery } from './queries/impl/get-all.banner';
 import { GetOneBannerQuery } from './queries/impl/get-one.banner';
+import { GetAllClientBannerQuery } from './queries/impl/get-all-client-banner';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('banner-hero')
 export class BannerHeroController {
   constructor(private _commandBus: CommandBus, private _queryBus: QueryBus) {}
+
+
+  @Public()
+  @Get('client')
+  async getClientBanners(
+    @Query() query: any,
+  ) {
+    return await this._queryBus.execute<GetAllClientBannerQuery>(
+      new GetAllClientBannerQuery(query),
+    );
+  }
 
   @Permissions(PermissionGroup.Banner, PermissionName.Write)
   @Post()
@@ -119,4 +133,7 @@ export class BannerHeroController {
     );
     return { message: result };
   }
+
+
+  
 }

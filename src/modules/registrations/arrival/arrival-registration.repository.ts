@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
-import { eq } from 'drizzle-orm';
+import { eq, isNull } from 'drizzle-orm';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { arrivalRegistration } from '../entities';
+import { arrivalRegistration, intendedAddress, passportInformation, personalInformation, visaInformation } from '../entities';
+import ArrivalRegistrationCommand from './commands/impl/arrival-registration.command';
+import { Gender } from './dtos/personal-info.dto';
+import generateVerifyCode from 'src/common/utils/generate-verify-code';
 
 @Injectable()
 export class ArrivalRegistrationRepository {
@@ -11,6 +14,12 @@ export class ArrivalRegistrationRepository {
 
   async getPassport(number: string) {
     return await this.drizzle.db().query.passportInformation.findFirst({
+      where: (fields, operators) => operators.eq(fields.number, number),
+    });
+  }
+
+  async getPassportAll(number: string) {
+    return await this.drizzle.db().query.passportInformation.findMany({
       where: (fields, operators) => operators.eq(fields.number, number),
     });
   }
@@ -38,4 +47,96 @@ export class ArrivalRegistrationRepository {
       .where(eq(arrivalRegistration.id, id))
       .execute();
   }
+
+  async findVerifiedAt(id: number) {
+    return await this.drizzle.db().query.arrivalRegistration.findFirst({
+      where: (fields, operators) => operators.and(
+        operators.eq(fields.passport_information_id, id),       // Match passport_information_id
+        // operators.isNull(fields.verified_at)                    // Check if verified_at is NULL
+      ),
+    });
+  }
+
+  
+    async create({ input }: ArrivalRegistrationCommand): Promise<string> {
+      try {
+          return await this.drizzle.db().transaction(async (tx) => {
+              const { passport_info, personal_info, visa, intend_Address } = input;
+
+              // Personal Information (Ensure column names match database schema)
+              const personalInfoRes = await tx.insert(personalInformation).values({
+                  gender: personal_info.gender === Gender.Male ? "male" : "female",
+                  name: personal_info.name,
+                  nationality: personal_info.nationality,
+                  occupation: personal_info.occupation,
+                  family_name: personal_info.family_name, // ✅ Fixed
+                  date_of_birth: format(personal_info.date_of_birth, DateTimeFormat.date), // ✅ Fixed
+                  phone_number: personal_info.phone_number, // ✅ Fixed
+                  place_of_birth: personal_info.place_of_birth,
+                  race: personal_info.race,
+              });
+
+              // Passport Information
+              const passportInfoRes = await tx.insert(passportInformation).values({
+                  number: passport_info.no,
+                  date_issue: format(passport_info.date_of_issue, DateTimeFormat.date), // ✅ Fixed
+                  expiry_date: format(passport_info.expiry_date, DateTimeFormat.date), // ✅ Fixed
+                  place_issue: passport_info.place_of_issue,
+                  image: passport_info.image,
+                  people_image: passport_info.people_image,
+              });
+
+              // Visa Information
+              let visaId: number | undefined;
+              if (visa) {
+                const visaInfoRes = await tx.insert(visaInformation).values({
+                    number: visa.no,                // Matches the 'number' column in the DB
+                    visaCategory: visa.visaCategory, // Drizzle will map 'visaCategory' to 'visa_category' in the DB
+                    date_issue: format(visa.date_of_issue, DateTimeFormat.date),
+                    place_issue: visa.place_of_issue,
+                    image: visa.image       // Handles the image field correctly (null if not provided)
+                });
+            
+                visaId = visaInfoRes[0].insertId; // Get the insertId from the response
+              }
+          
+              const code = generateVerifyCode(10);
+
+              // Arrival Registration
+              const savedData = await tx.insert(arrivalRegistration).values({
+                  black_list: "available", // ✅ Fixed (assuming database uses snake_case)
+                  entry_name: input.entry_point, // ✅ Fixed
+                  is_traveling_in_tour: input.is_travelling_in_tour, // ✅ Fixed
+                  purpose: input.purpose,
+                  traveling_by_no: input.travelling_by.no, // ✅ Fixed
+                  traveling_by_type: input.travelling_by.type, // ✅ Fixed
+                  personal_information_id: personalInfoRes[0].insertId, // ✅ Fixed
+                  passport_information_id: passportInfoRes[0].insertId, // ✅ Fixed
+                  country_id: Number(input.country_id), // ✅ Fixed
+                  visa_information_id: visaId, // ✅ Fixed
+                  verification_code: code, // ✅ Fixed
+              });
+
+              // Intended Address
+              await tx.insert(intendedAddress).values({
+                  arrival_registration_id: savedData[0].insertId, // ✅ Correct
+                  name: intend_Address.name,                   // ✅ Correct field name
+                  province: intend_Address.province,           // ✅ Correct field name
+                  district: intend_Address.district,           // ✅ Correct field name
+                  village: intend_Address.village,             // ✅ Correct field name
+                  check_in: format(intend_Address.date_range[0], DateTimeFormat.date), // ✅ Correct format
+                  check_out: format(intend_Address.date_range[1], DateTimeFormat.date), // ✅ Correct format
+              });
+              
+
+              return code; // Return generated verification code
+          });
+      } catch (error) {
+          console.error(error);
+          throw new Error("Failed to register arrival.");
+      }
+  }
+
+
+
 }

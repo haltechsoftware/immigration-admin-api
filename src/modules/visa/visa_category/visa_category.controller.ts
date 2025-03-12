@@ -29,6 +29,8 @@ import {
 import { GetVisaCategoryDetailQuery } from './queries/impl/get-visa-category-detail.query';
 import GetVisaCategoryQuery from './queries/impl/get-visa_category-all.query';
 import { GetOneVisaCategoryQuery } from './queries/impl/get-visa_category-by-id.query';
+import { Public } from 'src/common/decorators/public.decorator';
+import GetVisaCategoryClientQuery from './queries/impl/get-visa_category-client.query';
 
 @Controller('visa-category')
 export class VisaController {
@@ -36,6 +38,17 @@ export class VisaController {
     private readonly _queryBus: QueryBus,
     private readonly _commandBus: CommandBus,
   ) {}
+
+  @Public()
+  @Get('clients')
+  async getToClient(
+    @Valibot({ schema: QueryVisaCategory, type: 'query' })
+    query: QueryVisaCategoryType,
+  ) {
+      return await this._queryBus.execute<GetVisaCategoryClientQuery>(
+        new GetVisaCategoryClientQuery(query),
+      );
+  }
 
   @Permissions(PermissionGroup.Visa, PermissionName.Write)
   @Post()
@@ -83,6 +96,7 @@ export class VisaController {
       new GetVisaCategoryQuery(query),
     );
   }
+
 
   @Permissions(PermissionGroup.Visa, PermissionName.Write)
   @Put(':id')
