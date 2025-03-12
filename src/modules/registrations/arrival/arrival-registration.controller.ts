@@ -23,6 +23,8 @@ import { UploadPassportImageDto } from './dtos/upload-passport-image.dto';
 import { UploadVisaImageDto } from './dtos/upload-visa-image.dto';
 import ArrivalRegisterQuery from './queries/impl/arrival.query';
 import GetArrivalByIdQuery from './queries/impl/get-arrival-by-id.query';
+import ArrivalRegistrationCommand from './commands/impl/arrival-registration.command';
+import { ArrivalRegistrationDto, ArrivalRegistrationDtoType } from './dtos/arrival-registration.dto';
 
 @Controller('arrival')
 export class ArrivalRegistrationController {
@@ -44,6 +46,16 @@ export class ArrivalRegistrationController {
     >(new UploadPassportImageCommand(dto));
 
     return { url };
+  }
+
+  @Public()
+  @Post()
+  @FormDataRequest()
+  async arrivalRegistration(@Valibot({ schema: ArrivalRegistrationDto }) input: ArrivalRegistrationDtoType) {
+    const res = await this.commandBus.execute<ArrivalRegistrationCommand>(
+      new ArrivalRegistrationCommand(input),
+    );
+    return { message: res };
   }
 
   @Public()

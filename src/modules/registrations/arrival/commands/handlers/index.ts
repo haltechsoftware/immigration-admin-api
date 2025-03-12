@@ -1,3 +1,4 @@
+import ArrivalRegistrationHandler from './arrival-registration.handler';
 import { ScanArrivalCodeHandler } from './scan-arrival-code.handler';
 import { UploadPassportImageHandler } from './upload-passport-image.handler';
 import { UploadVisaImageHandler } from './upload-visa-image.handler';
@@ -8,4 +9,5 @@ export const arrivalCommandHandlers = [
   UploadPassportImageHandler,
   UploadVisaImageHandler,
   ScanArrivalCodeHandler,
+  ArrivalRegistrationHandler,
 ];

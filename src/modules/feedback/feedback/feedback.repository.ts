@@ -16,6 +16,7 @@ export class FeedbackRepository {
         email: input.email,
         tel: input.tel,
         message: input.message,
+        is_published: false,
         media: input.media,
       });
     });

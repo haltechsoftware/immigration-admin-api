@@ -17,6 +17,8 @@ import { CreateLawDto, CreateLawDtoType } from './dto/create-law.dto';
 import { UpdateLawDto, UpdateLawDtoType } from './dto/update-law.dto';
 import GetLawByIdQuery from './queries/impl/get-law-by-id.query';
 import GetLawQuery from './queries/impl/get-law.query';
+import { Public } from 'src/common/decorators/public.decorator';
+import GetLawClientQuery from './queries/impl/get-law-client.query';
 
 @Controller('law')
 export class LawController {
@@ -24,6 +26,12 @@ export class LawController {
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
   ) {}
+
+  @Public()
+  @Get('client')
+  async getToClient() {
+    return await this.queryBus.execute<GetLawClientQuery>(new GetLawClientQuery());
+  }
 
   @Permissions(PermissionGroup.Law, PermissionName.Read)
   @Get()

@@ -14,6 +14,7 @@ export default class CreateFeedbackHandler
             email: dto.email,
             tel: dto.tel,
             message: dto.message,
+            is_published: false,
             media: dto.media
         });
     

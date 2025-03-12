@@ -13,6 +13,7 @@ import { IncrementTouristEnterCommand } from './commands/impl/increment-tourist-
 import { IncrementTouristExitCommand } from './commands/impl/increment-tourist-exit.command';
 import { NumberTouristEnterQuery } from './queries/impl/number-tourist-enter.query';
 import { NumberTouristExitQuery } from './queries/impl/number-tourist-exit.query';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('no-of-tourists')
 export class NoOfTouristsController {
@@ -45,13 +46,15 @@ export class NoOfTouristsController {
     return { message };
   }
 
-  @Permissions(PermissionGroup.Registration, PermissionName.Read)
+  @Public()
+  // @Permissions(PermissionGroup.Registration, PermissionName.Read)
   @Get('enter')
   async numberTouristEnter(): Promise<any> {
     return await this.queryBus.execute<NumberTouristEnterQuery>(
       new NumberTouristEnterQuery(),
     );
   }
+
 
   @Permissions(PermissionGroup.Registration, PermissionName.Write)
   @Post('exit/increment')
@@ -77,9 +80,10 @@ export class NoOfTouristsController {
     return { message };
   }
 
-  @Permissions(PermissionGroup.Registration, PermissionName.Read)
+  // @Permissions(PermissionGroup.Registration, PermissionName.Read)
+  @Public()
   @Get('exit')
-  async numberTouristExit(): Promise<any> {
+    async numberTouristExit(): Promise<any> {
     return await this.queryBus.execute<NumberTouristExitQuery>(
       new NumberTouristExitQuery(),
     );

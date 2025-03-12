@@ -49,6 +49,12 @@ export class CountryRepository {
     return await this.prepared.execute({ id });
   }
 
+  async findOneCountry(id: number) {
+    const result = await this._drizzle.db().select().from(countries).where(eq(countries.id, id)).limit(1);
+    return result[0] ?? null;
+}
+
+
   async update(input: UpdateCountryType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
       await tx
