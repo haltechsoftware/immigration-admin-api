@@ -5,6 +5,7 @@ import {
   serial,
   text,
   varchar,
+  json,
 } from 'drizzle-orm/mysql-core';
 import { langCode } from 'src/modules/banners/entities';
 import { checkpoints } from './checkpoints';
@@ -19,9 +20,10 @@ export const checkpointTranslate = mysqlTable('checkpoint_translate', {
   }),
   slug: varchar('slug', { length: 255 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull().unique(),
-  content: text('content'),
+  content: json('content'),
   address: text('address'),
   lang: langCode.notNull(),
+  time_operation: text('time_operation'),
 });
 
 export const checkpointTranslateRelations = relations(

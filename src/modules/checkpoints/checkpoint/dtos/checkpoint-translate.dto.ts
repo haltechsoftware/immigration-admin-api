@@ -25,6 +25,9 @@ export const CheckpointTranslateDto = object({
   address: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
     maxLength(1000, 'ບໍ່ສາມາດປ້ອນເບີຫຼາຍກວ່າ 1000 ຫຼັກ.'),
   ]),
+  time_operation: string('ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.', [
+    maxLength(1000, 'ບໍ່ສາມາດປ້ອນເບີຫຼາຍກວ່າ 1000 ຫຼັກ.'),
+  ]),
 });
 
 export type CheckpointTranslateDtoType = Output<typeof CheckpointTranslateDto>;

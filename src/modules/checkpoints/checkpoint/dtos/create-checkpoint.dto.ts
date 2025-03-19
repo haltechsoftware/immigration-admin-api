@@ -49,7 +49,13 @@ const CreateCheckpointDto = object({
 
   lo: transform<StringSchema<string>, Omit<CheckpointTranslateDtoType, 'id'>>(
     string(),
-    (input) => JSON.parse(input),
+    // (input) => JSON.parse(input),
+    (input) => {
+      const res = safeParse(omit(CheckpointTranslateDto, ['id']), JSON.parse(input));
+      if (res.success) {
+        return res.output;
+      }
+    },
     [
       custom(
         (input) =>
@@ -60,7 +66,13 @@ const CreateCheckpointDto = object({
 
   en: transform<StringSchema<string>, Omit<CheckpointTranslateDtoType, 'id'>>(
     string(),
-    (input) => JSON.parse(input),
+    // (input) => JSON.parse(input),
+    (input) => {
+      const res = safeParse(omit(CheckpointTranslateDto, ['id']), JSON.parse(input));
+      if (res.success) {
+        return res.output;
+      }
+    },
     [
       custom(
         (input) =>
@@ -72,7 +84,15 @@ const CreateCheckpointDto = object({
   zh_cn: transform<
     StringSchema<string>,
     Omit<CheckpointTranslateDtoType, 'id'>
-  >(string(), (input) => JSON.parse(input), [
+  >(string(),
+  // (input) => JSON.parse(input),
+  (input) => {
+        const res = safeParse(omit(CheckpointTranslateDto, ['id']), JSON.parse(input));
+        if (res.success) {
+          return res.output;
+        }
+      }, 
+  [
     custom(
       (input) => safeParse(omit(CheckpointTranslateDto, ['id']), input).success,
     ),

@@ -23,6 +23,17 @@ import {
 } from './dtos/update-country.dto';
 import { GetAllCheckpointCommand } from './queries/impl/get-all';
 import { GetOneCheckpointCommand } from './queries/impl/get-one';
+import { QueryCheckpointClientDto, QueryCheckpointClientDtoType } from './dtos/query-client.dto';
+import { GetAllCheckpointClientCommand } from './queries/impl/get-all-client';
+import { Public } from 'src/common/decorators/public.decorator';
+import { QueryProvinceCheckpointClientDto, QueryProvinceCheckpointClientDtoType } from './dtos/query-province-checkpoint.dto';
+import { GetAllProvinceCheckpointCheckpointClientCommand } from './queries/impl/get-all-province-checkpoint-client';
+import { QueryclientCheckpointDto, QueryClientCheckpointDtoType } from './dtos/query-client-checkinpoint.dto';
+import { GetAllClientCheckpointCommand } from './queries/impl/get-all-client-checkpoint';
+import { GetOneClientCheckpointCommand } from './queries/impl/get-one-client';
+import { GetByIdClientDto, GetByIdClientDtoType } from './dtos/query-by-id-client';
+import { GetAllCategoryClientCommand } from './queries/impl/get-category-client';
+import { QueryCategoryClientDto, QueryCategoryClientDtoType } from './dtos/query-category-client.dto';
 
 @Controller('checkpoint')
 export class CheckpointController {
@@ -40,6 +51,63 @@ export class CheckpointController {
     );
 
     return { message };
+  }
+
+  @Public()
+  @Get('country-checkpoint')
+  async getToClient(
+    @Valibot({ schema: QueryCheckpointClientDto, type: 'query' })
+    query: QueryCheckpointClientDtoType,
+  ) {
+    return await this._queryBus.execute<GetAllCheckpointClientCommand>(
+      new GetAllCheckpointClientCommand(query),
+    );
+  }
+
+  @Public()
+  @Get('province-checkpoint')
+  async getProvinceOfCheckPointToClient(
+    @Valibot({ schema: QueryProvinceCheckpointClientDto, type: 'query' })
+    query: QueryProvinceCheckpointClientDtoType,
+  ) {
+    return await this._queryBus.execute<GetAllProvinceCheckpointCheckpointClientCommand>(
+      new GetAllProvinceCheckpointCheckpointClientCommand(query),
+    );
+  }
+
+  @Public()
+  @Get('client/categories')
+  async getCategoryToClient(
+    @Valibot({ schema: QueryCategoryClientDto, type: 'query' })
+    query: QueryCategoryClientDtoType,
+  ) {
+    return await this._queryBus.execute<GetAllCategoryClientCommand>(
+      new GetAllCategoryClientCommand(query),
+    );
+  }
+
+  @Public()
+  @Get('client')
+  async getCheckpointToClient(
+    @Valibot({ schema: QueryclientCheckpointDto, type: 'query' })
+    query: QueryClientCheckpointDtoType,
+  ) {
+    return await this._queryBus.execute<GetAllClientCheckpointCommand>(
+      new GetAllClientCheckpointCommand(query),
+    );
+  }
+
+  @Public()
+  @Get('client/:id')
+  async findOneToClient(
+    @Valibot({ schema: GetByIdDto, type: 'params' })
+    params: GetByIdDtoType,
+    @Valibot({ schema: GetByIdClientDto, type: 'query' })
+    query: GetByIdClientDtoType,
+  ) {
+    return await this._queryBus.execute<GetOneClientCheckpointCommand>(
+      new GetOneClientCheckpointCommand(params.id, query),
+    );
   }
 
   @Permissions(PermissionGroup.Checkpoint, PermissionName.Write)
