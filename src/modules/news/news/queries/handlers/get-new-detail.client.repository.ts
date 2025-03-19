@@ -51,7 +51,7 @@ export class GetNewsDetailClientHandler implements IQueryHandler<GetOneClientNew
             },
         },
         },
-        orderBy: (f, o) => o.desc(f.created_at),
+        orderBy: sql`RAND()`,
     });
 
     return { ...res, relatedNews }; 
