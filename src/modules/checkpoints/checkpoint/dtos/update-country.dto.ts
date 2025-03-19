@@ -42,17 +42,35 @@ const UpdateCheckpointDto = merge([
     ),
     lo: transform<StringSchema<string>, CheckpointTranslateDtoType>(
       string(),
-      (input) => JSON.parse(input),
+      // (input) => JSON.parse(input),
+      (input) => {
+        const res = safeParse(CheckpointTranslateDto, JSON.parse(input));
+        if (res.success) {
+          return res.output;
+        }
+      },
       [custom((input) => safeParse(CheckpointTranslateDto, input).success)],
     ),
     en: transform<StringSchema<string>, CheckpointTranslateDtoType>(
       string(),
-      (input) => JSON.parse(input),
+      // (input) => JSON.parse(input),
+      (input) => {
+        const res = safeParse(CheckpointTranslateDto, JSON.parse(input));
+        if (res.success) {
+          return res.output;
+        }
+      },
       [custom((input) => safeParse(CheckpointTranslateDto, input).success)],
     ),
     zh_cn: transform<StringSchema<string>, CheckpointTranslateDtoType>(
       string(),
-      (input) => JSON.parse(input),
+      // (input) => JSON.parse(input),
+      (input) => {
+        const res = safeParse(CheckpointTranslateDto, JSON.parse(input));
+        if (res.success) {
+          return res.output;
+        }
+      },
       [custom((input) => safeParse(CheckpointTranslateDto, input).success)],
     ),
   }),

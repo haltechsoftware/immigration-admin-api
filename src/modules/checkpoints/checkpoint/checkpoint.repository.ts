@@ -40,6 +40,7 @@ export class CheckpointRepository {
           content: val.content,
           address: val.address,
           lang: val.lang,
+          time_operation: val.time_operation
         })),
       );
     });
@@ -86,6 +87,7 @@ export class CheckpointRepository {
             content: val.content,
             address: val.address,
             lang: val.lang,
+            time_operation: val.time_operation,
           })
           .where(eq(checkpointTranslate.id, val.id));
       });

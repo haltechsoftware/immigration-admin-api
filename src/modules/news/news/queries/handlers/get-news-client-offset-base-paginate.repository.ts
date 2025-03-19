@@ -11,17 +11,14 @@ export class GetNewsOffsetBasePaginateClientHandler
   constructor(private readonly drizzle: DrizzleService) {}
 
   async execute({
-    paginate: { limit, offset },
+    paginate: { lang, limit, offset },
   }: GetNewsOffsetBasePaginateClientQuery): Promise<any> {
     const res = await this.drizzle.db().query.news.findMany({
       limit,
       offset,
       with: {
         translates: {
-          columns: {
-            id: true,
-            title: true,
-          },
+          where: lang ? (fields, operators) => operators.eq(fields.lang, lang) : undefined,
         },
       },
     });

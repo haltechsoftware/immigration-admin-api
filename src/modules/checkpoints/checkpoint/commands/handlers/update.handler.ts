@@ -19,12 +19,21 @@ export class UpdateCheckpointHandler
     private readonly drizzle: DrizzleService,
   ) {}
   async execute({ input, id }: UpdateCheckpointCommand): Promise<any> {
+    console.log(input);
     if (
       input.lo.name === input.en.name ||
       input.zh_cn.name === input.en.name ||
       input.zh_cn.name === input.lo.name
     )
       throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
+
+    // if (
+    //     input.lo.time_operation === input.en.time_operation ||
+    //     input.zh_cn.time_operation === input.en.time_operation ||
+    //     input.zh_cn.time_operation === input.lo.time_operation
+    //   )
+    //     throw new ConflictException({ message: 'ເວລາປິດ-ເປີດ ດ່ານ ຊ້ຳກັນ!' });
+  
 
     const checkpoint = await this.checkPointRepository.findOne(id);
 
@@ -79,6 +88,7 @@ export class UpdateCheckpointHandler
           address: input.lo.address,
           lang: 'lo',
           slug: generateSlug(input.lo.name),
+          time_operation: input.lo.time_operation,
         },
         {
           id: input.en.id,
@@ -87,6 +97,7 @@ export class UpdateCheckpointHandler
           address: input.en.address,
           lang: 'en',
           slug: generateSlug(input.en.name),
+          time_operation: input.en.time_operation,
         },
         {
           id: input.zh_cn.id,
@@ -95,6 +106,7 @@ export class UpdateCheckpointHandler
           address: input.zh_cn.address,
           lang: 'zh_cn',
           slug: generateSlug(input.zh_cn.name),
+          time_operation: input.zh_cn.time_operation,
         },
       ],
     });
