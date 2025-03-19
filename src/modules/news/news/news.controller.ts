@@ -19,6 +19,11 @@ import { GetNewsOffsetBasePaginateQuery } from './queries/impl/get-news-offset-b
 import { Public } from 'src/common/decorators/public.decorator';
 import { GetNewsOffsetBasePaginateClientQuery } from './queries/impl/get-new-offset-base-paginate-client.query';
 import { QueryClientNewsDto, QueryClientNewsDtoType } from './dtos/query-news-client.dto';
+import { QueryNewsClientDto, QueryNewsClientDtoType } from './dtos/query-client.dto';
+import { GetNewsClientOffsetBasePaginateQuery } from './queries/impl/get-new-to-client.query';
+import { GetNewsCategoryOffsetBasePaginateClientQuery } from './queries/impl/get-new-category-all.query';
+import { GetByIdClientDto, GetByIdClientDtoType } from 'src/modules/checkpoints/checkpoint/dtos/query-by-id-client';
+import { GetOneClientNewsQuery } from './queries/impl/get-new-detail-client.query';
 
 @Controller('news')
 export class NewsController {
@@ -59,13 +64,48 @@ export class NewsController {
   }
 
   @Public()
-  @Get('client')
+  @Get('home')
   async getOfClient(
     @Valibot({ schema: QueryClientNewsDto, type: 'query' })
     query: QueryClientNewsDtoType,
   ) {
     return await this._queryBus.execute<GetNewsOffsetBasePaginateClientQuery>(
       new GetNewsOffsetBasePaginateClientQuery(query),
+    );
+  }
+
+  @Public()
+  @Get('client')
+  async getNewOfClient(
+    @Valibot({ schema: QueryNewsClientDto, type: 'query' })
+    query: QueryNewsClientDtoType,
+  ) {
+    return await this._queryBus.execute<GetNewsClientOffsetBasePaginateQuery>(
+      new GetNewsClientOffsetBasePaginateQuery(query),
+    );
+  }
+
+  @Public()
+  @Get('client/:id')
+  async getNewDetailOfClient(
+    @Valibot({ schema: GetByIdDto, type: 'params' })
+    params: GetByIdDtoType,
+    @Valibot({ schema: GetByIdClientDto, type: 'query' })
+    query: GetByIdClientDtoType,
+  ) {
+    return await this._queryBus.execute<GetOneClientNewsQuery>(
+      new GetOneClientNewsQuery(params.id, query),
+    );
+  }
+
+  @Public()
+  @Get('category/client')
+  async getNewCategoryOfClient(
+    @Valibot({ schema: QueryClientNewsDto, type: 'query' })
+    query: QueryClientNewsDtoType,
+  ) {
+    return await this._queryBus.execute<GetNewsCategoryOffsetBasePaginateClientQuery>(
+      new GetNewsCategoryOffsetBasePaginateClientQuery(query),
     );
   }
 
