@@ -26,6 +26,8 @@ import {
 import { GetDetailServiceQuery } from './queries/impl/get-detail-service';
 import { GetPaginateServiceQuery } from './queries/impl/get-paginate-service';
 import { GetServiceByIdQuery } from './queries/impl/get-service-by-id.query';
+import { Public } from 'src/common/decorators/public.decorator';
+import { GetAllToClientServiceQuery } from './queries/impl/get-all-to-client-service';
 
 @Controller('services')
 export class ServiceController {
@@ -52,6 +54,31 @@ export class ServiceController {
   ) {
     return await this._queryBus.execute<GetPaginateServiceQuery>(
       new GetPaginateServiceQuery(query),
+    );
+  }
+
+  @Public()
+  @Get('client')
+  async getToClient(
+    @Valibot({ schema: QueryServiceDto, type: 'query' })
+    query: QueryServiceDtoType,
+  ) {
+    return await this._queryBus.execute<GetAllToClientServiceQuery>(
+      new GetAllToClientServiceQuery(query),
+    );
+  }
+
+
+  @Public()
+  @Get('client/:id')
+  async getByIdClient(
+    @Valibot({ schema: GetByIdDto, type: 'params' })
+    params: GetByIdDtoType,
+    @Valibot({ schema: QueryServiceByIdDto, type: 'query' })
+    query: QueryServiceByIdDtoType,
+  ) {
+    return await this._queryBus.execute<GetDetailServiceQuery>(
+      new GetDetailServiceQuery(params.id, query),
     );
   }
 
