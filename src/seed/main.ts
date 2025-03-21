@@ -7,7 +7,12 @@ import defaultUserSeed from './user/default-user.seed';
 import permissionSeed from './user/permission.seed';
 import roleSeed from './user/role.seed';
 
-const client = mysql.createPool(process.env.DB_URL);
+const client = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_DATABASE,
+});
 
 export const db = drizzle(client);
 
