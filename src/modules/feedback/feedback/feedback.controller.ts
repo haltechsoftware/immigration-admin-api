@@ -73,6 +73,7 @@ export class FeedbackController {
     );
   }
 
+  @Public()
   @Get('client')
   async getForClient(
     @Valibot({ schema: QueryFeedbackDto, type: 'query' })

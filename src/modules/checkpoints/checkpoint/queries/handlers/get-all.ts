@@ -30,7 +30,9 @@ export class QueryGetAllCheckpointHandler implements IQueryHandler<any> {
           columns: {
             id: true,
             name: true,
+            slug: true,
             time_operation: true,
+            lang: true,
           },
         },
       },
