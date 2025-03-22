@@ -19,6 +19,9 @@ import {
 } from './dto/verify-departure-code.dto';
 import DepartureRegisterQuery from './queries/impl/departure.query';
 import GetDepartureByIdQuery from './queries/impl/get-departure-by-id.query';
+import { Public } from 'src/common/decorators/public.decorator';
+import { DepartureRegistrationDto, DepartureRegistrationDtoType } from './dto/departure-registration.dto';
+import DepartureRegistrationCommand from './commands/impl/departure-registration.command';
 
 @Controller('departure')
 export class DepartureRegistrationController {
@@ -37,6 +40,17 @@ export class DepartureRegistrationController {
       new DepartureRegisterQuery(query),
     );
   }
+
+  @Public()
+  @Post()
+  async createDeparture(
+    @Valibot({ schema: DepartureRegistrationDto }) input: DepartureRegistrationDtoType
+  ): Promise<any>{
+    return await this.commandBus.execute<DepartureRegistrationCommand>(
+      new DepartureRegistrationCommand(input),
+    );
+  }
+
 
   @Permissions(PermissionGroup.Registration, PermissionName.Read)
   @Get(':id')

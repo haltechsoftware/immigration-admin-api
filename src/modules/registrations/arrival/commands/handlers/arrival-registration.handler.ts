@@ -43,7 +43,7 @@ export default class ArrivalRegistrationHandler
       for (const passport of passports) {
         // Check if the arrival registration exists and is not verified
         const arrival = await this.repository.findVerifiedAt(passport.id);
-        console.log(arrival);
+        
         if (arrival.verified_at == null) {
           throw new UnprocessableEntityException('ການລົງທະບຽນການມາຮອດບໍ່ໄດ้ຖືກຢືນຢັນ. ກະລຸນາຢືນຢັນການມາຮອດກ່ອນ.');
         }
