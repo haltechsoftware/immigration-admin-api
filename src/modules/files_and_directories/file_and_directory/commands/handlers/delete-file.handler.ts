@@ -21,7 +21,8 @@ export class DeleteFilesHandler implements ICommandHandler<DeleteFileCommand> {
 
     if (file.parent_id) await this.getParent(file.parent_id, file.size);
 
-    this.part.push('editor');
+    // this.part.push('editor');
+    this.part.push('client/editor');
 
     const fileName = this.part.reverse().join('/') + '/' + file.name;
 
