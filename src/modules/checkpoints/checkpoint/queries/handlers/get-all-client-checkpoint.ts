@@ -29,6 +29,13 @@ export class QueryGetAllClientCheckpointHandler implements IQueryHandler<GetAllC
         translates: {
             where: lang ? (fields, operators) => operators.eq(fields.lang, lang) : undefined,
         },
+        category: {
+          with: {
+            translates: {
+              where: lang ? (fields, operators) => operators.eq(fields.lang, lang) : undefined,
+            },
+          },
+        },
       },
       offset,
       limit,
@@ -41,9 +48,19 @@ export class QueryGetAllClientCheckpointHandler implements IQueryHandler<GetAllC
       .from(checkpoints)
       .where(conditional);
 
-    return {
-      data: res,
-      total: total[0].value,
-    };
+      const result = res.map((checkpoint) => {
+        const { category, translates, ...rest } = checkpoint;
+    
+        return {
+          ...rest,
+          translates: translates?.[0] ?? null,
+          category_translates: category?.translates?.[0] ?? null,
+        };
+      });
+    
+      return {
+        data: result,
+        total: total[0]?.value ?? 0,
+      };
   }
 }
