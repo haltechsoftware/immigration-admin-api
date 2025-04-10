@@ -7,7 +7,7 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors({ origin: '*' });
+  app.enableCors({ origin: ['*', 'https://immigrationlao.netlify.app'] });
 
   if (!existsSync('client')) mkdirSync('client');
 
