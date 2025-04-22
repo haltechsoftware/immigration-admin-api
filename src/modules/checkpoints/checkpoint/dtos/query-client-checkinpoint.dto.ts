@@ -12,9 +12,7 @@ import {
 
 const QueryclientCheckpointDto = merge([
   object({
-    category_id: transform(optional(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ')), (input) =>
-      input ? Number(input) : 0,
-    ),
+    slug: optional(transform(string('ບໍ່ຕ້ອງຫວ່າງເປົ່າ'), (input) => String(input))),
   }),
   partial(LanguageDto),
   OffsetBasePaginateDto,

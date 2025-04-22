@@ -10,53 +10,54 @@ export class QueryGetOneClientCheckpointHandler
   constructor(private readonly _drizzle: DrizzleService) {}
 
   async execute({
-    params: id,
+    params: slug,
     query: { lang },
   }: GetOneClientCheckpointCommand): Promise<any> {
-    console.log(lang);
-    const res = await this._drizzle.db().query.checkpoints.findFirst({
-      where: (fields, { eq }) => eq(fields.id, id),
-      with: {
-        translates: {
-          where: lang
-            ? (fields, operators) => operators.eq(fields.lang, lang)
-            : undefined,
-        },
-        category: {
-          columns: { id: true },
-          with: {
-            translates: {
-              //   columns: {
-              //     id: true,
-              //     title: true,
-              //     lang: true,
-              //   },
-              where: lang
-                ? (fields, operators) => operators.eq(fields.lang, lang)
-                : undefined,
-            },
-          },
-        },
-        province: {
-          columns: { id: true },
-          with: {
-            translates: {
-              //   columns: {
-              //     id: true,
-              //     name: true,
-              //     lang: true,
-              //   },
-              where: lang
-                ? (fields, operators) => operators.eq(fields.lang, lang)
-                : undefined,
-            },
-          },
-        },
+
+    const translate = await this._drizzle.db().query.checkpointTranslate.findFirst({
+      where: (f, o) => o.eq(f.slug, slug),
+      columns: {
+        checkpoint_id: true,
       },
     });
 
-    if (!res) throw new NotFoundException({ message: 'ບໍ່ພົບຂໍ້ມູນແຂວງນີ້' });
+    
+    if (translate && translate.checkpoint_id) {
+      const res = await this._drizzle.db().query.checkpoints.findFirst({
+        // where: (fields, { eq }) => eq(fields.id, id),
+        with: {
+          translates: {
+            where: (f, o) => o.eq(f.lang, lang),
+          },
+          category: {
+            columns: { id: true },
+            with: {
+              translates: {
+                where: lang
+                  ? (fields, operators) => operators.eq(fields.lang, lang)
+                  : undefined,
+              },
+            },
+          },
+          province: {
+            columns: { id: true },
+            with: {
+              translates: {
+                where: lang
+                  ? (fields, operators) => operators.eq(fields.lang, lang)
+                  : undefined,
+              },
+            },
+          },
+        },
+        where: (f, o) => o.eq(f.id, translate.checkpoint_id!),
+      });
 
-    return res;
+      if (!res) throw new NotFoundException({ message: 'ບໍ່ພົບຂໍ້ມູນແຂວງນີ້' });
+
+      return res;
+    } else {
+      return undefined;
+    }
   }
 }

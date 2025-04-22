@@ -4,63 +4,75 @@ import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import { checkpoints } from 'src/modules/checkpoints/entities';
 import { GetAllCheckpointCommand } from '../impl/get-all';
 import { GetAllClientCheckpointCommand } from '../impl/get-all-client-checkpoint';
-
 @QueryHandler(GetAllClientCheckpointCommand)
 export class QueryGetAllClientCheckpointHandler implements IQueryHandler<GetAllClientCheckpointCommand> {
   constructor(private readonly _drizzle: DrizzleService) {}
 
   async execute({
-    query: { lang, category_id, limit, offset },
+    query: { lang, slug, limit, offset },
   }: GetAllClientCheckpointCommand): Promise<any> {
-    const conditional = and(
-      category_id ? eq(checkpoints.category_id, category_id) : undefined,
-    );
+    let category:
+      | {
+          category_id: number | null;
+        }
+      | undefined;
 
-    const res = await this._drizzle.db().query.checkpoints.findMany({
+    if (slug) {
+      category = await this._drizzle.db().query.checkpointCategoryTranslate.findFirst({
+        where: (f, o) => o.eq(f.slug, slug),
+        columns: {
+          category_id: true,
+        },
+      });
+    }
+
+    const checkpointsList = await this._drizzle.db().query.checkpoints.findMany({
       columns: {
-        // category_id: true,
         province_id: false,
-        // country_id: false,
         link_map: false,
         created_at: false,
         updated_at: false,
       },
+      where: category
+        ? (f, o) => o.eq(f.category_id, category!.category_id!)
+        : undefined,
       with: {
         translates: {
-            where: lang ? (fields, operators) => operators.eq(fields.lang, lang) : undefined,
+          where: lang ? (f, o) => o.eq(f.lang, lang) : undefined,
         },
         category: {
           with: {
             translates: {
-              where: lang ? (fields, operators) => operators.eq(fields.lang, lang) : undefined,
+              where: lang ? (f, o) => o.eq(f.lang, lang) : undefined,
             },
           },
         },
       },
       offset,
       limit,
-      where: conditional,
     });
 
-    const total = await this._drizzle
-      .db()
-      .select({ value: count() })
-      .from(checkpoints)
-      .where(conditional);
+    const total = await this._drizzle.db()
+    .select({ value: count() })
+    .from(checkpoints)
+    .where(
+      category ? eq(checkpoints.category_id, category.category_id!) : undefined
+    );
 
-      const result = res.map((checkpoint) => {
-        const { category, translates, ...rest } = checkpoint;
-    
-        return {
-          ...rest,
-          translates: translates?.[0] ?? null,
-          category_translates: category?.translates?.[0] ?? null,
-        };
-      });
-    
+
+    const result = checkpointsList.map((checkpoint) => {
+      const { category, translates, ...rest } = checkpoint;
+
       return {
-        data: result,
-        total: total[0]?.value ?? 0,
+        ...rest,
+        translates: translates?.[0] ?? null,
+        category_translates: category?.translates?.[0] ?? null,
       };
+    });
+
+    return {
+      data: result,
+      total: total[0]?.value ?? 0,
+    };
   }
 }

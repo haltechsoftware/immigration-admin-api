@@ -23,7 +23,7 @@ export class GetAllToClientServiceHandler
     const res = await this._drizzle.db().query.services.findMany({
       with: {
         translates: {
-          columns: { id: true, title: true },
+          // columns: { id: true, title: true },
           where: lang
             ? (fields, operators) => operators.eq(fields.lang, lang)
             : undefined,
@@ -39,6 +39,8 @@ export class GetAllToClientServiceHandler
         ...val,
         lang_id: val.translates[0].id,
         title: val.translates[0].title,
+        description: val.translates[0].description,
+        content: val.translates[0].content,
         translates: undefined,
       })),
       total: total[0].value,

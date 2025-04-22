@@ -25,6 +25,9 @@ import ArrivalRegisterQuery from './queries/impl/arrival.query';
 import GetArrivalByIdQuery from './queries/impl/get-arrival-by-id.query';
 import ArrivalRegistrationCommand from './commands/impl/arrival-registration.command';
 import { ArrivalRegistrationDto, ArrivalRegistrationDtoType } from './dtos/arrival-registration.dto';
+import { QueryPointClientDto, QueryPointClientDtoType } from './dto/get-point.dto';
+import GetPointClientQuery from './queries/impl/get-point-client.query';
+import GetCountryClientQuery from './queries/impl/get-country.query';
 
 @Controller('arrival')
 export class ArrivalRegistrationController {
@@ -70,6 +73,28 @@ export class ArrivalRegistrationController {
     );
 
     return { url };
+  }
+
+  @Public()
+  @Get('point')
+  async getPoint(
+    @Valibot({ schema: QueryPointClientDto, type: 'query' })
+    query: QueryPointClientDtoType,
+  ) {
+    return await this.queryBus.execute<GetPointClientQuery>(
+      new GetPointClientQuery(query),
+    );
+  }
+
+  @Public()
+  @Get('countries')
+  async getCountries(
+    @Valibot({ schema: QueryPointClientDto, type: 'query' })
+    query: QueryPointClientDtoType,
+  ) {
+    return await this.queryBus.execute<GetCountryClientQuery>(
+      new GetCountryClientQuery(query),
+    );
   }
 
   @Permissions(PermissionGroup.Registration, PermissionName.Read)
