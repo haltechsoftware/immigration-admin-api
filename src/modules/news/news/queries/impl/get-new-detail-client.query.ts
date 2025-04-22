@@ -2,7 +2,7 @@ import { GetByIdClientDtoType } from "src/modules/checkpoints/checkpoint/dtos/qu
 
 export class GetOneClientNewsQuery {
   constructor(
-    public readonly params: number,
+    public readonly params: string,
     public readonly query: GetByIdClientDtoType,
   ) {}
 }

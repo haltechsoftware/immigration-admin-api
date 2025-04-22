@@ -24,6 +24,7 @@ import { GetNewsClientOffsetBasePaginateQuery } from './queries/impl/get-new-to-
 import { GetNewsCategoryOffsetBasePaginateClientQuery } from './queries/impl/get-new-category-all.query';
 import { GetByIdClientDto, GetByIdClientDtoType } from 'src/modules/checkpoints/checkpoint/dtos/query-by-id-client';
 import { GetOneClientNewsQuery } from './queries/impl/get-new-detail-client.query';
+import { GetBySlugDto, GetBySlugDtoType } from 'src/common/dtos/get-by-slug.dto';
 
 @Controller('news')
 export class NewsController {
@@ -86,15 +87,17 @@ export class NewsController {
   }
 
   @Public()
-  @Get('client/:id')
+  @Get('client/:slug')
   async getNewDetailOfClient(
-    @Valibot({ schema: GetByIdDto, type: 'params' })
-    params: GetByIdDtoType,
+    // @Valibot({ schema: GetByIdDto, type: 'params' })
+    // params: GetByIdDtoType,
+    @Valibot({ schema: GetBySlugDto, type: 'params' })
+    params: GetBySlugDtoType,
     @Valibot({ schema: GetByIdClientDto, type: 'query' })
     query: GetByIdClientDtoType,
   ) {
     return await this._queryBus.execute<GetOneClientNewsQuery>(
-      new GetOneClientNewsQuery(params.id, query),
+      new GetOneClientNewsQuery(params.slug, query),
     );
   }
 

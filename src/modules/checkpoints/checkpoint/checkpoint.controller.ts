@@ -34,6 +34,7 @@ import { GetOneClientCheckpointCommand } from './queries/impl/get-one-client';
 import { GetByIdClientDto, GetByIdClientDtoType } from './dtos/query-by-id-client';
 import { GetAllCategoryClientCommand } from './queries/impl/get-category-client';
 import { QueryCategoryClientDto, QueryCategoryClientDtoType } from './dtos/query-category-client.dto';
+import { GetBySlugDto, GetBySlugDtoType } from '../../../common/dtos/get-by-slug.dto';
 
 @Controller('checkpoint')
 export class CheckpointController {
@@ -98,15 +99,15 @@ export class CheckpointController {
   }
 
   @Public()
-  @Get('client/:id')
+  @Get('client/:slug')
   async findOneToClient(
-    @Valibot({ schema: GetByIdDto, type: 'params' })
-    params: GetByIdDtoType,
+    @Valibot({ schema: GetBySlugDto, type: 'params' })
+    params: GetBySlugDtoType,
     @Valibot({ schema: GetByIdClientDto, type: 'query' })
     query: GetByIdClientDtoType,
   ) {
     return await this._queryBus.execute<GetOneClientCheckpointCommand>(
-      new GetOneClientCheckpointCommand(params.id, query),
+      new GetOneClientCheckpointCommand(params.slug, query),
     );
   }
 

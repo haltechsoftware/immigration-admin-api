@@ -7,53 +7,53 @@ import { GetOneClientNewsQuery } from '../impl/get-new-detail-client.query';
 @QueryHandler(GetOneClientNewsQuery)
 export class GetNewsDetailClientHandler implements IQueryHandler<GetOneClientNewsQuery> {
   constructor(private readonly drizzle: DrizzleService) {}
-  private prepared = this.drizzle
-  .db()
-  .query.news.findFirst({
-    where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
-    with: {
-      translates: {
-        where: (fields, { eq }) => eq(fields.lang, sql.placeholder('lang')),
-      },
-      category: { with: { translates: {
-        where: (fields, { eq }) => eq(fields.lang, sql.placeholder('lang')),
-      } } },
-    },
-  })
-  .prepare();
 
   async execute({
-    params: id,
+    params: slug,
     query: { lang },
   }: GetOneClientNewsQuery): Promise<any> {
-    const res = await this.prepared.execute({ id, lang });
+    // Retrieve the main news record with its translations
+    const res = await this.drizzle.db().query.news.findFirst({
+      with: {
+        translates: {
+          where: (f, o) => o.and(
+            o.eq(f.lang, lang),
+            o.eq(f.slug, slug)
+          ),
+        },
+        category: {
+          with: {
+            translates: {
+              where: (f, o) => o.eq(f.lang, lang), // Filter category translations by lang
+            },
+          },
+        },
+      },
+    });
 
     if (!res) throw new NotFoundException({ message: 'ຂໍ້ມູນນີ້ບໍ່ມີໃນລະບົບ' });
 
+    // Retrieve related news articles
     const relatedNews = await this.drizzle.db().query.news.findMany({
-        limit: 4,
-        where: (f, o) => o.and(
-            o.not(o.eq(f.id, res.id!)),
-            o.eq(f.status, 'published')
-          ),
-        columns: {
+      limit: 4,
+      where: (f, o) => o.and(
+        o.not(o.eq(f.id, res.id!)),  // Exclude the current news article
+        o.eq(f.status, 'published')  // Only include published news
+      ),
+      columns: {
         status: false,
         category_id: false,
         created_at: false,
         updated_at: false,
-        },
-        with: {
+      },
+      with: {
         translates: {
-            where: (f, o) => o.eq(f.lang, lang),
-            columns: {
-            news_id: false,
-            content: false,
-            },
+          where: (f, o) => o.eq(f.lang, lang),  // Filter related news by lang
         },
-        },
-        orderBy: sql`RAND()`,
+      },
+      orderBy: sql`RAND()`,  // Order related news randomly
     });
 
-    return { ...res, relatedNews }; 
+    return { ...res, relatedNews };  // Return both the main news and related news
   }
 }
