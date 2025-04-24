@@ -28,6 +28,7 @@ import { ArrivalRegistrationDto, ArrivalRegistrationDtoType } from './dtos/arriv
 import { QueryPointClientDto, QueryPointClientDtoType } from './dto/get-point.dto';
 import GetPointClientQuery from './queries/impl/get-point-client.query';
 import GetCountryClientQuery from './queries/impl/get-country.query';
+import checkCountryExceptVisaQuery from './queries/impl/check-country-except-visa.query';
 
 @Controller('arrival')
 export class ArrivalRegistrationController {
@@ -94,6 +95,16 @@ export class ArrivalRegistrationController {
   ) {
     return await this.queryBus.execute<GetCountryClientQuery>(
       new GetCountryClientQuery(query),
+    );
+  }
+
+  @Public()
+  @Get('check-country-except-visa/:id')
+  async checkCountryExceptVisa(
+    @Valibot({ schema: GetByIdDto, type: 'params' }) { id }: GetByIdDtoType,
+  ) {
+    return await this.queryBus.execute<checkCountryExceptVisaQuery>(
+      new checkCountryExceptVisaQuery(id),
     );
   }
 
