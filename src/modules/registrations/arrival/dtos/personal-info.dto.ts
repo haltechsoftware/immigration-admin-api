@@ -39,9 +39,15 @@ export const PersonalInfoSchema = object({
         maxLength(255, "Please enter race with a maximum length of 255 characters."),
         englishOnly("race"),
     ]),
-    phone_number: string('Phone number must be a string', [
-        minLength(6, "Please enter Phone number."),
-        maxLength(20, "Please enter Phone number with a maximum length of 20 characters."),
-        englishOnly("Phone number"),
+    // phone_number: string('Phone number must be a string', [
+    //     minLength(6, "Please enter Phone number."),
+    //     maxLength(20, "Please enter Phone number with a maximum length of 20 characters."),
+    //     englishOnly("Phone number"),
+    // ])
+    phone_number: string("Phone number must be a string", [
+        minLength(6, "Phone number must be at least 6 characters."),
+        maxLength(20, "Phone number must not exceed 20 characters."),
+        englishOnly("Phone number must contain only English characters."),
     ])
+      
 });

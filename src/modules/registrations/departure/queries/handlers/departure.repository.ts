@@ -7,6 +7,7 @@ import {
   ilike,
   isNotNull,
   isNull,
+  sql,
   SQL,
   SQLWrapper,
 } from 'drizzle-orm';
@@ -62,7 +63,7 @@ export class DepartureRegisterHandler
   }: QueryDepartureDtoType): SQL<unknown> {
     const condition: SQLWrapper[] = [
       departure_name
-        ? ilike(departureRegistration.departure_name, `%${departure_name}%`)
+        ? sql`${departureRegistration.departure_name} LIKE ${`%${departure_name}%`}`
         : undefined,
       passport_number
         ? eq(passportInformation.number, passport_number)

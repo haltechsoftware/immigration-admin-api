@@ -7,6 +7,7 @@ import {
   ilike,
   isNotNull,
   isNull,
+  sql,
   SQL,
   SQLWrapper,
 } from 'drizzle-orm';
@@ -68,7 +69,7 @@ export class ArrivalRegisterHandler
   }: QueryArrivalDtoType): SQL<unknown> {
     const conditions: SQLWrapper[] = [
       entry_name
-        ? ilike(arrivalRegistration.entry_name, `%${entry_name}%`)
+        ? sql`${arrivalRegistration.entry_name} LIKE ${`%${entry_name}%`}`
         : undefined,
       passport_number
         ? eq(passportInformation.number, passport_number)
