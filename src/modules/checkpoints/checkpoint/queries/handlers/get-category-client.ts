@@ -26,7 +26,7 @@ export class QueryGetAllCategoryClientHandler
           columns: {
             description: false,
             category_id: false,
-            slug: false,
+            // slug: false,
           },
           where: lang
             ? (fields, operators) => operators.eq(fields.lang, lang)
@@ -43,6 +43,7 @@ export class QueryGetAllCategoryClientHandler
       created_at: item.created_at,
       updated_at: item.updated_at,
       title: item.translates?.[0]?.title || '', // Assuming title is in 'translates' and falls back to an empty string if not found
+      slug: item.translates?.[0]?.slug || '',   // Same assumption for lang
       lang: item.translates?.[0]?.lang || '',   // Same assumption for lang
     }));
 
