@@ -34,28 +34,15 @@ export class GetNewsDetailClientHandler implements IQueryHandler<GetOneClientNew
 
     const translate = await this.drizzle.db().query.newsTranslate.findFirst({
       where: (f, o) => o.and(o.eq(f.lang, lang), o.eq(f.slug, slug)),
-      // with: {
-      //   news: {
-      //     columns: {
-      //       id: false,
-      //       category_id: false,
-      //       thumbnail: false,
-      //       public_at: false,
-      //       status: false,
-      //       created_at: false,
-      //       updated_at: false,
-      //     },
-      //     with: {
-      //       category: {
-      //         with: {
-      //           translates: {
-      //             where: (f, o) => o.eq(f.lang, lang),
-      //           },
-      //         },
-      //       },
-      //     },
-      //   },
-      // },
+      with: {
+        news: {
+          columns: {
+            id: true,
+            category_id: true,
+            thumbnail: true,
+          },
+        },
+      },
     });
 
     if (!translate) throw new NotFoundException({ message: 'ຂໍ້ມູນນີ້ບໍ່ມີໃນລະບົບ' });
@@ -82,11 +69,15 @@ export class GetNewsDetailClientHandler implements IQueryHandler<GetOneClientNew
         orderBy: sql`RAND()`,  // Order related news randomly
       });
 
-      // return { ...translate, ...translate.news.category.translates[0], relatedNews };  // Return both the main news and related news
-      // const categoryTranslation = translate.news?.category?.translates?.[0] || null; // Get the first category translation or null
       const result = {
-        ...translate,
-        // translates: categoryTranslation, //  'translates' for the category translation
+        id: translate.news?.id,
+        news_id: translate.news_id,
+        title: translate.title,
+        slug: translate.slug,
+        description: translate.description,
+        content: translate.content,
+        lang: translate.lang,
+        thumbnail: translate.news?.thumbnail,
         relatedNews,
       };
 
