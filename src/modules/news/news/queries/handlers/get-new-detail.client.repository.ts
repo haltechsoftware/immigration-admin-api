@@ -12,6 +12,7 @@ export class GetNewsDetailClientHandler implements IQueryHandler<GetOneClientNew
     params: slug,
     query: { lang },
   }: GetOneClientNewsQuery): Promise<any> {
+    
     // Retrieve the main news record with its translations
     const res = await this.drizzle.db().query.news.findFirst({
       with: {
@@ -31,7 +32,10 @@ export class GetNewsDetailClientHandler implements IQueryHandler<GetOneClientNew
       },
     });
 
-    if (!res) throw new NotFoundException({ message: 'ຂໍ້ມູນນີ້ບໍ່ມີໃນລະບົບ' });
+    // if (!res) throw new NotFoundException({ message: 'ຂໍ້ມູນນີ້ບໍ່ມີໃນລະບົບ' });
+    if (!res || res.translates.length === 0) {
+      throw new NotFoundException({ message: 'ຂໍ້ມູນນີ້ບໍ່ມີໃນລະບົບ' });
+    }
 
     // Retrieve related news articles
     const relatedNews = await this.drizzle.db().query.news.findMany({
