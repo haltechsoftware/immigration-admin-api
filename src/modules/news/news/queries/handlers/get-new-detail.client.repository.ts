@@ -33,57 +33,69 @@ export class GetNewsDetailClientHandler implements IQueryHandler<GetOneClientNew
     // });
 
     const translate = await this.drizzle.db().query.newsTranslate.findFirst({
-      where: (f, o) => o.and(o.eq(f.lang, lang), o.eq(f.slug, slug)),
+      where: (f, o) => o.eq(f.slug, slug),
+      columns: { news_id: true },
+    });
+
+    if (!translate) {
+      throw new NotFoundException({ message: 'ຂໍ້ມູນນີ້ບໍ່ມີໃນລະບົບ' });
+    }
+
+    const data = await this.drizzle.db().query.news.findFirst({
+      columns: {
+        category_id: false,
+        created_at: false,
+        updated_at: false,
+        status: false,
+      },
+      where: (f, o) => o.and(
+        o.eq(f.status, "published"),
+        o.eq(f.id, translate.news_id)
+      ),
       with: {
-        news: {
-          columns: {
-            id: true,
-            category_id: true,
-            thumbnail: true,
-          },
+        translates: {
+          where: (f, o) => o.eq(f.lang, lang),
         },
       },
     });
 
-    if (!translate) throw new NotFoundException({ message: 'ຂໍ້ມູນນີ້ບໍ່ມີໃນລະບົບ' });
-
-    // Retrieve related news articles
-    if (translate && translate.news_id) {
-      const relatedNews = await this.drizzle.db().query.news.findMany({
-        limit: 4,
-        where: (f, o) => o.and(
-          o.not(o.eq(f.id, translate.news_id!)),  // Exclude the current news article
-          o.eq(f.status, 'published')  // Only include published news
-        ),
-        columns: {
-          status: false,
-          category_id: false,
-          created_at: false,
-          updated_at: false,
-        },
-        with: {
-          translates: {
-            where: (f, o) => o.eq(f.lang, lang),  // Filter related news by lang
-          },
-        },
-        orderBy: sql`RAND()`,  // Order related news randomly
-      });
-
-      const result = {
-        id: translate.news?.id,
-        news_id: translate.news_id,
-        title: translate.title,
-        slug: translate.slug,
-        description: translate.description,
-        content: translate.content,
-        lang: translate.lang,
-        thumbnail: translate.news?.thumbnail,
-        relatedNews,
-      };
-
-      return result;
-    } else {
-      return undefined;
+    if (!data || !data.translates?.length) {
+      throw new NotFoundException({ message: 'ບໍ່ພົບຂໍ້ມູນພາສາທີ່ທ່ານຮ້ອງຂໍ' });
     }
+
+    const translation = data.translates[0];
+
+    const relatedNews = await this.drizzle.db().query.news.findMany({
+      limit: 4,
+      where: (f, o) =>
+        o.and(
+          o.not(o.eq(f.id, translate.news_id)),
+          o.eq(f.status, 'published')
+        ),
+      columns: {
+        status: false,
+        category_id: false,
+        created_at: false,
+        updated_at: false,
+      },
+      with: {
+        translates: {
+          where: (f, o) => o.eq(f.lang, lang),
+        },
+      },
+      orderBy: sql`RAND()`,
+    });
+
+    return {
+      id: translation.id,
+      news_id: translation.news_id,
+      title: translation.title,
+      slug: translation.slug,
+      description: translation.description,
+      content: translation.content,
+      lang: translation.lang,
+      thumbnail: data.thumbnail,
+      relatedNews,
+    };
   }
 }
