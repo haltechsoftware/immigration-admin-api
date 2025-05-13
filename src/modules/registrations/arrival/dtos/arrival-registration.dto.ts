@@ -45,7 +45,6 @@ const ArrivalRegistrationDto = object({
     is_travelling_in_tour: optional(
       string('Group tour must be a string.', [
         maxLength(255, 'Please enter Group tour with a maximum length of 255 characters.'),
-        englishOnly('Group tour'),
       ])
     ),
 
