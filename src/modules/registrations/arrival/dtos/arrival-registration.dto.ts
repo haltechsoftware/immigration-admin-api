@@ -1,5 +1,5 @@
 import englishOnly from "src/common/utils/english-only";
-import { enum_, maxLength, minLength, object, Output, string } from "valibot";
+import { enum_, maxLength, minLength, object, optional, Output, string } from "valibot";
 import { PersonalInfoSchema } from "./personal-info.dto";
 import { PassportInfoSchema } from "./passport-info.dto";
 import { VisaInfoSchema } from "./visa-info.dto";
@@ -42,17 +42,14 @@ const ArrivalRegistrationDto = object({
     country_id: string('travelling from must be a string.', [
         minLength(1, 'Please select an option.'),
     ]),
-    is_travelling_in_tour: string('Group tour must be a string.', [
-        minLength(
-          1,
-          'Please enter Group tour.',
-        ),
-        maxLength(
-          255,
-          'Please enter Group tour with a maximum length of ${255} characters.',
-        ),
+    is_travelling_in_tour: optional(
+      string('Group tour must be a string.', [
+        minLength(1, 'Please enter Group tour.'),
+        maxLength(255, 'Please enter Group tour with a maximum length of 255 characters.'),
         englishOnly('Group tour'),
-    ]),
+      ])
+    ),
+
     personal_info: PersonalInfoSchema,
     passport_info: PassportInfoSchema,
     visa: VisaInfoSchema,
