@@ -88,7 +88,7 @@ export class ArrivalRegistrationRepository {
 
               // Visa Information
               let visaId: number | undefined;
-              if (visa) {
+              if (visa !== null && visa.no && visa.visaCategory && visa.date_of_issue && visa.place_of_issue) {
                 const visaInfoRes = await tx.insert(visaInformation).values({
                     number: visa.no,                // Matches the 'number' column in the DB
                     visaCategory: visa.visaCategory, // Drizzle will map 'visaCategory' to 'visa_category' in the DB
