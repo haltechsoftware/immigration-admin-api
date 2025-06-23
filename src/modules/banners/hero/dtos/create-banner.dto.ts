@@ -4,7 +4,9 @@ import {
   custom,
   maxLength,
   minLength,
+  nullable,
   object,
+  optional,
   regex,
   special,
   string,
@@ -49,27 +51,48 @@ const CreateBannerHeroDto = object({
     (input) => Boolean(Number(input)),
   ),
 
-  lo_title: string('ຈະຕ້ອງເປັນ string', [
-    minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
-    maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
-  ]),
-  lo_description: string('ຈະຕ້ອງເປັນ string.', [
-    maxLength(1000, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 1000 ຕົວອັກສອນ.'),
-  ]),
-  en_title: string('ຈະຕ້ອງເປັນ string.', [
-    minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
-    maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
-  ]),
-  en_description: string('ຈະຕ້ອງເປັນ string.', [
-    maxLength(1000, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 1000 ຕົວອັກສອນ.'),
-  ]),
-  zh_cn_title: string('ຈະຕ້ອງເປັນ string.', [
-    minLength(1, 'ຈະຕ້ອງບໍ່ຫວ່າງເປົ່າ.'),
-    maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
-  ]),
-  zh_cn_description: string('ຈະຕ້ອງເປັນ string.', [
-    maxLength(1000, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 1000 ຕົວອັກສອນ.'),
-  ]),
+  lo_title: optional(
+    nullable(
+      string('ຈະຕ້ອງເປັນ string', [
+        maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
+      ]),
+    ),
+  ),
+  lo_description: optional(
+    nullable(
+      string('ຈະຕ້ອງເປັນ string.', [
+        maxLength(1000, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 1000 ຕົວອັກສອນ.'),
+      ]),
+    ),
+  ),
+  en_title: optional(
+    nullable(
+      string('ຈະຕ້ອງເປັນ string.', [
+        maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
+      ]),
+    ),
+  ),
+  en_description: optional(
+    nullable(
+      string('ຈະຕ້ອງເປັນ string.', [
+        maxLength(1000, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 1000 ຕົວອັກສອນ.'),
+      ]),
+    ),
+  ),
+  zh_cn_title: optional(
+    nullable(
+      string('ຈະຕ້ອງເປັນ string.', [
+        maxLength(255, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 255 ຕົວອັກສອນ.'),
+      ]),
+    ),
+  ),
+  zh_cn_description: optional(
+    nullable(
+      string('ຈະຕ້ອງເປັນ string.', [
+        maxLength(1000, 'ຄວາມຍາວສູງສຸດທີ່ອະນຸຍາດແມ່ນ 1000 ຕົວອັກສອນ.'),
+      ]),
+    ),
+  ),
 });
 
 type CreateBannerHeroType = Output<typeof CreateBannerHeroDto>;
