@@ -24,8 +24,14 @@ import { UploadVisaImageDto } from './dtos/upload-visa-image.dto';
 import ArrivalRegisterQuery from './queries/impl/arrival.query';
 import GetArrivalByIdQuery from './queries/impl/get-arrival-by-id.query';
 import ArrivalRegistrationCommand from './commands/impl/arrival-registration.command';
-import { ArrivalRegistrationDto, ArrivalRegistrationDtoType } from './dtos/arrival-registration.dto';
-import { QueryPointClientDto, QueryPointClientDtoType } from './dto/get-point.dto';
+import {
+  ArrivalRegistrationDto,
+  ArrivalRegistrationDtoType,
+} from './dtos/arrival-registration.dto';
+import {
+  QueryPointClientDto,
+  QueryPointClientDtoType,
+} from './dto/get-point.dto';
 import GetPointClientQuery from './queries/impl/get-point-client.query';
 import GetCountryClientQuery from './queries/impl/get-country.query';
 import checkCountryExceptVisaQuery from './queries/impl/check-country-except-visa.query';
@@ -55,7 +61,10 @@ export class ArrivalRegistrationController {
   @Public()
   @Post()
   @FormDataRequest()
-  async arrivalRegistration(@Valibot({ schema: ArrivalRegistrationDto }) input: ArrivalRegistrationDtoType) {
+  async arrivalRegistration(
+    @Valibot({ schema: ArrivalRegistrationDto })
+    input: ArrivalRegistrationDtoType,
+  ) {
     const res = await this.commandBus.execute<ArrivalRegistrationCommand>(
       new ArrivalRegistrationCommand(input),
     );
