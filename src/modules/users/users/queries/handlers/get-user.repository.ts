@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { count } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
-import { users } from 'src/modules/users/entities';
+import { users, usersToRoles, roles } from 'src/modules/users/entities';
 import GetUserQuery from '../impl/get-user.query';
 
 @QueryHandler(GetUserQuery)
@@ -12,6 +12,10 @@ export class GetUserHandler implements IQueryHandler<GetUserQuery> {
     .db()
     .select({ value: count() })
     .from(users)
+    // new
+    .leftJoin(usersToRoles, eq(users.id, usersToRoles.user_id))
+    .leftJoin(roles, eq(usersToRoles.role_id, roles.id))
+    .where(eq(roles.is_default, false))
     .prepare();
 
   async execute({ paginate: { offset, limit } }: GetUserQuery) {
@@ -27,16 +31,35 @@ export class GetUserHandler implements IQueryHandler<GetUserQuery> {
       limit,
       offset,
     });
+    // const total = await this._prepared.execute();
+
+    // return {
+    //   data: res.map((val) => ({
+    //     ...val,
+    //     roles: val.usersToRoles.map(({ role }) => role),
+    //     usersToRoles: undefined,
+    //     session: val.sessions[0],
+    //     sessions: undefined,
+    //   })),
+    //   total: total[0].value,
+    // };
+
+    const filtered = res.filter((user) =>
+      user.usersToRoles.some(({ role }) => role.is_default === false),
+    );
+
+    const data = filtered.map((val) => ({
+      ...val,
+      roles: val.usersToRoles.map(({ role }) => role),
+      usersToRoles: undefined,
+      session: val.sessions[0],
+      sessions: undefined,
+    }));
+
     const total = await this._prepared.execute();
 
     return {
-      data: res.map((val) => ({
-        ...val,
-        roles: val.usersToRoles.map(({ role }) => role),
-        usersToRoles: undefined,
-        session: val.sessions[0],
-        sessions: undefined,
-      })),
+      data,
       total: total[0].value,
     };
   }
