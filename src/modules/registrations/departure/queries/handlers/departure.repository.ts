@@ -19,6 +19,7 @@ import {
 import { QueryDepartureDtoType } from '../../dto/query-departure.dto';
 import DepartureRegisterQuery from '../impl/departure.query';
 import { personalInformation } from './../../../entities/personal_information';
+import { profiles, users } from 'src/modules/users/entities';
 
 @QueryHandler(DepartureRegisterQuery)
 export class DepartureRegisterHandler
@@ -44,11 +45,21 @@ export class DepartureRegisterHandler
         black_list: val.departure_registration.black_list,
         verification_code: val.departure_registration.verification_code,
         verified_at: val.departure_registration.verified_at,
+        verified_by: val.departure_registration.verified_by,
         created_at: val.departure_registration.created_at,
         passport_information: {
           id: val.passport_information.id,
           number: val.passport_information.number,
         },
+        verified_by_user: val.users
+          ? {
+              id: val.users.id,
+              first_name: val.profiles.first_name,
+              last_name: val.profiles.last_name,
+              email: val.users.email,
+              image: val.profiles.image,
+            }
+          : null,
       })),
       total: total[0].value,
     };
@@ -63,7 +74,9 @@ export class DepartureRegisterHandler
   }: QueryDepartureDtoType): SQL<unknown> {
     const condition: SQLWrapper[] = [
       departure_name
-        ? sql`${departureRegistration.departure_name} LIKE ${`%${departure_name}%`}`
+        ? sql`${
+            departureRegistration.departure_name
+          } LIKE ${`%${departure_name}%`}`
         : undefined,
       passport_number
         ? eq(passportInformation.number, passport_number)
@@ -105,6 +118,8 @@ export class DepartureRegisterHandler
           passportInformation.id,
         ),
       )
+      .leftJoin(users, eq(departureRegistration.verified_by, users.id))
+      .leftJoin(profiles, eq(users.id, profiles.user_id))
       .orderBy(desc(departureRegistration.id))
       .offset(offset)
       .limit(limit)

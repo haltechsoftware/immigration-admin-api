@@ -11,6 +11,10 @@ import { hotels } from 'src/modules/hotels/entities';
 import { profiles } from './profiles';
 import { sessions } from './sessions';
 import { usersToRoles } from './users_to_roles';
+import {
+  arrivalRegistration,
+  departureRegistration,
+} from 'src/modules/registrations/entities';
 
 export const users = mysqlTable('users', {
   id: serial('id').primaryKey().notNull(),
@@ -39,6 +43,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   }),
   sessions: many(sessions),
   usersToRoles: many(usersToRoles),
+  verified_arrival_registrations: many(arrivalRegistration),
+  verified_departure_registrations: many(departureRegistration),
 }));
 
 export type User = typeof users.$inferSelect;

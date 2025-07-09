@@ -19,6 +19,7 @@ import {
 } from 'src/modules/registrations/entities';
 import { QueryArrivalDtoType } from '../../dto/query-arrival.dto';
 import ArrivalRegisterQuery from '../impl/arrival.query';
+import { profiles, users } from 'src/modules/users/entities';
 
 @QueryHandler(ArrivalRegisterQuery)
 export class ArrivalRegisterHandler
@@ -43,6 +44,7 @@ export class ArrivalRegisterHandler
         black_list: val.arrival_registration.black_list,
         verification_code: val.arrival_registration.verification_code,
         verified_at: val.arrival_registration.verified_at,
+        verified_by: val.arrival_registration.verified_by,
         created_at: val.arrival_registration.created_at,
         passport_information: {
           id: val.passport_information.id,
@@ -54,6 +56,15 @@ export class ArrivalRegisterHandler
               number: val.visa_information.number,
             }
           : undefined,
+        verified_by_user: val.users
+          ? {
+              id: val.users.id,
+              first_name: val.profiles.first_name,
+              last_name: val.profiles.last_name,
+              email: val.users.email,
+              image: val.profiles.image,
+            }
+          : null,
       })),
       total: total[0].value,
     };
@@ -106,6 +117,8 @@ export class ArrivalRegisterHandler
         visaInformation,
         eq(arrivalRegistration.visa_information_id, visaInformation.id),
       )
+      .leftJoin(users, eq(arrivalRegistration.verified_by, users.id))
+      .leftJoin(profiles, eq(users.id, profiles.user_id))
       .orderBy(desc(arrivalRegistration.id))
       .offset(offset)
       .limit(limit)

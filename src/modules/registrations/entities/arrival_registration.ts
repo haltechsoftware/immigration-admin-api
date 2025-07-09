@@ -15,6 +15,7 @@ import { intendedAddress } from './intended_address';
 import { passportInformation } from './passport_information';
 import { personalInformation } from './personal_information';
 import { visaInformation } from './visa_information';
+import { users } from 'src/modules/users/entities';
 
 export const purpose = mysqlEnum('purpose', [
   'transit',
@@ -58,6 +59,11 @@ export const arrivalRegistration = mysqlTable(
     is_traveling_in_tour: varchar('is_traveling_in_tour', { length: 255 }),
     verification_code: char('verification_code', { length: 10 }).unique(),
     verified_at: timestamp('verified_at', { mode: 'string' }),
+    // verified_by: varchar('verified_by', { length: 255 }),
+    verified_by: bigint('verified_by', {
+      mode: 'number',
+      unsigned: true,
+    }),
     black_list: blackListStatus.notNull(),
     created_at: timestamp('created_at', { mode: 'string' })
       .defaultNow()
@@ -87,6 +93,12 @@ export const arrivalRegistration = mysqlTable(
       foreignColumns: [countries.id],
       name: 'arrival_reg_country_id_fk',
     }).onDelete('set null'),
+
+    verifiedByReference: foreignKey({
+      columns: [table.verified_by],
+      foreignColumns: [users.id],
+      name: 'arrival_reg_verified_by_fk',
+    }).onDelete('set null'),
   }),
 );
 
@@ -106,5 +118,9 @@ export const arrivalRegistrationRelations = relations(
       references: [personalInformation.id],
     }),
     intended_address: many(intendedAddress),
+    verified_by_user: one(users, {
+      fields: [arrivalRegistration.verified_by],
+      references: [users.id],
+    }),
   }),
 );

@@ -17,6 +17,12 @@ export class GetDepartureByIdHandler
       with: {
         passport_information: true,
         personal_information: true,
+        verified_by_user: {
+          columns: { password: false },
+          with: {
+            profile: true,
+          },
+        },
       },
     })
     .prepare();

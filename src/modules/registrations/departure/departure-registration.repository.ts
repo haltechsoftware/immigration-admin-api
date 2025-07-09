@@ -18,9 +18,11 @@ export class DepartureRepository {
   async updateVerifyCode({
     id,
     verified_at,
+    user_id,
   }: {
     id: number;
     verified_at: string;
+    user_id: number;
   }): Promise<void> {
     await this.drizzle
       .db()
@@ -28,6 +30,7 @@ export class DepartureRepository {
       .set({
         verified_at,
         updated_at: format(new Date(), DateTimeFormat.Timestamp),
+        verified_by: user_id,
       })
       .where(eq(departureRegistration.id, id));
   }

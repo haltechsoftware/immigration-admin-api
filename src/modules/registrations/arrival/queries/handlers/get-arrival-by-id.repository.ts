@@ -19,6 +19,12 @@ export class GetArrivalByIdHandler
         visa_information: true,
         personal_information: true,
         intended_address: true,
+        verified_by_user: {
+          columns: { password: false },
+          with: {
+            profile: true,
+          },
+        },
       },
     })
     .prepare();

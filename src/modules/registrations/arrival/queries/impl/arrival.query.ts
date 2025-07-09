@@ -1,5 +1,5 @@
-import { QueryArrivalDtoType } from "../../dto/query-arrival.dto";
+import { QueryArrivalDtoType } from '../../dto/query-arrival.dto';
 
 export default class ArrivalRegisterQuery {
-    constructor(public readonly query: QueryArrivalDtoType) {}
-} 
+  constructor(public readonly query: QueryArrivalDtoType) {}
+}

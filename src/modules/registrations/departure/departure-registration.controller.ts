@@ -20,8 +20,13 @@ import {
 import DepartureRegisterQuery from './queries/impl/departure.query';
 import GetDepartureByIdQuery from './queries/impl/get-departure-by-id.query';
 import { Public } from 'src/common/decorators/public.decorator';
-import { DepartureRegistrationDto, DepartureRegistrationDtoType } from './dto/departure-registration.dto';
+import {
+  DepartureRegistrationDto,
+  DepartureRegistrationDtoType,
+} from './dto/departure-registration.dto';
 import DepartureRegistrationCommand from './commands/impl/departure-registration.command';
+import { Auth } from 'src/common/decorators/auth.decorator';
+import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
 
 @Controller('departure')
 export class DepartureRegistrationController {
@@ -44,13 +49,13 @@ export class DepartureRegistrationController {
   @Public()
   @Post()
   async createDeparture(
-    @Valibot({ schema: DepartureRegistrationDto }) input: DepartureRegistrationDtoType
-  ): Promise<any>{
+    @Valibot({ schema: DepartureRegistrationDto })
+    input: DepartureRegistrationDtoType,
+  ): Promise<any> {
     return await this.commandBus.execute<DepartureRegistrationCommand>(
       new DepartureRegistrationCommand(input),
     );
   }
-
 
   @Permissions(PermissionGroup.Registration, PermissionName.Read)
   @Get(':id')
@@ -78,9 +83,11 @@ export class DepartureRegistrationController {
   @Put(':id')
   async verifyCode(
     @Valibot({ schema: GetByIdDto, type: 'params' }) { id }: GetByIdDtoType,
+    @Auth() user: IJwtPayload,
   ): Promise<any> {
+    const user_id = Number(user.sub);
     const message = await this.commandBus.execute<VerifyDepartureCodeCommand>(
-      new VerifyDepartureCodeCommand(id),
+      new VerifyDepartureCodeCommand(id, user_id),
     );
 
     return { message };

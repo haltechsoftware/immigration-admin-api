@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Put, Req } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Permissions } from 'src/common/decorators/permission.decorator';
@@ -9,7 +9,7 @@ import {
   PermissionGroup,
   PermissionName,
 } from 'src/common/enum/permission.enum';
-import { Output } from 'valibot';
+import { number, Output } from 'valibot';
 import ScanArrivalCodeCommand from './commands/impl/scan-arrival-code.command';
 import { UploadPassportImageCommand } from './commands/impl/upload-passport-image.command';
 import { UploadVisaImageCommand } from './commands/impl/upload-visa-image.command';
@@ -35,6 +35,8 @@ import {
 import GetPointClientQuery from './queries/impl/get-point-client.query';
 import GetCountryClientQuery from './queries/impl/get-country.query';
 import checkCountryExceptVisaQuery from './queries/impl/check-country-except-visa.query';
+import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
+import { Auth } from 'src/common/decorators/auth.decorator';
 
 @Controller('arrival')
 export class ArrivalRegistrationController {
@@ -154,9 +156,11 @@ export class ArrivalRegistrationController {
   @Put(':id')
   async verifyCode(
     @Valibot({ schema: GetByIdDto, type: 'params' }) { id }: GetByIdDtoType,
+    @Auth() user: IJwtPayload,
   ): Promise<any> {
+    const user_id = Number(user.sub);
     const result = await this.commandBus.execute<VerifyArrivalCodeCommand>(
-      new VerifyArrivalCodeCommand(id),
+      new VerifyArrivalCodeCommand(id, user_id),
     );
 
     return { message: result };

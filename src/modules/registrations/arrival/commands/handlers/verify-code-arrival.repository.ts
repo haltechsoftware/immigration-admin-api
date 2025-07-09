@@ -23,7 +23,7 @@ export class VerifyArrivalCodeHandler
     })
     .prepare();
 
-  async execute({ id }: VerifyArrivalCodeCommand) {
+  async execute({ id, user_id }: VerifyArrivalCodeCommand) {
     const res = await this.prepared.execute({ id });
 
     if (!res) throw new NotFoundException({ message: 'ລະຫັດບໍ່ມີໃນລະບົບ' });
@@ -36,6 +36,7 @@ export class VerifyArrivalCodeHandler
     await this.repository.updateVerifyCode({
       id: res.id,
       verified_at: format(new Date(), DateTimeFormat.Timestamp),
+      user_id,
     });
 
     return 'ກວດສອບສຳເລັດ';
