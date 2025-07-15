@@ -88,6 +88,7 @@ export class DepartureRepository {
           personal_information_id: personalInfoRes.insertId, // ✅ Correct access to insertId
           passport_information_id: passportInfoRes.insertId, // ✅ Correct access to insertId
           verification_code: code,
+          check_in_date: new Date(input.check_in_date),
         });
 
         // return code;

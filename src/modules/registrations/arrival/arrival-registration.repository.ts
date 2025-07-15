@@ -134,6 +134,7 @@ export class ArrivalRegistrationRepository {
           country_id: Number(input.country_id), // ✅ Fixed
           visa_information_id: visaId, // ✅ Fixed
           verification_code: code, // ✅ Fixed
+          check_in_date: new Date(input.check_in_date),
         });
 
         // Intended Address
@@ -148,10 +149,7 @@ export class ArrivalRegistrationRepository {
         });
 
         const [country] = await tx
-          .select({
-            ...countries,
-            ...countryTranslate,
-          })
+          .select({ ...countries, ...countryTranslate })
           .from(countries)
           .leftJoin(
             countryTranslate,
@@ -168,6 +166,7 @@ export class ArrivalRegistrationRepository {
         // return code; // Return generated verification code
         return {
           verification_code: code,
+          check_in_date: input.check_in_date,
           personal_info: personal_info,
           passport_info: passport_info,
           visa_info: visa || null,

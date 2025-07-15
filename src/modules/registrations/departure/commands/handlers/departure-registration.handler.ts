@@ -1,11 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DepartureRepository } from '../../departure-registration.repository';
 import { validateDate } from 'src/common/utils/validate-date';
-import {
-  UnprocessableEntityException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+
 import DepartureRegistrationCommand from '../impl/departure-registration.command';
+import { TypeCheckDate } from 'src/common/enum/date-time-fomat.enum';
+import { validateCheckInDate } from 'src/common/utils/check-date.util';
 
 @CommandHandler(DepartureRegistrationCommand)
 export default class DepartureRegistrationHandler
@@ -14,6 +13,8 @@ export default class DepartureRegistrationHandler
   constructor(private readonly repository: DepartureRepository) {}
 
   async execute({ input }: DepartureRegistrationCommand): Promise<string> {
+    validateCheckInDate(input.check_in_date, TypeCheckDate.DEPARTURE);
+
     // Validate dates
     if (input.personal_info?.date_of_birth)
       validateDate(input.personal_info.date_of_birth, 'date_of_birth');
@@ -24,6 +25,7 @@ export default class DepartureRegistrationHandler
         input.passport_info.date_of_issue,
         'passport_info.date_of_issue',
       );
+    if (input.check_in_date) validateDate(input.check_in_date, 'check_in_date');
 
     // Check if the passport already exists
     // const passports = await this.repository.getPassportAll(

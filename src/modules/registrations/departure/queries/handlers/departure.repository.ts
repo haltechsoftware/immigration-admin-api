@@ -4,7 +4,6 @@ import {
   count,
   desc,
   eq,
-  ilike,
   isNotNull,
   isNull,
   sql,
@@ -20,6 +19,8 @@ import { QueryDepartureDtoType } from '../../dto/query-departure.dto';
 import DepartureRegisterQuery from '../impl/departure.query';
 import { personalInformation } from './../../../entities/personal_information';
 import { profiles, users } from 'src/modules/users/entities';
+import { format } from 'date-fns';
+import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 
 @QueryHandler(DepartureRegisterQuery)
 export class DepartureRegisterHandler
@@ -46,6 +47,12 @@ export class DepartureRegisterHandler
         verification_code: val.departure_registration.verification_code,
         verified_at: val.departure_registration.verified_at,
         verified_by: val.departure_registration.verified_by,
+        check_in_date: val.departure_registration.check_in_date
+          ? format(
+              val.departure_registration.check_in_date,
+              DateTimeFormat.date,
+            )
+          : null,
         created_at: val.departure_registration.created_at,
         passport_information: {
           id: val.passport_information.id,

@@ -2,12 +2,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import ArrivalRegistrationCommand from '../impl/arrival-registration.command';
 import { ArrivalRegistrationRepository } from '../../arrival-registration.repository';
 import { CountryRepository } from 'src/modules/checkpoints/country/country.repository';
-import {
-  BadRequestException,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { validateDate } from 'src/common/utils/validate-date';
+import { validateCheckInDate } from 'src/common/utils/check-date.util';
+import { TypeCheckDate } from 'src/common/enum/date-time-fomat.enum';
 
 @CommandHandler(ArrivalRegistrationCommand)
 export default class ArrivalRegistrationHandler
@@ -31,6 +29,8 @@ export default class ArrivalRegistrationHandler
 
     const country = await this.countryRepository.findOneCountry(countryId);
 
+    validateCheckInDate(input.check_in_date, TypeCheckDate.ARRIVAL);
+
     if (!country) {
       throw new NotFoundException({
         message: `${countryId} ລະຫັດບໍ່ມີໃນລະບົບ`,
@@ -48,6 +48,7 @@ export default class ArrivalRegistrationHandler
         input.passport_info.date_of_issue,
         'passport_info.date_of_issue',
       );
+    if (input.check_in_date) validateDate(input.check_in_date, 'check_in_date');
 
     // const passports = await this.repository.getPassportAll(
     //   input.passport_info.no,

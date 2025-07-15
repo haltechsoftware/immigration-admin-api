@@ -20,6 +20,8 @@ import {
 import { QueryArrivalDtoType } from '../../dto/query-arrival.dto';
 import ArrivalRegisterQuery from '../impl/arrival.query';
 import { profiles, users } from 'src/modules/users/entities';
+import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
+import { format } from 'date-fns';
 
 @QueryHandler(ArrivalRegisterQuery)
 export class ArrivalRegisterHandler
@@ -45,6 +47,9 @@ export class ArrivalRegisterHandler
         verification_code: val.arrival_registration.verification_code,
         verified_at: val.arrival_registration.verified_at,
         verified_by: val.arrival_registration.verified_by,
+        check_in_date: val.arrival_registration.check_in_date
+          ? format(val.arrival_registration.check_in_date, DateTimeFormat.date)
+          : null,
         created_at: val.arrival_registration.created_at,
         passport_information: {
           id: val.passport_information.id,

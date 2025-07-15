@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm';
 import {
   bigint,
   char,
+  date,
   foreignKey,
   mysqlTable,
   serial,
@@ -34,6 +35,7 @@ export const departureRegistration = mysqlTable(
       unsigned: true,
     }),
     black_list: blackListStatus.notNull(),
+    check_in_date: date('check_in_date'),
     created_at: timestamp('created_at', { mode: 'string' })
       .defaultNow()
       .notNull(),

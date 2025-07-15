@@ -1,6 +1,6 @@
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import GetCountryClientQuery from "../impl/get-country.query";
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import GetCountryClientQuery from '../impl/get-country.query';
 
 @QueryHandler(GetCountryClientQuery)
 export class queryCountriesClientHandler
@@ -26,9 +26,9 @@ export class queryCountriesClientHandler
     });
 
     const result = countryList.map((country) => ({
-        id: country.id,
-        name: country.translates?.[0]?.name ?? null,
-        slug: country.translates?.[0]?.slug ?? null,
+      id: country.id,
+      name: country.translates?.[0]?.name ?? null,
+      slug: country.translates?.[0]?.slug ?? null,
     }));
 
     return {

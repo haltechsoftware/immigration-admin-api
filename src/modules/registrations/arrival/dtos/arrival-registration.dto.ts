@@ -6,6 +6,7 @@ import {
   object,
   optional,
   Output,
+  regex,
   string,
 } from 'valibot';
 import { PersonalInfoSchema } from './personal-info.dto';
@@ -55,6 +56,10 @@ const ArrivalRegistrationDto = object({
       ),
     ]),
   ),
+  check_in_date: string('Check in date must be a string.', [
+    minLength(1, 'Please enter Check in date.'),
+    regex(/^\d{4}-\d{2}-\d{2}$/, 'Check in date must be in YYYY-MM-DD format.'),
+  ]),
 
   personal_info: PersonalInfoSchema,
   passport_info: PassportInfoSchema,

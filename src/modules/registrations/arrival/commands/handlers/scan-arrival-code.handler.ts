@@ -3,6 +3,12 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { sql } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import ScanArrivalCodeCommand from '../impl/scan-arrival-code.command';
+import { validateCheckInDate } from 'src/common/utils/check-date.util';
+import {
+  DateTimeFormat,
+  TypeCheckDate,
+} from 'src/common/enum/date-time-fomat.enum';
+import { format } from 'date-fns';
 
 @CommandHandler(ScanArrivalCodeCommand)
 export class ScanArrivalCodeHandler
@@ -33,6 +39,15 @@ export class ScanArrivalCodeHandler
 
     if (!res) throw new NotFoundException({ message: 'ລະຫັດບໍ່ມີໃນລະບົບ' });
 
-    return res;
+    validateCheckInDate(res.check_in_date, TypeCheckDate.SCAN);
+
+    const formatted = {
+      ...res,
+      check_in_date: res.check_in_date
+        ? format(res.check_in_date, DateTimeFormat.date)
+        : null,
+    };
+
+    return formatted;
   }
 }

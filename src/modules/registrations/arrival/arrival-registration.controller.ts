@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Post, Put, Req } from '@nestjs/common';
+import { Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Permissions } from 'src/common/decorators/permission.decorator';
@@ -9,7 +9,7 @@ import {
   PermissionGroup,
   PermissionName,
 } from 'src/common/enum/permission.enum';
-import { number, Output } from 'valibot';
+import { Output } from 'valibot';
 import ScanArrivalCodeCommand from './commands/impl/scan-arrival-code.command';
 import { UploadPassportImageCommand } from './commands/impl/upload-passport-image.command';
 import { UploadVisaImageCommand } from './commands/impl/upload-visa-image.command';
