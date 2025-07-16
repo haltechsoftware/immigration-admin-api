@@ -33,7 +33,6 @@ export class UpdateCheckpointHandler
     //     input.zh_cn.time_operation === input.lo.time_operation
     //   )
     //     throw new ConflictException({ message: 'ເວລາປິດ-ເປີດ ດ່ານ ຊ້ຳກັນ!' });
-  
 
     const checkpoint = await this.checkPointRepository.findOne(id);
 

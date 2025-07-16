@@ -51,7 +51,10 @@ const CreateCheckpointDto = object({
     string(),
     // (input) => JSON.parse(input),
     (input) => {
-      const res = safeParse(omit(CheckpointTranslateDto, ['id']), JSON.parse(input));
+      const res = safeParse(
+        omit(CheckpointTranslateDto, ['id']),
+        JSON.parse(input),
+      );
       if (res.success) {
         return res.output;
       }
@@ -68,7 +71,10 @@ const CreateCheckpointDto = object({
     string(),
     // (input) => JSON.parse(input),
     (input) => {
-      const res = safeParse(omit(CheckpointTranslateDto, ['id']), JSON.parse(input));
+      const res = safeParse(
+        omit(CheckpointTranslateDto, ['id']),
+        JSON.parse(input),
+      );
       if (res.success) {
         return res.output;
       }
@@ -84,19 +90,25 @@ const CreateCheckpointDto = object({
   zh_cn: transform<
     StringSchema<string>,
     Omit<CheckpointTranslateDtoType, 'id'>
-  >(string(),
-  // (input) => JSON.parse(input),
-  (input) => {
-        const res = safeParse(omit(CheckpointTranslateDto, ['id']), JSON.parse(input));
-        if (res.success) {
-          return res.output;
-        }
-      }, 
-  [
-    custom(
-      (input) => safeParse(omit(CheckpointTranslateDto, ['id']), input).success,
-    ),
-  ]),
+  >(
+    string(),
+    // (input) => JSON.parse(input),
+    (input) => {
+      const res = safeParse(
+        omit(CheckpointTranslateDto, ['id']),
+        JSON.parse(input),
+      );
+      if (res.success) {
+        return res.output;
+      }
+    },
+    [
+      custom(
+        (input) =>
+          safeParse(omit(CheckpointTranslateDto, ['id']), input).success,
+      ),
+    ],
+  ),
 });
 
 type CreateCheckpointDtoType = Output<typeof CreateCheckpointDto>;

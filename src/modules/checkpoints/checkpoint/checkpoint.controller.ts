@@ -23,18 +23,36 @@ import {
 } from './dtos/update-country.dto';
 import { GetAllCheckpointCommand } from './queries/impl/get-all';
 import { GetOneCheckpointCommand } from './queries/impl/get-one';
-import { QueryCheckpointClientDto, QueryCheckpointClientDtoType } from './dtos/query-client.dto';
+import {
+  QueryCheckpointClientDto,
+  QueryCheckpointClientDtoType,
+} from './dtos/query-client.dto';
 import { GetAllCheckpointClientCommand } from './queries/impl/get-all-client';
 import { Public } from 'src/common/decorators/public.decorator';
-import { QueryProvinceCheckpointClientDto, QueryProvinceCheckpointClientDtoType } from './dtos/query-province-checkpoint.dto';
+import {
+  QueryProvinceCheckpointClientDto,
+  QueryProvinceCheckpointClientDtoType,
+} from './dtos/query-province-checkpoint.dto';
 import { GetAllProvinceCheckpointCheckpointClientCommand } from './queries/impl/get-all-province-checkpoint-client';
-import { QueryclientCheckpointDto, QueryClientCheckpointDtoType } from './dtos/query-client-checkinpoint.dto';
+import {
+  QueryclientCheckpointDto,
+  QueryClientCheckpointDtoType,
+} from './dtos/query-client-checkinpoint.dto';
 import { GetAllClientCheckpointCommand } from './queries/impl/get-all-client-checkpoint';
 import { GetOneClientCheckpointCommand } from './queries/impl/get-one-client';
-import { GetByIdClientDto, GetByIdClientDtoType } from './dtos/query-by-id-client';
+import {
+  GetByIdClientDto,
+  GetByIdClientDtoType,
+} from './dtos/query-by-id-client';
 import { GetAllCategoryClientCommand } from './queries/impl/get-category-client';
-import { QueryCategoryClientDto, QueryCategoryClientDtoType } from './dtos/query-category-client.dto';
-import { GetBySlugDto, GetBySlugDtoType } from '../../../common/dtos/get-by-slug.dto';
+import {
+  QueryCategoryClientDto,
+  QueryCategoryClientDtoType,
+} from './dtos/query-category-client.dto';
+import {
+  GetBySlugDto,
+  GetBySlugDtoType,
+} from '../../../common/dtos/get-by-slug.dto';
 
 @Controller('checkpoint')
 export class CheckpointController {
@@ -119,6 +137,7 @@ export class CheckpointController {
     input: UpdateCheckpointDtoType,
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
   ) {
+    console.log('input', input);
     const message = await this._commandBus.execute<UpdateCheckpointCommand>(
       new UpdateCheckpointCommand(params.id, input),
     );

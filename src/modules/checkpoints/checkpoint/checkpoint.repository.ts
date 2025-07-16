@@ -40,7 +40,7 @@ export class CheckpointRepository {
           content: val.content,
           address: val.address,
           lang: val.lang,
-          time_operation: val.time_operation
+          time_operation: val.time_operation,
         })),
       );
     });

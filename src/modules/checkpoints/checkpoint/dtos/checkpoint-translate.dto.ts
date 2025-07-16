@@ -1,6 +1,16 @@
 import getJsonStringSize from 'src/common/utils/get-json-string-size';
 import isValidJson from 'src/common/utils/is-valid-json';
-import { any, custom, maxLength, minLength, number, object, Output, string, transform } from 'valibot';
+import {
+  any,
+  custom,
+  maxLength,
+  minLength,
+  number,
+  object,
+  Output,
+  string,
+  transform,
+} from 'valibot';
 
 export const CheckpointTranslateDto = object({
   id: number(),
