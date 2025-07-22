@@ -7,9 +7,7 @@ import { timeSeries } from 'src/modules/registrations/entities';
 import { VisitorQuery } from '../impl/visitor.query';
 
 @QueryHandler(VisitorQuery)
-export class VisitorHandler
-  implements IQueryHandler<VisitorQuery>
-{
+export class VisitorHandler implements IQueryHandler<VisitorQuery> {
   constructor(private readonly drizzle: DrizzleService) {}
 
   async execute(query: VisitorQuery) {
@@ -34,7 +32,7 @@ export class VisitorHandler
       )
       .groupBy(timeSeries.type);
 
-      const visitorPerWeek = await this.drizzle
+    const visitorPerWeek = await this.drizzle
       .db()
       .select({
         value: sum(timeSeries.number).mapWith(Number),
@@ -42,7 +40,7 @@ export class VisitorHandler
       .from(timeSeries)
       .where(
         and(
-          eq(timeSeries.type, "visitor"),
+          eq(timeSeries.type, 'visitor'),
           between(
             timeSeries.timestamp,
             format(subWeeks(currentDate, 1), DateTimeFormat.Timestamp),
@@ -76,11 +74,7 @@ export class VisitorHandler
         value: sum(timeSeries.number).mapWith(Number),
       })
       .from(timeSeries)
-      .where(
-        and(
-          eq(timeSeries.type, 'visitor'),
-        ),
-      )
+      .where(and(eq(timeSeries.type, 'visitor')))
       .groupBy(timeSeries.type);
 
     return {

@@ -14,42 +14,42 @@ import {
 export const IntendedAddressSchema = object({
   name: optional(
     string('Accommodation Name / Hotel Name must be a string.', [
-      minLength(1, 'Please enter Accommodation Name / Hotel Name.'),
+      // minLength(1, 'Please enter Accommodation Name / Hotel Name.'),
       maxLength(
         255,
         'Please enter Accommodation Name / Hotel Name with a maximum length of 255 characters.',
       ),
-      englishOnly('Accommodation Name / Hotel Name'),
+      // englishOnly('Accommodation Name / Hotel Name'),
     ]),
   ),
   province: optional(
     string('Province must be a string.', [
-      minLength(1, 'Please enter Province.'),
+      // minLength(1, 'Please enter Province.'),
       maxLength(
         255,
         'Please enter Province with a maximum length of 255 characters.',
       ),
-      englishOnly('Province'),
+      // englishOnly('Province'),
     ]),
   ),
   district: optional(
     string('District must be a string.', [
-      minLength(1, 'Please enter District.'),
+      // minLength(1, 'Please enter District.'),
       maxLength(
         255,
         'Please enter District with a maximum length of 255 characters.',
       ),
-      englishOnly('District'),
+      // englishOnly('District'),
     ]),
   ),
   village: optional(
     string('Village must be a string.', [
-      minLength(1, 'Please enter Village.'),
+      // minLength(1, 'Please enter Village.'),
       maxLength(
         255,
         'Please enter Village with a maximum length of 255 characters.',
       ),
-      englishOnly('Village'),
+      // englishOnly('Village'),
     ]),
   ),
   date_range: tuple(
