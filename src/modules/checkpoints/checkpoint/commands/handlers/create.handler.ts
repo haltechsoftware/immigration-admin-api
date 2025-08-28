@@ -57,6 +57,7 @@ export class CreateCheckpointHandler
       email: input.email,
       visa: input.visa,
       e_visa: input.e_visa,
+      is_open: input.is_open,
       translates: [
         {
           name: input.lo.name,

@@ -79,6 +79,7 @@ export class UpdateCheckpointHandler
       updated_at: format(new Date(), DateTimeFormat.Timestamp),
       visa: input.visa,
       e_visa: input.e_visa,
+      is_open: input.is_open,
       translates: [
         {
           id: input.lo.id,
