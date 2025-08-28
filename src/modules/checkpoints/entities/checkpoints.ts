@@ -35,6 +35,7 @@ export const checkpoints = mysqlTable('checkpoints', {
   email: varchar('email', { length: 255 }),
   visa: boolean('visa').notNull(),
   e_visa: boolean('e_visa').notNull(),
+  is_open: boolean('is_open').default(false),
   created_at: timestamp('created_at', { mode: 'string' })
     .defaultNow()
     .notNull(),

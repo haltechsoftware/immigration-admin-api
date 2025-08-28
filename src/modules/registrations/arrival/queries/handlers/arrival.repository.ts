@@ -47,6 +47,8 @@ export class ArrivalRegisterHandler
         verification_code: val.arrival_registration.verification_code,
         verified_at: val.arrival_registration.verified_at,
         verified_by: val.arrival_registration.verified_by,
+        arrival_registration_type:
+          val.arrival_registration.arrival_registration_type,
         check_in_date: val.arrival_registration.check_in_date
           ? format(val.arrival_registration.check_in_date, DateTimeFormat.date)
           : null,

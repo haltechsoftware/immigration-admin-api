@@ -30,7 +30,6 @@ export class CreateCheckpointHandler
       input.zh_cn.name === input.lo.name
     )
       throw new ConflictException({ message: 'ຂໍ້ມູນຊ້ຳກັນ!' });
-  
 
     const conflict = await this.drizzle
       .db()
@@ -47,7 +46,6 @@ export class CreateCheckpointHandler
       input.image.buffer,
       input.image.originalName,
     );
-    console.log(input.en.time_operation);
 
     await this.checkPointRepository.create({
       category_id: input.category_id,

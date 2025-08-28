@@ -17,6 +17,7 @@ import { passportInformation } from './passport_information';
 import { personalInformation } from './personal_information';
 import { visaInformation } from './visa_information';
 import { users } from 'src/modules/users/entities';
+import { ArrivalRegistration } from 'src/common/enum/arrival-registration.enum';
 
 export const purpose = mysqlEnum('purpose', [
   'transit',
@@ -65,6 +66,11 @@ export const arrivalRegistration = mysqlTable(
       mode: 'number',
       unsigned: true,
     }),
+    arrival_registration_type: mysqlEnum('arrival_registration_type', [
+      ArrivalRegistration.NO_VISA,
+      ArrivalRegistration.VISA_EXEMPTION,
+      ArrivalRegistration.APPLY_VISA_CHECKPOINT,
+    ]),
     black_list: blackListStatus.notNull(),
     check_in_date: date('check_in_date'),
     created_at: timestamp('created_at', { mode: 'string' })

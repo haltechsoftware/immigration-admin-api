@@ -132,6 +132,7 @@ export class ArrivalRegistrationRepository {
           personal_information_id: personalInfoRes[0].insertId, // ✅ Fixed
           passport_information_id: passportInfoRes[0].insertId, // ✅ Fixed
           country_id: Number(input.country_id), // ✅ Fixed
+          arrival_registration_type: input.arrival_registration_type, // ✅ Fixed
           visa_information_id: visaId, // ✅ Fixed
           verification_code: code, // ✅ Fixed
           check_in_date: new Date(input.check_in_date),

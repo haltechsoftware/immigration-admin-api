@@ -46,6 +46,7 @@ const CreateCheckpointDto = object({
   email: string(),
   visa: transform(string(), (input) => (input === 'true' ? true : false)),
   e_visa: transform(string(), (input) => (input === 'true' ? true : false)),
+  is_open: transform(string(), (input) => (input === 'true' ? true : false)),
 
   lo: transform<StringSchema<string>, Omit<CheckpointTranslateDtoType, 'id'>>(
     string(),

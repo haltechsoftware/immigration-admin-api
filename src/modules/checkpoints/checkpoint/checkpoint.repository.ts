@@ -30,6 +30,7 @@ export class CheckpointRepository {
         email: input.email,
         visa: input.visa,
         e_visa: input.e_visa,
+        is_open: input.is_open,
       });
 
       await tx.insert(checkpointTranslate).values(
@@ -74,6 +75,7 @@ export class CheckpointRepository {
           updated_at: input.updated_at,
           visa: input.visa,
           e_visa: input.e_visa,
+          is_open: input.is_open,
         })
         .where(eq(checkpoints.id, input.id));
 

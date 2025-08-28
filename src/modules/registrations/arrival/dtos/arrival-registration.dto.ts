@@ -13,6 +13,7 @@ import { PersonalInfoSchema } from './personal-info.dto';
 import { PassportInfoSchema } from './passport-info.dto';
 import { VisaInfoSchema } from './visa-info.dto';
 import { IntendedAddressSchema } from './intended-address.dto';
+import { ArrivalRegistration } from 'src/common/enum/arrival-registration.enum';
 export enum PurposeOfEntry {
   Diplomatic = 'diplomatic',
   Official = 'official',
@@ -60,6 +61,11 @@ const ArrivalRegistrationDto = object({
     minLength(1, 'Please enter Check in date.'),
     regex(/^\d{4}-\d{2}-\d{2}$/, 'Check in date must be in YYYY-MM-DD format.'),
   ]),
+
+  arrival_registration_type: enum_(
+    ArrivalRegistration,
+    'Please select a valid Arrival Registration Type',
+  ),
 
   personal_info: PersonalInfoSchema,
   passport_info: PassportInfoSchema,

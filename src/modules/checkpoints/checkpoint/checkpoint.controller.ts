@@ -137,7 +137,6 @@ export class CheckpointController {
     input: UpdateCheckpointDtoType,
     @Valibot({ schema: GetByIdDto, type: 'params' }) params: GetByIdDtoType,
   ) {
-    console.log('input', input);
     const message = await this._commandBus.execute<UpdateCheckpointCommand>(
       new UpdateCheckpointCommand(params.id, input),
     );
