@@ -29,6 +29,8 @@ import {
 } from './dto/update-private.dto';
 import GetPopupByIdQuery from './queries/impl/get-popup-by-id.query';
 import GetPopupQuery from './queries/impl/get-popup.query';
+import GetPopupClientQuery from './queries/impl/get-popup-client.query';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('popup')
 export class PopupController {
@@ -44,6 +46,17 @@ export class PopupController {
     query: QueryPopupDtoType,
   ) {
     return await this.queryBus.execute<GetPopupQuery>(new GetPopupQuery(query));
+  }
+
+  @Public()
+  @Get('client')
+  async getClient(
+    @Valibot({ schema: QueryPopupDto, type: 'query' })
+    query: QueryPopupDtoType,
+  ) {
+    return await this.queryBus.execute<GetPopupClientQuery>(
+      new GetPopupClientQuery(query),
+    );
   }
 
   @Permissions(PermissionGroup.Banner, PermissionName.Write)

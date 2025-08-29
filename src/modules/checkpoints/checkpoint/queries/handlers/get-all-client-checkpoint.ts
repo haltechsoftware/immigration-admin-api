@@ -5,7 +5,9 @@ import { checkpoints } from 'src/modules/checkpoints/entities';
 import { GetAllCheckpointCommand } from '../impl/get-all';
 import { GetAllClientCheckpointCommand } from '../impl/get-all-client-checkpoint';
 @QueryHandler(GetAllClientCheckpointCommand)
-export class QueryGetAllClientCheckpointHandler implements IQueryHandler<GetAllClientCheckpointCommand> {
+export class QueryGetAllClientCheckpointHandler
+  implements IQueryHandler<GetAllClientCheckpointCommand>
+{
   constructor(private readonly _drizzle: DrizzleService) {}
 
   async execute({
@@ -18,47 +20,53 @@ export class QueryGetAllClientCheckpointHandler implements IQueryHandler<GetAllC
       | undefined;
 
     if (slug) {
-      category = await this._drizzle.db().query.checkpointCategoryTranslate.findFirst({
-        where: (f, o) => o.eq(f.slug, slug),
-        columns: {
-          category_id: true,
-        },
-      });
+      category = await this._drizzle
+        .db()
+        .query.checkpointCategoryTranslate.findFirst({
+          where: (f, o) => o.eq(f.slug, slug),
+          columns: {
+            category_id: true,
+          },
+        });
     }
 
-    const checkpointsList = await this._drizzle.db().query.checkpoints.findMany({
-      columns: {
-        province_id: false,
-        link_map: false,
-        created_at: false,
-        updated_at: false,
-      },
-      where: category
-        ? (f, o) => o.eq(f.category_id, category!.category_id!)
-        : undefined,
-      with: {
-        translates: {
-          where: lang ? (f, o) => o.eq(f.lang, lang) : undefined,
+    const checkpointsList = await this._drizzle
+      .db()
+      .query.checkpoints.findMany({
+        columns: {
+          province_id: false,
+          link_map: false,
+          created_at: false,
+          updated_at: false,
         },
-        category: {
-          with: {
-            translates: {
-              where: lang ? (f, o) => o.eq(f.lang, lang) : undefined,
+        where: category
+          ? (f, o) => o.eq(f.category_id, category!.category_id!)
+          : undefined,
+        with: {
+          translates: {
+            where: lang ? (f, o) => o.eq(f.lang, lang) : undefined,
+          },
+          category: {
+            with: {
+              translates: {
+                where: lang ? (f, o) => o.eq(f.lang, lang) : undefined,
+              },
             },
           },
         },
-      },
-      offset,
-      limit,
-    });
+        offset,
+        limit,
+      });
 
-    const total = await this._drizzle.db()
-    .select({ value: count() })
-    .from(checkpoints)
-    .where(
-      category ? eq(checkpoints.category_id, category.category_id!) : undefined
-    );
-
+    const total = await this._drizzle
+      .db()
+      .select({ value: count() })
+      .from(checkpoints)
+      .where(
+        category
+          ? eq(checkpoints.category_id, category.category_id!)
+          : undefined,
+      );
 
     const result = checkpointsList.map((checkpoint) => {
       const { category, translates, ...rest } = checkpoint;

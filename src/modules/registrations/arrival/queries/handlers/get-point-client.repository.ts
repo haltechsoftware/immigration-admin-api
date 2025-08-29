@@ -1,6 +1,8 @@
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
-import GetPointClientQuery from "../impl/get-point-client.query";
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
+import GetPointClientQuery from '../impl/get-point-client.query';
+import { checkpoints } from 'src/modules/checkpoints/entities';
+import { eq } from 'drizzle-orm';
 
 @QueryHandler(GetPointClientQuery)
 export class queryPointClientHandler
@@ -11,19 +13,22 @@ export class queryPointClientHandler
   async execute({
     query: { lang, limit, offset },
   }: GetPointClientQuery): Promise<any> {
-    const checkpointsList = await this._drizzle.db().query.checkpoints.findMany({
-      with: {
-        translates: {
-          columns: {
-            name: true,
-            slug: true,
+    const checkpointsList = await this._drizzle
+      .db()
+      .query.checkpoints.findMany({
+        where: eq(checkpoints.is_open, true),
+        with: {
+          translates: {
+            columns: {
+              name: true,
+              slug: true,
+            },
+            where: lang ? (f, o) => o.eq(f.lang, lang) : undefined,
           },
-          where: lang ? (f, o) => o.eq(f.lang, lang) : undefined,
         },
-      },
-      offset,
-      limit,
-    });
+        offset,
+        limit,
+      });
 
     const result = checkpointsList.map((checkpoint) => ({
       id: checkpoint.id,
