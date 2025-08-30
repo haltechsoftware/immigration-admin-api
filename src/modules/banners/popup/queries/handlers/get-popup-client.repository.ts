@@ -13,7 +13,7 @@ export class GetPopupClientHandler
   constructor(private readonly drizzle: DrizzleService) {}
 
   async execute({ query: { offset, limit } }: GetPopupClientQuery) {
-    const isPrivateCondition = eq(bannerPopups.is_private, false);
+    const isPrivateCondition = eq(bannerPopups.is_private, true);
 
     const now = format(new Date(), DateTimeFormat.Timestamp);
 
