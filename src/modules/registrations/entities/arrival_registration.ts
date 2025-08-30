@@ -67,9 +67,9 @@ export const arrivalRegistration = mysqlTable(
       unsigned: true,
     }),
     arrival_registration_type: mysqlEnum('arrival_registration_type', [
-      ArrivalRegistration.NO_VISA,
-      ArrivalRegistration.VISA_EXEMPTION,
-      ArrivalRegistration.APPLY_VISA_CHECKPOINT,
+      ArrivalRegistration.CHOOSE_VISA,
+      ArrivalRegistration.EXEMPTION_VISA,
+      ArrivalRegistration.APPLY_VISA_ON_ARRIVAL,
     ]),
     black_list: blackListStatus.notNull(),
     check_in_date: date('check_in_date'),

@@ -1,5 +1,5 @@
 export enum ArrivalRegistration {
-  NO_VISA = 'no_visa',
-  VISA_EXEMPTION = 'visa_exemption',
-  APPLY_VISA_CHECKPOINT = 'apply_visa_checkpoint',
+  CHOOSE_VISA = 'choose_visa',
+  EXEMPTION_VISA = 'exemption_visa',
+  APPLY_VISA_ON_ARRIVAL = 'apply_visa_on_arrival',
 }
