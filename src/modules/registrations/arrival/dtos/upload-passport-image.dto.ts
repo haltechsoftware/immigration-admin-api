@@ -8,7 +8,9 @@ export const UploadPassportImageDto = object({
     [
       custom(
         (input: MemoryStoredFile) =>
-          ['image/jpeg', 'image/png', 'image/webp'].includes(input.mimeType),
+          ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(
+            input.mimeType,
+          ),
         'ກະລຸນາເລືອກໄຟລ໌ JPEG ຫຼື PNG ຫຼື Webp.',
       ),
       custom(

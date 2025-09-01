@@ -23,8 +23,13 @@ export class UploadPassportImageHandler
       await this.upload.remove(exist.image);
     }
 
+    // return await this.upload.upload(
+    //   'document/passport/',
+    //   image.buffer,
+    //   image.originalName,
+    // );
     return await this.upload.upload(
-      'document/passport/',
+      'uploads/',
       image.buffer,
       image.originalName,
     );

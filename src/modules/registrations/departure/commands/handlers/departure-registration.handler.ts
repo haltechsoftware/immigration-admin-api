@@ -5,6 +5,8 @@ import { validateDate } from 'src/common/utils/validate-date';
 import DepartureRegistrationCommand from '../impl/departure-registration.command';
 import { TypeCheckDate } from 'src/common/enum/date-time-fomat.enum';
 import { validateCheckInDate } from 'src/common/utils/check-date.util';
+import { moveFileToPassport } from 'src/common/utils/copy-file-name.util';
+import { join } from 'path';
 
 @CommandHandler(DepartureRegistrationCommand)
 export default class DepartureRegistrationHandler
@@ -46,6 +48,22 @@ export default class DepartureRegistrationHandler
     //   }
     // }
 
-    return await this.repository.create({ input });
+    // passport image
+    const destinationDir = join(
+      process.cwd(),
+      'client',
+      'document',
+      'passport',
+    );
+
+    const fileName = await moveFileToPassport(
+      input.passport_info.image,
+      destinationDir,
+    );
+
+    const passport_path = `client/document/passport/${fileName}`;
+    // end
+
+    return await this.repository.create({ input }, passport_path);
   }
 }

@@ -23,8 +23,14 @@ export class UploadVisaImageHandler
       await this.upload.remove(exist.image);
     }
 
+    // return await this.upload.upload(
+    //   'document/visa/',
+    //   image.buffer,
+    //   image.originalName,
+    // );
+
     return await this.upload.upload(
-      'document/visa/',
+      'uploads/',
       image.buffer,
       image.originalName,
     );

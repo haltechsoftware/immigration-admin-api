@@ -6,6 +6,8 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { validateDate } from 'src/common/utils/validate-date';
 import { validateCheckInDate } from 'src/common/utils/check-date.util';
 import { TypeCheckDate } from 'src/common/enum/date-time-fomat.enum';
+import { join } from 'path';
+import { moveFileToPassport } from 'src/common/utils/copy-file-name.util';
 
 @CommandHandler(ArrivalRegistrationCommand)
 export default class ArrivalRegistrationHandler
@@ -68,6 +70,46 @@ export default class ArrivalRegistrationHandler
     //   }
     // }
 
-    return await this.repository.create({ input });
+    // passport image
+    const destinationDir = join(
+      process.cwd(),
+      'client',
+      'document',
+      'passport',
+    );
+
+    const fileName = await moveFileToPassport(
+      input.passport_info.image,
+      destinationDir,
+    );
+
+    const passport_path = `client/document/passport/${fileName}`;
+    // end
+
+    // people image
+    const people_fileName = await moveFileToPassport(
+      input.passport_info.people_image,
+      destinationDir,
+    );
+
+    const people_file_path = `client/document/passport/${people_fileName}`;
+    // end
+
+    // visa
+    const visa_path = join(process.cwd(), 'client', 'document', 'visa');
+
+    const visa_fileName = await moveFileToPassport(input.visa.image, visa_path);
+
+    const visa_filePath = `client/document/visa/${visa_fileName}`;
+    // end
+
+    console.log(passport_path);
+
+    return await this.repository.create(
+      { input },
+      passport_path,
+      visa_filePath,
+      people_file_path,
+    );
   }
 }

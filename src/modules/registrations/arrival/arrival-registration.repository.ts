@@ -68,11 +68,15 @@ export class ArrivalRegistrationRepository {
     });
   }
 
-  async create({ input }: ArrivalRegistrationCommand): Promise<any> {
+  async create(
+    { input }: ArrivalRegistrationCommand,
+    passport_path: string,
+    visa_filePath: string,
+    people_file_path: string,
+  ): Promise<any> {
     try {
       return await this.drizzle.db().transaction(async (tx) => {
         const { passport_info, personal_info, visa, intend_Address } = input;
-
         // Personal Information (Ensure column names match database schema)
         const personalInfoRes = await tx.insert(personalInformation).values({
           gender: personal_info.gender === Gender.Male ? 'male' : 'female',
@@ -95,8 +99,8 @@ export class ArrivalRegistrationRepository {
           date_issue: format(passport_info.date_of_issue, DateTimeFormat.date), // ✅ Fixed
           expiry_date: format(passport_info.expiry_date, DateTimeFormat.date), // ✅ Fixed
           place_issue: passport_info.place_of_issue,
-          image: passport_info.image,
-          people_image: passport_info.people_image,
+          image: passport_path,
+          people_image: people_file_path,
         });
 
         // Visa Information
@@ -113,7 +117,7 @@ export class ArrivalRegistrationRepository {
             visaCategory: visa.visaCategory, // Drizzle will map 'visaCategory' to 'visa_category' in the DB
             date_issue: format(visa.date_of_issue, DateTimeFormat.date),
             place_issue: visa.place_of_issue,
-            image: visa.image, // Handles the image field correctly (null if not provided)
+            image: visa_filePath, // Handles the image field correctly (null if not provided)
           });
 
           visaId = visaInfoRes[0].insertId; // Get the insertId from the response

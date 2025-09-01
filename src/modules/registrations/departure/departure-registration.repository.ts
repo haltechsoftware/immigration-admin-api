@@ -50,7 +50,10 @@ export class DepartureRepository {
     });
   }
 
-  async create({ input }: DepartureRegistrationCommand): Promise<any> {
+  async create(
+    { input }: DepartureRegistrationCommand,
+    passport_path: string,
+  ): Promise<any> {
     try {
       const { passport_info, personal_info } = input;
 
@@ -74,7 +77,7 @@ export class DepartureRepository {
           date_issue: format(passport_info.date_of_issue, DateTimeFormat.date),
           expiry_date: format(passport_info.expiry_date, DateTimeFormat.date),
           place_issue: passport_info.place_of_issue,
-          image: passport_info.image,
+          image: passport_path,
           people_image: '',
         });
 
