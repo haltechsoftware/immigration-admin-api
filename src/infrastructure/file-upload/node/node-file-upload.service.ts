@@ -19,16 +19,18 @@ export class NodeFileUploadService implements IFileUpload {
     const newFileName = this.generateUniqueFilename(truncatedName, extension);
 
     // let existsPath = 'client/';
+    // console.log('process', resolve(process.cwd()));
     const existsPath = resolve(process.cwd(), 'client');
 
     let currentPath = existsPath;
 
     for (const val of path.split('/')) {
       // existsPath = existsPath + val + '/';
+      // console.log('existsPath', existsPath);
       currentPath = join(currentPath, val);
-      if (val && !existsSync(currentPath)) {
+      if (val && !existsSync(existsPath)) {
         try {
-          await mkdir(currentPath, { recursive: true });
+          await mkdir(existsPath, { recursive: true });
         } catch (err) {
           console.error('Error creating directory:', err);
         }
