@@ -4,6 +4,8 @@ import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interfac
 import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { ArrivalRegistrationRepository } from '../../arrival-registration.repository';
 import { UploadPassportImageCommand } from '../impl/upload-passport-image.command';
+import { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 
 @CommandHandler(UploadPassportImageCommand)
 export class UploadPassportImageHandler
@@ -28,6 +30,14 @@ export class UploadPassportImageHandler
     //   image.buffer,
     //   image.originalName,
     // );
+
+    const uploadPath = join(process.cwd(), 'client', 'uploads');
+
+    // ✅ Check if "uploads" folder exists, if not create it
+    if (!existsSync(uploadPath)) {
+      mkdirSync(uploadPath, { recursive: true });
+    }
+
     return await this.upload.upload(
       'uploads/',
       image.buffer,

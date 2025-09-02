@@ -152,7 +152,6 @@ export class ArrivalRegistrationRepository {
           check_in: intend_Address.date_range?.[0]
             ? format(intend_Address.date_range[0], DateTimeFormat.date)
             : undefined,
-
           check_out: intend_Address.date_range?.[1]
             ? format(intend_Address.date_range[1], DateTimeFormat.date)
             : undefined,

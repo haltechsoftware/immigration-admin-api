@@ -65,7 +65,7 @@ export class NodeFileUploadService implements IFileUpload {
     const microseconds = String(now.getMilliseconds()).padStart(3, '0') + '000';
     // milliseconds (3 digits) + pad to 6 digits
 
-    const baseWithoutSpaces = `${year}-${month}-${day}-${hours}-${minutes}-${seconds}${microseconds}`;
+    const baseWithoutSpaces = `${year}${month}${day}${hours}${minutes}${seconds}${microseconds}`;
     const randomString = Math.random().toString(36).substring(2, 8);
     const filename = `${baseWithoutSpaces}-${randomString}${extension}`;
 

@@ -2,19 +2,22 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import ArrivalRegistrationCommand from '../impl/arrival-registration.command';
 import { ArrivalRegistrationRepository } from '../../arrival-registration.repository';
 import { CountryRepository } from 'src/modules/checkpoints/country/country.repository';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { validateDate } from 'src/common/utils/validate-date';
 import { validateCheckInDate } from 'src/common/utils/check-date.util';
 import { TypeCheckDate } from 'src/common/enum/date-time-fomat.enum';
 import { join } from 'path';
 import { moveFileToPassport } from 'src/common/utils/copy-file-name.util';
 import { isBefore } from 'date-fns';
+import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
+import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
 
 @CommandHandler(ArrivalRegistrationCommand)
 export default class ArrivalRegistrationHandler
   implements ICommandHandler<ArrivalRegistrationCommand, string>
 {
   constructor(
+    @Inject(FILE_UPLOAD_SERVICE) private readonly upload: IFileUpload,
     private readonly repository: ArrivalRegistrationRepository,
     private readonly countryRepository: CountryRepository,
   ) {}
@@ -122,13 +125,40 @@ export default class ArrivalRegistrationHandler
     }
     // end
 
-    console.log(passport_path);
-
-    return await this.repository.create(
+    const res = await this.repository.create(
       { input },
       passport_path,
       visa_filePath,
       people_file_path,
     );
+
+    // if (res.status === 200 || res.status === 201) {
+    //   console.log('object', res);
+    //   await this.remove(input);
+    // }
+
+    return res;
   }
+
+  // async remove(input: ArrivalRegistrationDtoType): Promise<void> {
+  //   const passport_image = join(
+  //     process.cwd(),
+  //     'client',
+  //     'uploads',
+  //     input.passport_info.image,
+  //   );
+  //   const passport_people = join(
+  //     process.cwd(),
+  //     'client',
+  //     'uploads',
+  //     input.passport_info.people_image,
+  //   );
+
+  //   if (input.visa.image) {
+  //     const visa = join(process.cwd(), 'client', 'uploads', input.visa.image);
+  //     await this.upload.remove(visa);
+  //   }
+  //   await this.upload.remove(passport_image);
+  //   await this.upload.remove(passport_people);
+  // }
 }

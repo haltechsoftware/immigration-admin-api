@@ -1,7 +1,6 @@
 import sharp from 'sharp';
 import {
   BadRequestException,
-  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
