@@ -12,11 +12,11 @@ export class NodeFileUploadService implements IFileUpload {
     buffer: Buffer,
     fileName: string,
   ): Promise<string> {
-    const [name] = fileName.split('.');
+    // const [name] = fileName.split('.');
     const extension = extname(fileName);
 
-    const truncatedName = name.substring(0, 25);
-    const newFileName = this.generateUniqueFilename(truncatedName, extension);
+    // const truncatedName = name.substring(0, 25);
+    const newFileName = this.generateUniqueFilename(extension);
 
     // let existsPath = 'client/';
     // console.log('process', resolve(process.cwd()));
@@ -52,9 +52,21 @@ export class NodeFileUploadService implements IFileUpload {
     await unlink(path);
   }
 
-  private generateUniqueFilename(base: string, extension: string): string {
-    const baseWithoutSpaces = base.replace(/\s+/g, '-').toLowerCase();
-    const randomString = Math.random().toString(36).substring(2, 15);
+  private generateUniqueFilename(extension: string): string {
+    // const baseWithoutSpaces = base.replace(/\s+/g, '-').toLowerCase();
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const microseconds = String(now.getMilliseconds()).padStart(3, '0') + '000';
+    // milliseconds (3 digits) + pad to 6 digits
+
+    const baseWithoutSpaces = `${year}-${month}-${day}-${hours}-${minutes}-${seconds}${microseconds}`;
+    const randomString = Math.random().toString(36).substring(2, 8);
     const filename = `${baseWithoutSpaces}-${randomString}${extension}`;
 
     return filename;

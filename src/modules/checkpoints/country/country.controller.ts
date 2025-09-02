@@ -24,9 +24,15 @@ import {
 import { GetAllCountryCommand } from './queries/impl/get-all.country';
 import { GetOneCountryCommand } from './queries/impl/get-one.country';
 import { Public } from 'src/common/decorators/public.decorator';
-import { OffsetBasePaginateDto, OffsetBasePaginateDtoType } from 'src/common/dtos/offset-base-paginate.dto';
+import {
+  OffsetBasePaginateDto,
+  OffsetBasePaginateDtoType,
+} from 'src/common/dtos/offset-base-paginate.dto';
 import { GetAllToClientCountryCommand } from './queries/impl/get-all-to-client.country';
-import { QueryClientCountryDto, QueryClientCountryDtoType } from './dtos/query-client.country.dto';
+import {
+  QueryClientCountryDto,
+  QueryClientCountryDtoType,
+} from './dtos/query-client.country.dto';
 
 @Controller('country')
 export class CountryController {
@@ -44,7 +50,6 @@ export class CountryController {
 
     return { message };
   }
-
 
   @Public()
   @Get('client')

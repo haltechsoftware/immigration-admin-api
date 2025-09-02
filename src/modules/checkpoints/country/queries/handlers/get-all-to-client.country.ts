@@ -1,8 +1,8 @@
-import { sql } from "drizzle-orm";
-import { checkpoints } from "src/modules/checkpoints/entities";
-import { GetAllToClientCountryCommand } from "../impl/get-all-to-client.country";
-import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
-import { DrizzleService } from "src/infrastructure/drizzle/drizzle.service";
+import { sql } from 'drizzle-orm';
+import { checkpoints } from 'src/modules/checkpoints/entities';
+import { GetAllToClientCountryCommand } from '../impl/get-all-to-client.country';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 
 @QueryHandler(GetAllToClientCountryCommand)
 export class QueryGetAllClientCountryHandler implements IQueryHandler<any> {
@@ -12,7 +12,15 @@ export class QueryGetAllClientCountryHandler implements IQueryHandler<any> {
     const db = this._drizzle.db(); // CALL the function to get the instance
 
     // Explicitly typing 'country' as a union of string literals
-    const countryList: { country: "vietnam" | "thailand" | "cambodia" | "myanmar" | "china" | "airport" }[] = [
+    const countryList: {
+      country:
+        | 'vietnam'
+        | 'thailand'
+        | 'cambodia'
+        | 'myanmar'
+        | 'china'
+        | 'airport';
+    }[] = [
       { country: 'vietnam' },
       { country: 'thailand' },
       { country: 'cambodia' },
@@ -25,7 +33,7 @@ export class QueryGetAllClientCountryHandler implements IQueryHandler<any> {
     const result = await db
       .select({
         country: checkpoints.country,
-        count: sql<number>`COUNT(${checkpoints.id})`.as("count"),
+        count: sql<number>`COUNT(${checkpoints.id})`.as('count'),
       })
       .from(checkpoints)
       .groupBy(checkpoints.country)

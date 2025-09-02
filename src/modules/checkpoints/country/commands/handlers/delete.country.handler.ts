@@ -1,4 +1,4 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
 import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
@@ -19,6 +19,14 @@ export class DeleteCountryHandler
 
     if (!country)
       throw new NotFoundException({ message: 'ປະເທດນີ້ບໍ່ມີໃນລະບົບ' });
+
+    const check_in_arrival = await this.countryRepository.findCountryId(
+      country.id,
+    );
+
+    if (check_in_arrival) {
+      throw new BadRequestException('ປະເທດນີ້ຖືກໃຊ້ໃນການລົງທະບຽນແລ້ວ');
+    }
 
     if (country.image) {
       await this.fileUpload.remove(country.image);

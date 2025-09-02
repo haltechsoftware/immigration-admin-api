@@ -49,11 +49,27 @@ export class CountryRepository {
     return await this.prepared.execute({ id });
   }
 
-  async findOneCountry(id: number) {
-    const result = await this._drizzle.db().select().from(countries).where(eq(countries.id, id)).limit(1);
-    return result[0] ?? null;
-}
+  private preparedFindCountryId = this._drizzle
+    .db()
+    .query.arrivalRegistration.findFirst({
+      where: (fields, { eq, sql }) =>
+        eq(fields.country_id, sql.placeholder('country_id')),
+    })
+    .prepare();
 
+  async findCountryId(id: number) {
+    return await this.preparedFindCountryId.execute({ country_id: id });
+  }
+
+  async findOneCountry(id: number) {
+    const result = await this._drizzle
+      .db()
+      .select()
+      .from(countries)
+      .where(eq(countries.id, id))
+      .limit(1);
+    return result[0] ?? null;
+  }
 
   async update(input: UpdateCountryType): Promise<void> {
     await this._drizzle.db().transaction(async (tx) => {
