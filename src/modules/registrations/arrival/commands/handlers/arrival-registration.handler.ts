@@ -110,7 +110,7 @@ export default class ArrivalRegistrationHandler
 
     // visa
     let visa_filePath = '';
-    if (input.visa) {
+    if (input.visa.image) {
       const visa_path = join(process.cwd(), 'client', 'document', 'visa');
 
       const visa_fileName = await moveFileToPassport(
