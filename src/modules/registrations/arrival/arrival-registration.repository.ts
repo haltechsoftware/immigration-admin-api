@@ -149,8 +149,13 @@ export class ArrivalRegistrationRepository {
           province: intend_Address.province, // ✅ Correct field name
           district: intend_Address.district, // ✅ Correct field name
           village: intend_Address.village, // ✅ Correct field name
-          check_in: format(intend_Address.date_range[0], DateTimeFormat.date), // ✅ Correct format
-          check_out: format(intend_Address.date_range[1], DateTimeFormat.date), // ✅ Correct format
+          check_in: intend_Address.date_range?.[0]
+            ? format(intend_Address.date_range[0], DateTimeFormat.date)
+            : undefined,
+
+          check_out: intend_Address.date_range?.[1]
+            ? format(intend_Address.date_range[1], DateTimeFormat.date)
+            : undefined,
         });
 
         const [country] = await tx

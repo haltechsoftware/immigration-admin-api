@@ -1,9 +1,7 @@
 import { isBefore } from 'date-fns';
-import englishOnly from 'src/common/utils/english-only';
 import {
   custom,
   maxLength,
-  minLength,
   nullable,
   object,
   optional,
@@ -54,15 +52,15 @@ export const IntendedAddressSchema = object({
   ),
   date_range: tuple(
     [
-      nullable(string([minLength(1, 'Please enter Check in.')])),
-      nullable(string([minLength(1, 'Please enter Check out.')])),
+      optional(nullable(string())), // checkIn: string | null | undefined
+      optional(nullable(string())), // checkOut: string | null | undefined
     ],
-    [
-      custom(
-        ([checkIn, checkOut]) =>
-          isBefore(new Date(checkIn), new Date(checkOut)),
-        'Check-in must be before check-out.',
-      ),
-    ],
+    // [
+    //   custom(
+    //     ([checkIn, checkOut]) =>
+    //       isBefore(new Date(checkIn), new Date(checkOut)),
+    //     'Check-in must be before check-out.',
+    //   ),
+    // ],
   ),
 });

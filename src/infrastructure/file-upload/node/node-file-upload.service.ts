@@ -1,7 +1,7 @@
 import { Injectable, Provider } from '@nestjs/common';
 import { existsSync } from 'fs';
 import { mkdir, unlink, writeFile } from 'fs/promises';
-import { extname } from 'path';
+import { extname, join, resolve } from 'path';
 import { IFileUpload } from '../file-upload.interface';
 import { FILE_UPLOAD_SERVICE } from '../inject-key';
 
@@ -18,13 +18,17 @@ export class NodeFileUploadService implements IFileUpload {
     const truncatedName = name.substring(0, 25);
     const newFileName = this.generateUniqueFilename(truncatedName, extension);
 
-    let existsPath = 'client/';
+    // let existsPath = 'client/';
+    const existsPath = resolve(process.cwd(), 'client');
+
+    let currentPath = existsPath;
 
     for (const val of path.split('/')) {
-      existsPath = existsPath + val + '/';
-      if (val && !existsSync(existsPath)) {
+      // existsPath = existsPath + val + '/';
+      currentPath = join(currentPath, val);
+      if (val && !existsSync(currentPath)) {
         try {
-          await mkdir(existsPath, { recursive: true });
+          await mkdir(currentPath, { recursive: true });
         } catch (err) {
           console.error('Error creating directory:', err);
         }

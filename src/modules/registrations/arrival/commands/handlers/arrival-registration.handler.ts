@@ -8,6 +8,7 @@ import { validateCheckInDate } from 'src/common/utils/check-date.util';
 import { TypeCheckDate } from 'src/common/enum/date-time-fomat.enum';
 import { join } from 'path';
 import { moveFileToPassport } from 'src/common/utils/copy-file-name.util';
+import { isBefore } from 'date-fns';
 
 @CommandHandler(ArrivalRegistrationCommand)
 export default class ArrivalRegistrationHandler
@@ -51,6 +52,18 @@ export default class ArrivalRegistrationHandler
         'passport_info.date_of_issue',
       );
     if (input.check_in_date) validateDate(input.check_in_date, 'check_in_date');
+
+    if (input.intend_Address.date_range) {
+      const [checkIn, checkOut] = input.intend_Address.date_range;
+
+      if (
+        checkIn &&
+        checkOut &&
+        !isBefore(new Date(checkIn), new Date(checkOut))
+      ) {
+        throw new BadRequestException('Check-in must be before check-out.');
+      }
+    }
 
     // const passports = await this.repository.getPassportAll(
     //   input.passport_info.no,

@@ -12,7 +12,7 @@ export const PersonalInfoSchema = object({
       255,
       'Please enter family name with a maximum length of 255 characters.',
     ),
-    englishOnly('family name'),
+    // englishOnly('family name'),
   ]),
   name: string('Name must be a string.', [
     minLength(1, 'Please enter family name.'),
@@ -20,7 +20,7 @@ export const PersonalInfoSchema = object({
       255,
       'Please enter family name with a maximum length of 255 characters.',
     ),
-    englishOnly('family name'),
+    // englishOnly('family name'),
   ]),
   gender: enum_(Gender, 'Please select a valid gender.'),
   date_of_birth: string('Date of Birth must be a string.', [
@@ -39,7 +39,7 @@ export const PersonalInfoSchema = object({
       255,
       'Please enter Nationality with a maximum length of 255 characters.',
     ),
-    englishOnly('Nationality'),
+    // englishOnly('Nationality'),
   ]),
   occupation: string('Occupation must be a string', [
     minLength(1, 'Please enter Occupation.'),
@@ -47,7 +47,7 @@ export const PersonalInfoSchema = object({
       255,
       'Please enter Occupation with a maximum length of 255 characters.',
     ),
-    englishOnly('Occupation'),
+    // englishOnly('Occupation'),
   ]),
   race: string('race must be a string', [
     minLength(1, 'Please enter race.'),
@@ -55,7 +55,7 @@ export const PersonalInfoSchema = object({
       255,
       'Please enter race with a maximum length of 255 characters.',
     ),
-    englishOnly('race'),
+    // englishOnly('race'),
   ]),
   // phone_number: string('Phone number must be a string', [
   //     minLength(6, "Please enter Phone number."),
