@@ -6,6 +6,7 @@ import { ArrivalRegistrationRepository } from '../../arrival-registration.reposi
 import { UploadVisaImageCommand } from '../impl/upload-visa-image.command';
 import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
+import { optimizeImage } from 'src/common/utils/image-optimize.util';
 
 @CommandHandler(UploadVisaImageCommand)
 export class UploadVisaImageHandler
@@ -31,6 +32,11 @@ export class UploadVisaImageHandler
     //   image.originalName,
     // );
 
+    const optimizedBuffer = await optimizeImage({
+      buffer: image.buffer,
+      originalName: image.originalName,
+    });
+
     const uploadPath = join(process.cwd(), 'client', 'uploads');
 
     // ✅ Check if "uploads" folder exists, if not create it
@@ -40,7 +46,7 @@ export class UploadVisaImageHandler
 
     return await this.upload.upload(
       'uploads/',
-      image.buffer,
+      optimizedBuffer,
       image.originalName,
     );
   }

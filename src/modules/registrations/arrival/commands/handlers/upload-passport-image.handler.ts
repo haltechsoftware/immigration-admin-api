@@ -6,6 +6,7 @@ import { ArrivalRegistrationRepository } from '../../arrival-registration.reposi
 import { UploadPassportImageCommand } from '../impl/upload-passport-image.command';
 import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
+import { optimizeImage } from 'src/common/utils/image-optimize.util';
 
 @CommandHandler(UploadPassportImageCommand)
 export class UploadPassportImageHandler
@@ -31,6 +32,22 @@ export class UploadPassportImageHandler
     //   image.originalName,
     // );
 
+    const optimizedBuffer = await optimizeImage({
+      buffer: image.buffer,
+      originalName: image.originalName,
+    }); // Log size in bytes
+    console.log('Optimized buffer size (bytes):', optimizedBuffer.length);
+    // Log size in KB
+    console.log(
+      'Optimized size (KB):',
+      (optimizedBuffer.length / 1024).toFixed(2),
+    );
+    // Log size in MB
+    console.log(
+      'Optimized size (MB):',
+      (optimizedBuffer.length / (1024 * 1024)).toFixed(2),
+    );
+
     const uploadPath = join(process.cwd(), 'client', 'uploads');
 
     // ✅ Check if "uploads" folder exists, if not create it
@@ -40,7 +57,7 @@ export class UploadPassportImageHandler
 
     return await this.upload.upload(
       'uploads/',
-      image.buffer,
+      optimizedBuffer,
       image.originalName,
     );
   }
