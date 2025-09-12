@@ -67,5 +67,6 @@ import { visaModules } from './modules/visa';
       useClass: PermissionsGuard,
     },
   ],
+  exports: [],
 })
 export class AppModule {}

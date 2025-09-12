@@ -4,13 +4,19 @@ import { ArrivalRegistrationRepository } from './arrival-registration.repository
 import { arrivalCommandHandlers } from './commands/handlers';
 import arrivalRegisterHandlers from './queries/handlers';
 import { CountryRepository } from 'src/modules/checkpoints/country/country.repository';
+import { GoogleRecaptchaGuard } from 'src/common/guards/recaptcha.guard';
+import { GoogleRecaptchaService } from 'src/common/google-recaptcha/recaptcha.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
+  imports: [HttpModule],
   providers: [
+    GoogleRecaptchaGuard,
+    GoogleRecaptchaService,
     ...arrivalRegisterHandlers,
     ...arrivalCommandHandlers,
     ArrivalRegistrationRepository,
-    CountryRepository
+    CountryRepository,
   ],
   controllers: [ArrivalRegistrationController],
 })
