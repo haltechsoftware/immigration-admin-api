@@ -37,6 +37,7 @@
     "bcryptjs": "^2.4.3",
     "date-fns": "^3.6.0",
     "drizzle-orm": "^0.30.8",
+    "exceljs": "^4.4.0",
     "mysql2": "^3.9.7",
     "nestjs-form-data": "^1.9.7",
     "nestjs-request-context": "^3.0.0",

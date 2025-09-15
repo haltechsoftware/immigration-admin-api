@@ -181,7 +181,7 @@ export class ArrivalRegistrationController {
   @RequireRecaptcha(true)
   @Post('verify-recaptcha-token')
   @HttpCode(200)
-  async verifyRecaptchaToken() {
+  async verifyGoogleRecaptchaToken() {
     return { message: 'Recaptcha token verified successfully' };
   }
 }
