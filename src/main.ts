@@ -4,9 +4,11 @@ import { AppModule } from './app.module';
 import { ValibotExceptionsFilter } from './common/filters/valibot-exception.filter';
 import * as express from 'express';
 import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.set('trust proxy', 'loopback');
   app.enableCors({ origin: '*' });
 
   if (!existsSync('client')) mkdirSync('client');

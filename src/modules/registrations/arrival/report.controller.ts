@@ -1,4 +1,4 @@
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
 import {
@@ -12,6 +12,9 @@ import {
   QueryReportArrivalDtoType,
   queryReportArrivalDto,
 } from './dto/query-report-arrival.dto';
+import { Throttle } from '@nestjs/throttler';
+import { Public } from 'src/common/decorators/public.decorator';
+import { BotDetectionGuard } from 'src/common/guards/bot-detection.guard';
 
 @Controller('report')
 export class ReportArrivalRegistrationController {
@@ -28,5 +31,13 @@ export class ReportArrivalRegistrationController {
     return await this.queryBus.execute<ReportArrivalRegisterQuery>(
       new ReportArrivalRegisterQuery(query, res),
     );
+  }
+
+  @Public()
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
+  @UseGuards(BotDetectionGuard)
+  @Get('test-throttle')
+  testThrottle() {
+    return { message: 'This is a throttled route' };
   }
 }

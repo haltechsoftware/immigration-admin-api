@@ -24,6 +24,7 @@ import { format } from 'date-fns';
 import ReportArrivalRegisterQuery from '../impl/report.query';
 import { ReportArrivalService } from '../../report.service';
 import { QueryReportArrivalDtoType } from '../../dto/query-report-arrival.dto';
+import { countries, countryTranslate } from 'src/modules/checkpoints/entities';
 
 @QueryHandler(ReportArrivalRegisterQuery)
 export class ReportArrivalRegisterHandler
@@ -45,8 +46,6 @@ export class ReportArrivalRegisterHandler
       query.limit,
     );
 
-    const total = await this.retrieveTotalCount(whereConditions);
-
     const data = results.map((val) => ({
       id: val.arrival_registration.id,
       entry_name: val.arrival_registration.entry_name,
@@ -61,6 +60,7 @@ export class ReportArrivalRegisterHandler
         ? format(val.arrival_registration.check_in_date, DateTimeFormat.date)
         : null,
       created_at: val.arrival_registration.created_at,
+      country: val.country_translate,
       personal_information: val.personal_information,
       passport_information: {
         id: val.passport_information.id,
@@ -83,8 +83,6 @@ export class ReportArrivalRegisterHandler
         : null,
     }));
 
-    // const totalCount = total[0].value;
-
     /** Export Excel Service */
     return await this._reportService.exportArrivalReport(
       data,
@@ -92,11 +90,6 @@ export class ReportArrivalRegisterHandler
       query.end_date,
       res,
     );
-
-    // return {
-    //   data,
-    //   total: totalCount,
-    // };
   }
 
   buildWhereConditions({
@@ -151,6 +144,7 @@ export class ReportArrivalRegisterHandler
       .db()
       .select()
       .from(arrivalRegistration)
+      .innerJoin(countries, eq(arrivalRegistration.country_id, countries.id))
       .innerJoin(
         personalInformation,
         eq(arrivalRegistration.personal_information_id, personalInformation.id),
@@ -165,6 +159,14 @@ export class ReportArrivalRegisterHandler
       )
       .leftJoin(users, eq(arrivalRegistration.verified_by, users.id))
       .leftJoin(profiles, eq(users.id, profiles.user_id))
+      // join translate table โดย filter locale
+      .leftJoin(
+        countryTranslate,
+        and(
+          eq(countries.id, countryTranslate.country_id),
+          eq(countryTranslate.lang, 'en'), // locale ທີ່ເຮົາຕ້ອງການເຊັ່ນ: "en" ຫຼື "lo"
+        ),
+      )
       .orderBy(desc(arrivalRegistration.id))
       .offset(offset)
       .limit(limit)

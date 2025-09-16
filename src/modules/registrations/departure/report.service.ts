@@ -1,23 +1,22 @@
-import { count } from 'drizzle-orm';
 import { Injectable } from '@nestjs/common';
 import * as ExcelJS from 'exceljs';
 import { Response } from 'express';
 import { format } from 'date-fns';
 
 @Injectable()
-export class ReportArrivalService {
-  async exportArrivalReport(
+export class ReportDepartureService {
+  async exportDepartureReport(
     data: any[],
     dateFrom: string,
     dateTo: string,
     res: Response,
   ) {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Arrival Register');
+    const worksheet = workbook.addWorksheet('Departure Register');
 
     // Title
-    worksheet.mergeCells('A1:L1');
-    worksheet.getCell('A1').value = 'Arrival Register';
+    worksheet.mergeCells('A1:I1');
+    worksheet.getCell('A1').value = 'Departure Register';
     worksheet.getCell('A1').alignment = { horizontal: 'center' };
     worksheet.getCell('A1').font = { bold: true, size: 14 };
 
@@ -25,7 +24,7 @@ export class ReportArrivalService {
     const from = new Date(dateFrom);
     const to = new Date(dateTo);
 
-    worksheet.mergeCells('A2:L2');
+    worksheet.mergeCells('A2:I2');
     worksheet.getCell('A2').value = `${
       isNaN(from.getTime()) ? '' : format(from, 'dd/MM/yyyy')
     } - ${isNaN(to.getTime()) ? '' : format(to, 'dd/MM/yyyy')}`;
@@ -43,9 +42,6 @@ export class ReportArrivalService {
       'Nationality',
       'Phone Number',
       'Passport',
-      'Travelling By',
-      'Visa',
-      'Country',
     ];
     worksheet.addRow([]);
     worksheet.addRow(header);
@@ -63,7 +59,7 @@ export class ReportArrivalService {
       };
     });
 
-    const totalColumns = 12;
+    const totalColumns = 9;
     // Add data
     data.forEach((item, index) => {
       const row = worksheet.addRow([
@@ -76,9 +72,6 @@ export class ReportArrivalService {
         item.personal_information.nationality,
         item.personal_information.phone_number,
         item.passport_information.number,
-        item.traveling_by_type,
-        item.visa_information?.number,
-        item.country.name,
       ]);
 
       for (let i = 1; i <= totalColumns; i++) {
@@ -109,9 +102,6 @@ export class ReportArrivalService {
     worksheet.getColumn(7).width = 12; // column G
     worksheet.getColumn(8).width = 18; // column H
     worksheet.getColumn(9).width = 20; // column I
-    worksheet.getColumn(10).width = 12; // column J
-    worksheet.getColumn(11).width = 16; // column K
-    worksheet.getColumn(12).width = 18; // column L
 
     // Set response header
     res.setHeader(
@@ -120,7 +110,7 @@ export class ReportArrivalService {
     );
     res.setHeader(
       'Content-Disposition',
-      'attachment; filename=arrival-report.xlsx',
+      'attachment; filename=departure-report.xlsx',
     );
 
     await workbook.xlsx.write(res);
