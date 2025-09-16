@@ -34,7 +34,7 @@ export class ReportArrivalRegistrationController {
   }
 
   @Public()
-  @Throttle({ default: { limit: 60, ttl: 60000 } })
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @UseGuards(BotDetectionGuard)
   @Get('test-throttle')
   testThrottle() {
