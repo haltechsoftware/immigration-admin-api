@@ -1,4 +1,11 @@
-import { Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FormDataRequest } from 'nestjs-form-data';
 import { Permissions } from 'src/common/decorators/permission.decorator';
@@ -37,6 +44,8 @@ import GetCountryClientQuery from './queries/impl/get-country.query';
 import checkCountryExceptVisaQuery from './queries/impl/check-country-except-visa.query';
 import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
 import { Auth } from 'src/common/decorators/auth.decorator';
+import { RequireRecaptcha } from 'src/common/decorators/recaptcha.decorator';
+import { GoogleRecaptchaGuard } from 'src/common/guards/recaptcha.guard';
 
 @Controller('arrival')
 export class ArrivalRegistrationController {
@@ -164,5 +173,15 @@ export class ArrivalRegistrationController {
     );
 
     return { message: result };
+  }
+
+  /** Google reCAPTCHA Guard */
+  @Public()
+  @UseGuards(GoogleRecaptchaGuard)
+  @RequireRecaptcha(true)
+  @Post('verify-recaptcha-token')
+  @HttpCode(200)
+  async verifyGoogleRecaptchaToken() {
+    return { message: 'Recaptcha token verified successfully' };
   }
 }

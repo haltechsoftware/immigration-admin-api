@@ -24,9 +24,18 @@ import { registrationModules } from './modules/registrations';
 import { serviceModules } from './modules/services';
 import { UserModules } from './modules/users';
 import { visaModules } from './modules/visa';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000, // 1 minute
+          limit: 60, // limit 60 requests per minute/IP
+        },
+      ],
+    }),
     ConfigModule.forRoot({ isGlobal: true, cache: true }),
     CqrsModule.forRoot(),
     JwtModule.registerAsync({
@@ -60,6 +69,10 @@ import { visaModules } from './modules/visa';
   providers: [
     {
       provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
       useClass: AuthGuard,
     },
     {
@@ -67,5 +80,6 @@ import { visaModules } from './modules/visa';
       useClass: PermissionsGuard,
     },
   ],
+  exports: [],
 })
 export class AppModule {}

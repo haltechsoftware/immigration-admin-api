@@ -17,7 +17,6 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
 
   private async _checkUser(dto: LoginDtoType) {
     const user = await this._repository.checkUser(dto.email);
-
     if (!user || !compareSync(dto.password, user.password))
       throw new UnauthorizedException({
         message:
