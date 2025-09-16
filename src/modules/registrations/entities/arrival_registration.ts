@@ -130,5 +130,10 @@ export const arrivalRegistrationRelations = relations(
       fields: [arrivalRegistration.verified_by],
       references: [users.id],
     }),
+
+    country: one(countries, {
+      fields: [arrivalRegistration.country_id],
+      references: [countries.id],
+    }),
   }),
 );
