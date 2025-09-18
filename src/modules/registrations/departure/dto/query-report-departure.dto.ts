@@ -39,7 +39,7 @@ const end_date = string('end_date must be a string', [
 
 // Combine all fields
 const baseQueryReportArrivalDto = object({
-  entry_name: optional(string()),
+  departure_name: optional(string()),
   passport_number: optional(string()),
   visa_number: optional(string()),
   verification_code: optional(string()),
