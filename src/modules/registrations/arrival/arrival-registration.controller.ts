@@ -46,6 +46,7 @@ import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { RequireRecaptcha } from 'src/common/decorators/recaptcha.decorator';
 import { GoogleRecaptchaGuard } from 'src/common/guards/recaptcha.guard';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('arrival')
 export class ArrivalRegistrationController {
@@ -54,6 +55,7 @@ export class ArrivalRegistrationController {
     private readonly commandBus: CommandBus,
   ) {}
 
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Public()
   @Post('upload-passport')
   @FormDataRequest()
@@ -69,6 +71,7 @@ export class ArrivalRegistrationController {
     return { url };
   }
 
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Public()
   @Post()
   @FormDataRequest()
@@ -82,6 +85,7 @@ export class ArrivalRegistrationController {
     return { message: res };
   }
 
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Public()
   @Post('upload-visa')
   @FormDataRequest()
