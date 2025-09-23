@@ -54,10 +54,5 @@ jobs:
       - name: Restart server app (optional)
         run: |
           ssh root@${{ secrets.DEPLOY_SERVER_IP }} "
-            cd /var/www/admin.immigration.gov &&
-            if pm2 list | grep -q 'main'; then
-              pm2 restart main;
-            else
-              pm2 start dist/main.js --name main;
-            fi
+            pm2 restart main
           "
