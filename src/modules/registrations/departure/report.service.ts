@@ -15,7 +15,7 @@ export class ReportDepartureService {
     const worksheet = workbook.addWorksheet('Departure Register');
 
     // Title
-    worksheet.mergeCells('A1:I1');
+    worksheet.mergeCells('A1:L1');
     worksheet.getCell('A1').value = 'Departure Register';
     worksheet.getCell('A1').alignment = { horizontal: 'center' };
     worksheet.getCell('A1').font = { bold: true, size: 14 };
@@ -24,7 +24,7 @@ export class ReportDepartureService {
     const from = new Date(dateFrom);
     const to = new Date(dateTo);
 
-    worksheet.mergeCells('A2:I2');
+    worksheet.mergeCells('A2:L2');
     worksheet.getCell('A2').value = `${
       isNaN(from.getTime()) ? '' : format(from, 'dd/MM/yyyy')
     } - ${isNaN(to.getTime()) ? '' : format(to, 'dd/MM/yyyy')}`;
