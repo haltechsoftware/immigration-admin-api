@@ -34,7 +34,9 @@ export class ReportDepartureService {
     // Header row
     const header = [
       'No',
-      'Date',
+      'Date Submit',
+      'Departure Date',
+      'Check Point',
       'Name',
       'Family Name',
       'Gender',
@@ -42,6 +44,7 @@ export class ReportDepartureService {
       'Nationality',
       'Phone Number',
       'Passport',
+      'Verification Code',
     ];
     worksheet.addRow([]);
     worksheet.addRow(header);
@@ -59,12 +62,14 @@ export class ReportDepartureService {
       };
     });
 
-    const totalColumns = 9;
+    const totalColumns = 12;
     // Add data
     data.forEach((item, index) => {
       const row = worksheet.addRow([
         index + 1,
         item.created_at,
+        item.check_in_date,
+        item.departure_name,
         item.personal_information.name,
         item.personal_information.family_name,
         item.personal_information.gender,
@@ -72,6 +77,7 @@ export class ReportDepartureService {
         item.personal_information.nationality,
         item.personal_information.phone_number,
         item.passport_information.number,
+        item.verification_code,
       ]);
 
       for (let i = 1; i <= totalColumns; i++) {
@@ -95,13 +101,16 @@ export class ReportDepartureService {
     // Adjust column width
     worksheet.getColumn(1).width = 8; // column A
     worksheet.getColumn(2).width = 20; // column B
-    worksheet.getColumn(3).width = 18; // column C
+    worksheet.getColumn(3).width = 15; // column C
     worksheet.getColumn(4).width = 18; // column D
-    worksheet.getColumn(5).width = 10; // column E
-    worksheet.getColumn(6).width = 12; // column F
-    worksheet.getColumn(7).width = 12; // column G
-    worksheet.getColumn(8).width = 18; // column H
-    worksheet.getColumn(9).width = 20; // column I
+    worksheet.getColumn(5).width = 18; // column E
+    worksheet.getColumn(6).width = 18; // column F
+    worksheet.getColumn(7).width = 10; // column G
+    worksheet.getColumn(8).width = 15; // column H
+    worksheet.getColumn(9).width = 15; // column I
+    worksheet.getColumn(10).width = 20; // column J
+    worksheet.getColumn(11).width = 25; // column K
+    worksheet.getColumn(12).width = 16; // column L
 
     // Set response header
     res.setHeader(
