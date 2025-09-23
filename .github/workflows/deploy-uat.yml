@@ -51,8 +51,6 @@ jobs:
           ssh root@${{ secrets.DEPLOY_SERVER_IP }} "echo '${{ secrets.ENV_CONTENT }}' > /var/www/admin.immigration.gov/.env"
 
       # Restart Server
-      - name: Restart server app (optional)
+      - name: Restart server app
         run: |
-          ssh root@${{ secrets.DEPLOY_SERVER_IP }} "
-            pm2 restart main
-          "
+          ssh root@${{ secrets.SERVER_HOST }} "/root/.nvm/versions/node/v20.18.2/bin/pm2 restart main"
