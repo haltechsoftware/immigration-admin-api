@@ -53,4 +53,5 @@ jobs:
       # Restart Server
       - name: Restart server app
         run: |
-          ssh root@${{ secrets.SERVER_HOST }} "/root/.nvm/versions/node/v20.18.2/bin/pm2 restart main"
+          ssh root@${{ secrets.SERVER_HOST }} "export NVM_DIR=\"$HOME/.nvm\" && source \$NVM_DIR/nvm.sh && pm2 restart main"
+
