@@ -40,6 +40,7 @@ jobs:
         run: |
           rsync -az --delete \
             --exclude 'node_modules' \
+            --exclude 'client' \
             --exclude '.git' \
             --exclude '.github' \
             --exclude '.env*' \
