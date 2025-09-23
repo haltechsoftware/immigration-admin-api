@@ -15,13 +15,13 @@ import {
   departureRegistration,
   passportInformation,
 } from 'src/modules/registrations/entities';
-import { QueryDepartureDtoType } from '../../dto/query-departure.dto';
 import { personalInformation } from './../../../entities/personal_information';
 import { profiles, users } from 'src/modules/users/entities';
 import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import ReportDepartureRegisterQuery from '../impl/report-departure.command';
 import { ReportDepartureService } from '../../report.service';
+import { QueryReportDepartureDtoType } from '../../dto/query-report-departure.dto';
 
 @QueryHandler(ReportDepartureRegisterQuery)
 export class ReportDepartureRegisterHandler
@@ -84,7 +84,12 @@ export class ReportDepartureRegisterHandler
     is_verified,
     black_list,
     verification_code,
-  }: QueryDepartureDtoType): SQL<unknown> {
+    start_date,
+    end_date,
+  }: QueryReportDepartureDtoType): SQL<unknown> {
+    const start = start_date ? `${start_date} 00:00:00` : undefined;
+    const end = end_date ? `${end_date} 23:59:59` : undefined;
+
     const condition: SQLWrapper[] = [
       departure_name
         ? sql`${
@@ -102,6 +107,14 @@ export class ReportDepartureRegisterHandler
       black_list ? eq(departureRegistration.black_list, black_list) : undefined,
       verification_code
         ? eq(departureRegistration.verification_code, verification_code)
+        : undefined,
+      // filter ระหว่าง start_date & end_date
+      start && end
+        ? sql`${departureRegistration.created_at} BETWEEN ${start} AND ${end}`
+        : start
+        ? sql`${departureRegistration.created_at} >= ${start}`
+        : end
+        ? sql`${departureRegistration.created_at} <= ${end}`
         : undefined,
     ];
 

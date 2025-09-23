@@ -27,6 +27,7 @@ import {
 import DepartureRegistrationCommand from './commands/impl/departure-registration.command';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { IJwtPayload } from 'src/common/interface/jwt-payload.interface';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('departure')
 export class DepartureRegistrationController {
@@ -46,6 +47,7 @@ export class DepartureRegistrationController {
     );
   }
 
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Public()
   @Post()
   async createDeparture(
@@ -79,6 +81,7 @@ export class DepartureRegistrationController {
     );
   }
 
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   @Permissions(PermissionGroup.Registration, PermissionName.Write)
   @Put(':id')
   async verifyCode(
