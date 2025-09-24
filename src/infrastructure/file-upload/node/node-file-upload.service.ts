@@ -12,40 +12,56 @@ export class NodeFileUploadService implements IFileUpload {
     buffer: Buffer,
     fileName: string,
   ): Promise<string> {
-    // const [name] = fileName.split('.');
     const extension = extname(fileName);
-
-    // const truncatedName = name.substring(0, 25);
     const newFileName = this.generateUniqueFilename(extension);
 
-    // let existsPath = 'client/';
-    // console.log('process', resolve(process.cwd()));
-    const existsPath = resolve(process.cwd(), 'client');
-
-    let currentPath = existsPath;
-
-    for (const val of path.split('/')) {
-      // existsPath = existsPath + val + '/';
-      // console.log('existsPath', existsPath);
-      currentPath = join(currentPath, val);
-      if (val && !existsSync(existsPath)) {
-        try {
-          await mkdir(existsPath, { recursive: true });
-        } catch (err) {
-          console.error('Error creating directory:', err);
-        }
-      }
-    }
-
-    const filePath = `client/${path}${newFileName}`;
+    const basePath = resolve(process.cwd(), 'client');
+    const fullPath = join(basePath, path);
+    await mkdir(fullPath, { recursive: true });
+    const filePath = join(fullPath, newFileName);
 
     try {
       await writeFile(filePath, buffer);
-      return filePath;
+      return `client/${path}${newFileName}`;
     } catch (error) {
       console.error('Error uploading file:', error);
       throw error;
     }
+
+    // // const [name] = fileName.split('.');
+    // const extension = extname(fileName);
+
+    // // const truncatedName = name.substring(0, 25);
+    // const newFileName = this.generateUniqueFilename(extension);
+
+    // // let existsPath = 'client/';
+    // // console.log('process', resolve(process.cwd()));
+    // const existsPath = resolve(process.cwd(), 'client');
+
+    // let currentPath = existsPath;
+
+    // for (const val of path.split('/')) {
+    //   // existsPath = existsPath + val + '/';
+    //   // console.log('existsPath', existsPath);
+    //   currentPath = join(currentPath, val);
+    //   if (val && !existsSync(existsPath)) {
+    //     try {
+    //       await mkdir(existsPath, { recursive: true });
+    //     } catch (err) {
+    //       console.error('Error creating directory:', err);
+    //     }
+    //   }
+    // }
+
+    // const filePath = `client/${path}${newFileName}`;
+
+    // try {
+    //   await writeFile(filePath, buffer);
+    //   return filePath;
+    // } catch (error) {
+    //   console.error('Error uploading file:', error);
+    //   throw error;
+    // }
   }
 
   async remove(path: string): Promise<void> {
