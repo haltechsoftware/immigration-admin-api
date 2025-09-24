@@ -26,7 +26,7 @@ export default class CreateUserHandler
         dto.image.originalName,
       );
     }
-    console.log('createPopups', dto);
+
     if (dto.end_time <= dto.start_time)
       throw new BadRequestException({
         message: 'ວັນທີສິ້ນສຸດຕ້ອງໃຫ່ຍກວ່າ ຫຼື ເທົ່າກັບວັນທີເລີ່ມ.',
