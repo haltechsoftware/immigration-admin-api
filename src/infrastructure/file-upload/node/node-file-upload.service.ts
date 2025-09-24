@@ -65,8 +65,19 @@ export class NodeFileUploadService implements IFileUpload {
   }
 
   async remove(path: string): Promise<void> {
-    await unlink(path);
+    try {
+      await unlink(path);
+    } catch (err: any) {
+      if (err.code !== 'ENOENT') {
+        throw err; // ❌ ถ้าเป็น error อื่นเช่น permission denied ต้อง throw
+      }
+      // ✅ ถ้าเป็น ENOENT (ไฟล์ไม่มี) ก็แค่ข้ามไป
+    }
   }
+
+  // async remove(path: string): Promise<void> {
+  //   await unlink(path);
+  // }
 
   private generateUniqueFilename(extension: string): string {
     // const baseWithoutSpaces = base.replace(/\s+/g, '-').toLowerCase();
