@@ -46,19 +46,22 @@ export default class CreateNationalityHandler
       translates: [
         {
           name: dto.lo.name,
+          short_name: dto.lo.short_name,
           lang: 'lo',
         },
         {
           name: dto.en.name,
+          short_name: dto.en.short_name,
           lang: 'en',
         },
         {
           name: dto.zh_cn.name,
+          short_name: dto.zh_cn.short_name,
           lang: 'zh_cn',
         },
       ],
     });
 
-    return 'ບັນທຶກຂໍ້ມູນປະເພດວີຊາສຳເລັດ';
+    return 'ບັນທຶກຂໍ້ມູນສຳເລັດ';
   }
 }

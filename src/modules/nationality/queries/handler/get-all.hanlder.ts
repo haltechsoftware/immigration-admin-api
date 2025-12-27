@@ -33,6 +33,7 @@ export class GetNationalityHandler
         ...val,
         lang_id: val.translates[0].id,
         name: val.translates[0].name,
+        short_name: val.translates[0].short_name,
         lang: val.translates[0].lang,
         translates: undefined,
       })),

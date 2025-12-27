@@ -22,6 +22,7 @@ export class NationalityRepository {
         input.translates.map((val) => ({
           nationality_id: nationalities[0].insertId,
           name: val.name,
+          short_name: val.short_name,
           lang: val.lang,
         })),
       );
@@ -53,6 +54,7 @@ export class NationalityRepository {
           .update(nationalityTranslate)
           .set({
             name: val.name,
+            short_name: val.short_name,
           })
           .where(eq(nationalityTranslate.id, val.id));
       });

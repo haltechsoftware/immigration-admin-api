@@ -17,6 +17,7 @@ export const nationalityTranslate = mysqlTable('nationality_translates', {
     unsigned: true,
   }).references(() => nationality.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 255 }).notNull(),
+  short_name: varchar('short_name', { length: 255 }),
   lang: langCode.notNull(),
 });
 

@@ -51,16 +51,19 @@ export class UpdateNationalityHandler
         {
           id: input.lo.id,
           name: input.lo.name,
+          short_name: input.lo.short_name,
           lang: 'lo',
         },
         {
           id: input.en.id,
           name: input.en.name,
+          short_name: input.en.short_name,
           lang: 'en',
         },
         {
           id: input.zh_cn.id,
           name: input.zh_cn.name,
+          short_name: input.zh_cn.short_name,
           lang: 'zh_cn',
         },
       ],
