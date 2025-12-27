@@ -45,9 +45,9 @@ export class VisaController {
     @Valibot({ schema: QueryVisaCategory, type: 'query' })
     query: QueryVisaCategoryType,
   ) {
-      return await this._queryBus.execute<GetVisaCategoryClientQuery>(
-        new GetVisaCategoryClientQuery(query),
-      );
+    return await this._queryBus.execute<GetVisaCategoryClientQuery>(
+      new GetVisaCategoryClientQuery(query),
+    );
   }
 
   @Permissions(PermissionGroup.Visa, PermissionName.Write)
@@ -96,7 +96,6 @@ export class VisaController {
       new GetVisaCategoryQuery(query),
     );
   }
-
 
   @Permissions(PermissionGroup.Visa, PermissionName.Write)
   @Put(':id')

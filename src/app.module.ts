@@ -25,6 +25,7 @@ import { serviceModules } from './modules/services';
 import { UserModules } from './modules/users';
 import { visaModules } from './modules/visa';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { NationalityModule } from './modules/nationality/nationality.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     ...registrationModules,
     ...contactModules,
     ...serviceModules,
+    NationalityModule,
   ],
   providers: [
     {

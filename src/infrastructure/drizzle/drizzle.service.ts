@@ -15,21 +15,18 @@ import * as registrationSchema from 'src/modules/registrations/entities';
 import * as serviceSchema from 'src/modules/services/entities';
 import * as userSchema from 'src/modules/users/entities';
 import * as visaCategorySchema from 'src/modules/visa/entities';
+import * as nationalitySchema from 'src/modules/nationality/entities';
 
 @Injectable()
 export class DrizzleService {
-  constructor(private readonly config?: ConfigService<IEnv>) {
-
-  }
+  constructor(private readonly config?: ConfigService<IEnv>) {}
 
   private readonly client = mysql.createPool({
     host: this.config.get('DB_HOST'),
     user: this.config.get('DB_USER'),
-    password: this.config.get('DB_PASS'), 
-    database: this.config.get('DB_DATABASE')
+    password: this.config.get('DB_PASS'),
+    database: this.config.get('DB_DATABASE'),
   });
-
-   
 
   private readonly schema = {
     ...userSchema,
@@ -44,10 +41,10 @@ export class DrizzleService {
     ...registrationSchema,
     contacts,
     ...serviceSchema,
+    ...nationalitySchema,
   };
 
   db() {
-   
     return drizzle(this.client, {
       schema: this.schema,
       mode: 'default',
