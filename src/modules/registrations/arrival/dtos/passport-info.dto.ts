@@ -18,7 +18,7 @@ export const PassportInfoSchema = object({
     ),
   ]),
   image: string('Image must be a string'),
-  people_image: string('People image must be a string'),
+  // people_image: string('People image must be a string'),
   // image: special(
   // (input) => input instanceof MemoryStoredFile,
   // 'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ',
