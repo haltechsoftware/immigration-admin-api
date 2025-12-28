@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
@@ -12,7 +12,6 @@ import {
 } from '../entities';
 import ArrivalRegistrationCommand from './commands/impl/arrival-registration.command';
 import { Gender } from './dtos/personal-info.dto';
-import generateVerifyCode from 'src/common/utils/generate-verify-code';
 import { countries, countryTranslate } from 'src/modules/checkpoints/entities';
 
 @Injectable()
@@ -68,11 +67,20 @@ export class ArrivalRegistrationRepository {
     });
   }
 
+  async checkVerificationCodeExists(code: string): Promise<boolean> {
+    const result = await this.drizzle.db().query.arrivalRegistration.findFirst({
+      where: (fields, operators) =>
+        operators.eq(fields.verification_code, code),
+    });
+    return result !== undefined;
+  }
+
   async create(
     { input }: ArrivalRegistrationCommand,
     passport_path: string,
-    visa_filePath: string,
-    people_file_path: string,
+    verificationCode: string,
+    // visa_filePath: string,
+    // people_file_path: string,
   ): Promise<any> {
     try {
       return await this.drizzle.db().transaction(async (tx) => {
@@ -81,7 +89,8 @@ export class ArrivalRegistrationRepository {
         const personalInfoRes = await tx.insert(personalInformation).values({
           gender: personal_info.gender === Gender.Male ? 'male' : 'female',
           name: personal_info.name,
-          nationality: personal_info.nationality,
+          nationality: null,
+          nationality_id: Number(personal_info.nationality_id),
           occupation: personal_info.occupation,
           family_name: personal_info.family_name, // ✅ Fixed
           date_of_birth: format(
@@ -100,7 +109,7 @@ export class ArrivalRegistrationRepository {
           expiry_date: format(passport_info.expiry_date, DateTimeFormat.date), // ✅ Fixed
           place_issue: passport_info.place_of_issue,
           image: passport_path,
-          people_image: people_file_path,
+          people_image: null,
         });
 
         // Visa Information
@@ -117,13 +126,14 @@ export class ArrivalRegistrationRepository {
             visaCategory: visa.visaCategory, // Drizzle will map 'visaCategory' to 'visa_category' in the DB
             date_issue: format(visa.date_of_issue, DateTimeFormat.date),
             place_issue: visa.place_of_issue,
-            image: visa_filePath, // Handles the image field correctly (null if not provided)
+            image: null, // Handles the image field correctly (null if not provided)
           });
 
           visaId = visaInfoRes[0].insertId; // Get the insertId from the response
         }
 
-        const code = generateVerifyCode(10);
+        // Use the verification code passed from handler
+        const code = verificationCode;
 
         // Arrival Registration
         const savedData = await tx.insert(arrivalRegistration).values({

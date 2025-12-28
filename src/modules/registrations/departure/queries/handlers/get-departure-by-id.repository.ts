@@ -18,7 +18,18 @@ export class GetDepartureByIdHandler
       where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
       with: {
         passport_information: true,
-        personal_information: true,
+        // personal_information: true,
+        personal_information: {
+          with: {
+            nationality: {
+              with: {
+                translates: {
+                  where: (translates, { eq }) => eq(translates.lang, 'en'),
+                },
+              },
+            },
+          },
+        },
         verified_by_user: {
           columns: { password: false },
           with: {

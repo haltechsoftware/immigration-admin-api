@@ -19,7 +19,18 @@ export class GetArrivalByIdHandler
       with: {
         passport_information: true,
         visa_information: true,
-        personal_information: true,
+        // personal_information: true,
+        personal_information: {
+          with: {
+            nationality: {
+              with: {
+                translates: {
+                  where: (translates, { eq }) => eq(translates.lang, 'en'),
+                },
+              },
+            },
+          },
+        },
         intended_address: true,
         verified_by_user: {
           columns: { password: false },

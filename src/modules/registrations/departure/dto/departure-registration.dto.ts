@@ -34,7 +34,7 @@ const DepartureRegistrationDto = object({
     regex(/^\d{4}-\d{2}-\d{2}$/, 'Check in date must be in YYYY-MM-DD format.'),
   ]),
 
-  passport_info: omit(PassportInfoSchema, ['people_image']),
+  passport_info: PassportInfoSchema,
 });
 
 type DepartureRegistrationDtoType = Output<typeof DepartureRegistrationDto>;

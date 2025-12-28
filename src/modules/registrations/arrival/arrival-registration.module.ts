@@ -9,6 +9,7 @@ import { GoogleRecaptchaService } from 'src/common/google-recaptcha/recaptcha.se
 import { HttpModule } from '@nestjs/axios';
 import { ReportArrivalRegistrationController } from './report.controller';
 import { ReportArrivalService } from './report.service';
+import { NationalityRepository } from 'src/modules/nationality/nationality.repository';
 
 @Module({
   imports: [HttpModule],
@@ -20,6 +21,7 @@ import { ReportArrivalService } from './report.service';
     ArrivalRegistrationRepository,
     CountryRepository,
     ReportArrivalService,
+    NationalityRepository,
   ],
   controllers: [
     ArrivalRegistrationController,

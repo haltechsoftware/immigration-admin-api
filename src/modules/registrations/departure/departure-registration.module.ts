@@ -5,6 +5,7 @@ import { DepartureRepository } from './departure-registration.repository';
 import departureRegisterHandlers from './queries/handlers';
 import { ReportArrivalRegistrationController } from './report.controller';
 import { ReportDepartureService } from './report.service';
+import { NationalityRepository } from 'src/modules/nationality/nationality.repository';
 
 @Module({
   providers: [
@@ -12,6 +13,7 @@ import { ReportDepartureService } from './report.service';
     ...departureCommandHandlers,
     DepartureRepository,
     ReportDepartureService,
+    NationalityRepository,
   ],
   controllers: [
     DepartureRegistrationController,

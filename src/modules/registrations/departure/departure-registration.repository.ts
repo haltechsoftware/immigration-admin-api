@@ -9,7 +9,6 @@ import {
   personalInformation,
 } from '../entities';
 import DepartureRegistrationCommand from './commands/impl/departure-registration.command';
-import generateVerifyCode from 'src/common/utils/generate-verify-code';
 
 @Injectable()
 export class DepartureRepository {
@@ -50,9 +49,20 @@ export class DepartureRepository {
     });
   }
 
+  async checkVerificationCodeExists(code: string): Promise<boolean> {
+    const result = await this.drizzle
+      .db()
+      .query.departureRegistration.findFirst({
+        where: (fields, operators) =>
+          operators.eq(fields.verification_code, code),
+      });
+    return result !== undefined;
+  }
+
   async create(
     { input }: DepartureRegistrationCommand,
     passport_path: string,
+    verification_code: string,
   ): Promise<any> {
     try {
       const { passport_info, personal_info } = input;
@@ -69,6 +79,7 @@ export class DepartureRepository {
           ),
           phone_number: personal_info.phone_number,
           place_of_birth: personal_info.place_of_birth,
+          nationality_id: Number(personal_info.nationality_id),
         });
 
         // Insert Passport Information
@@ -81,7 +92,8 @@ export class DepartureRepository {
           people_image: '',
         });
 
-        const code = generateVerifyCode(10);
+        // const code = generateVerifyCode();
+        const code = verification_code;
 
         // Insert Departure Information
         const [departure] = await tx.insert(departureRegistration).values({

@@ -4,6 +4,7 @@ import { merge, object, optional, Output, special, string } from 'valibot';
 const QueryDepartureDto = merge([
   OffsetBasePaginateDto,
   object({
+    search: optional(string()),
     departure_name: optional(string()),
     passport_number: optional(string()),
     is_verified: optional(
@@ -24,6 +25,7 @@ const QueryDepartureDto = merge([
       ),
     ),
     verification_code: optional(string()),
+    check_in_date: optional(string()),
   }),
 ]);
 

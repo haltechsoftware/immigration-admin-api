@@ -11,6 +11,8 @@ import { moveFileToPassport } from 'src/common/utils/copy-file-name.util';
 import { isBefore } from 'date-fns';
 import { FILE_UPLOAD_SERVICE } from 'src/infrastructure/file-upload/inject-key';
 import { IFileUpload } from 'src/infrastructure/file-upload/file-upload.interface';
+import { generateCode } from 'src/common/utils/generate-code.util';
+import { NationalityRepository } from 'src/modules/nationality/nationality.repository';
 
 @CommandHandler(ArrivalRegistrationCommand)
 export default class ArrivalRegistrationHandler
@@ -19,6 +21,7 @@ export default class ArrivalRegistrationHandler
   constructor(
     @Inject(FILE_UPLOAD_SERVICE) private readonly upload: IFileUpload,
     private readonly repository: ArrivalRegistrationRepository,
+    private readonly nationalityRepository: NationalityRepository,
     private readonly countryRepository: CountryRepository,
   ) {}
 
@@ -29,6 +32,16 @@ export default class ArrivalRegistrationHandler
       throw new BadRequestException(
         'Invalid country_id: must be a valid integer.',
       );
+    }
+
+    const nationality = await this.nationalityRepository.findOne(
+      Number(input.personal_info.nationality_id),
+    );
+
+    if (!nationality) {
+      throw new NotFoundException({
+        message: `ບໍ່ພົບຂໍ້ມູນສັນຊາດs`,
+      });
     }
 
     const countryId = parseInt(input.country_id);
@@ -103,33 +116,52 @@ export default class ArrivalRegistrationHandler
     // end
 
     // people image
-    const people_fileName = await moveFileToPassport(
-      input.passport_info.people_image,
-      destinationDir,
-    );
+    // const people_fileName = await moveFileToPassport(
+    //   input.passport_info.people_image,
+    //   destinationDir,
+    // );
 
-    const people_file_path = `client/document/passport/${people_fileName}`;
+    // const people_file_path = `client/document/passport/${people_fileName}`;
     // end
 
     // visa
-    let visa_filePath = '';
-    if (input.visa.image) {
-      const visa_path = join(process.cwd(), 'client', 'document', 'visa');
+    // let visa_filePath = '';
+    // if (input.visa.image) {
+    //   const visa_path = join(process.cwd(), 'client', 'document', 'visa');
 
-      const visa_fileName = await moveFileToPassport(
-        input.visa.image,
-        visa_path,
-      );
+    //   const visa_fileName = await moveFileToPassport(
+    //     input.visa.image,
+    //     visa_path,
+    //   );
 
-      visa_filePath = `client/document/visa/${visa_fileName}`;
-    }
+    //   visa_filePath = `client/document/visa/${visa_fileName}`;
+    // }
     // end
+
+    // Generate unique verification code
+    let code: string;
+    let isUnique = false;
+    const maxAttempts = 100;
+    let attempts = 0;
+
+    while (!isUnique && attempts < maxAttempts) {
+      code = generateCode();
+      isUnique = !(await this.repository.checkVerificationCodeExists(code));
+      attempts++;
+    }
+
+    if (!isUnique) {
+      throw new Error(
+        'Failed to generate unique verification code after multiple attempts',
+      );
+    }
 
     const res = await this.repository.create(
       { input },
       passport_path,
-      visa_filePath,
-      people_file_path,
+      code,
+      // visa_filePath,
+      // people_file_path,
     );
 
     // if (res.status === 200 || res.status === 201) {

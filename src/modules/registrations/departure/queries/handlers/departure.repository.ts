@@ -6,12 +6,14 @@ import {
   eq,
   isNotNull,
   isNull,
+  or,
   sql,
   SQL,
   SQLWrapper,
 } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
+  arrivalRegistration,
   departureRegistration,
   passportInformation,
 } from 'src/modules/registrations/entities';
@@ -21,6 +23,7 @@ import { personalInformation } from './../../../entities/personal_information';
 import { profiles, users } from 'src/modules/users/entities';
 import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
+import { nationalityTranslate } from 'src/modules/nationality/entities';
 
 @QueryHandler(DepartureRegisterQuery)
 export class DepartureRegisterHandler
@@ -78,8 +81,18 @@ export class DepartureRegisterHandler
     is_verified,
     black_list,
     verification_code,
+    search,
+    check_in_date,
   }: QueryDepartureDtoType): SQL<unknown> {
     const condition: SQLWrapper[] = [
+      search
+        ? or(
+            sql`${nationalityTranslate.name} LIKE ${`%${search}%`}`,
+            sql`${nationalityTranslate.short_name} LIKE ${`%${search}%`}`,
+            sql`${arrivalRegistration.traveling_by_type} = ${search}`,
+            sql`${arrivalRegistration.entry_name} LIKE ${`%${search}%`}`,
+          )
+        : undefined,
       departure_name
         ? sql`${
             departureRegistration.departure_name
@@ -96,6 +109,9 @@ export class DepartureRegisterHandler
       black_list ? eq(departureRegistration.black_list, black_list) : undefined,
       verification_code
         ? eq(departureRegistration.verification_code, verification_code)
+        : undefined,
+      check_in_date
+        ? sql`${departureRegistration.check_in_date} = DATE(${check_in_date})`
         : undefined,
     ];
 
@@ -127,6 +143,13 @@ export class DepartureRegisterHandler
       )
       .leftJoin(users, eq(departureRegistration.verified_by, users.id))
       .leftJoin(profiles, eq(users.id, profiles.user_id))
+      .leftJoin(
+        nationalityTranslate,
+        eq(
+          personalInformation.nationality_id,
+          nationalityTranslate.nationality_id,
+        ),
+      )
       .orderBy(desc(departureRegistration.id))
       .offset(offset)
       .limit(limit)

@@ -7,14 +7,29 @@ import { TypeCheckDate } from 'src/common/enum/date-time-fomat.enum';
 import { validateCheckInDate } from 'src/common/utils/check-date.util';
 import { moveFileToPassport } from 'src/common/utils/copy-file-name.util';
 import { join } from 'path';
+import { generateCode } from 'src/common/utils/generate-code.util';
+import { NationalityRepository } from 'src/modules/nationality/nationality.repository';
+import { NotFoundException } from '@nestjs/common';
 
 @CommandHandler(DepartureRegistrationCommand)
 export default class DepartureRegistrationHandler
   implements ICommandHandler<DepartureRegistrationCommand, string>
 {
-  constructor(private readonly repository: DepartureRepository) {}
+  constructor(
+    private readonly repository: DepartureRepository,
+    private readonly nationalityRepository: NationalityRepository,
+  ) {}
 
   async execute({ input }: DepartureRegistrationCommand): Promise<string> {
+    const nationality = await this.nationalityRepository.findOne(
+      Number(input.personal_info.nationality_id),
+    );
+
+    if (!nationality) {
+      throw new NotFoundException({
+        message: `ບໍ່ພົບຂໍ້ມູນສັນຊາດs`,
+      });
+    }
     validateCheckInDate(input.check_in_date, TypeCheckDate.DEPARTURE);
 
     // Validate dates
@@ -64,6 +79,24 @@ export default class DepartureRegistrationHandler
     const passport_path = `client/document/passport/${fileName}`;
     // end
 
-    return await this.repository.create({ input }, passport_path);
+    // Generate unique verification code
+    let code: string;
+    let isUnique = false;
+    const maxAttempts = 100;
+    let attempts = 0;
+
+    while (!isUnique && attempts < maxAttempts) {
+      code = generateCode();
+      isUnique = !(await this.repository.checkVerificationCodeExists(code));
+      attempts++;
+    }
+
+    if (!isUnique) {
+      throw new Error(
+        'Failed to generate unique verification code after multiple attempts',
+      );
+    }
+
+    return await this.repository.create({ input }, passport_path, code);
   }
 }

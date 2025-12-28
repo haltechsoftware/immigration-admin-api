@@ -1,4 +1,3 @@
-import englishOnly from 'src/common/utils/english-only';
 import { object, string, minLength, maxLength, enum_ } from 'valibot';
 export enum Gender {
   Male = 'male',
@@ -33,13 +32,16 @@ export const PersonalInfoSchema = object({
       'Please enter Place of birth with a maximum length of 255 characters.',
     ),
   ]),
-  nationality: string('Nationality must be a string', [
-    minLength(1, 'Please enter Nationality.'),
-    maxLength(
-      255,
-      'Please enter Nationality with a maximum length of 255 characters.',
-    ),
-    // englishOnly('Nationality'),
+  // nationality: string('Nationality must be a string', [
+  //   minLength(1, 'Please enter Nationality.'),
+  //   maxLength(
+  //     255,
+  //     'Please enter Nationality with a maximum length of 255 characters.',
+  //   ),
+  //   // englishOnly('Nationality'),
+  // ]),
+  nationality_id: string('nationality from must be a string.', [
+    minLength(1, 'Please select an option.'),
   ]),
   occupation: string('Occupation must be a string', [
     minLength(1, 'Please enter Occupation.'),

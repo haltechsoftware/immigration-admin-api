@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { mysqlTable, serial, timestamp } from 'drizzle-orm/mysql-core';
 import { nationalityTranslate } from './nationality-translate';
+import { personalInformation } from 'src/modules/registrations/entities';
 
 export const nationality = mysqlTable('nationalities', {
   id: serial('id').primaryKey().notNull(),
@@ -14,6 +15,7 @@ export const nationality = mysqlTable('nationalities', {
 
 export const nationalityRelations = relations(nationality, ({ many }) => ({
   translates: many(nationalityTranslate),
+  personal_information: many(personalInformation),
 }));
 
 export type Nationality = typeof nationality.$inferSelect;

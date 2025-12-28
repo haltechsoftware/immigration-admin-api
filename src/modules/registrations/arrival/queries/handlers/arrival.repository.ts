@@ -4,9 +4,9 @@ import {
   count,
   desc,
   eq,
-  ilike,
   isNotNull,
   isNull,
+  or,
   sql,
   SQL,
   SQLWrapper,
@@ -15,6 +15,7 @@ import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
   arrivalRegistration,
   passportInformation,
+  personalInformation,
   visaInformation,
 } from 'src/modules/registrations/entities';
 import { QueryArrivalDtoType } from '../../dto/query-arrival.dto';
@@ -22,6 +23,8 @@ import ArrivalRegisterQuery from '../impl/arrival.query';
 import { profiles, users } from 'src/modules/users/entities';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { format } from 'date-fns';
+import { nationalityTranslate } from 'src/modules/nationality/entities';
+import { countryTranslate } from 'src/modules/checkpoints/entities';
 
 @QueryHandler(ArrivalRegisterQuery)
 export class ArrivalRegisterHandler
@@ -84,8 +87,21 @@ export class ArrivalRegisterHandler
     is_verified,
     black_list,
     verification_code,
+    search,
+    check_in_date,
   }: QueryArrivalDtoType): SQL<unknown> {
     const conditions: SQLWrapper[] = [
+      // Search across multiple fields with OR logic
+      search
+        ? or(
+            sql`${nationalityTranslate.name} LIKE ${`%${search}%`}`,
+            sql`${nationalityTranslate.short_name} LIKE ${`%${search}%`}`,
+            sql`${arrivalRegistration.traveling_by_type} = ${search}`,
+            sql`${countryTranslate.name} LIKE ${`%${search}%`}`,
+            sql`${countryTranslate.slug} LIKE ${`%${search}%`}`,
+            sql`${arrivalRegistration.entry_name} LIKE ${`%${search}%`}`,
+          )
+        : undefined,
       entry_name
         ? sql`${arrivalRegistration.entry_name} LIKE ${`%${entry_name}%`}`
         : undefined,
@@ -101,6 +117,9 @@ export class ArrivalRegisterHandler
       black_list ? eq(arrivalRegistration.black_list, black_list) : undefined,
       verification_code
         ? eq(arrivalRegistration.verification_code, verification_code)
+        : undefined,
+      check_in_date
+        ? sql`${arrivalRegistration.check_in_date} = DATE(${check_in_date})`
         : undefined,
     ];
 
@@ -120,12 +139,27 @@ export class ArrivalRegisterHandler
         passportInformation,
         eq(arrivalRegistration.passport_information_id, passportInformation.id),
       )
+      .innerJoin(
+        personalInformation,
+        eq(arrivalRegistration.personal_information_id, personalInformation.id),
+      )
       .leftJoin(
         visaInformation,
         eq(arrivalRegistration.visa_information_id, visaInformation.id),
       )
       .leftJoin(users, eq(arrivalRegistration.verified_by, users.id))
       .leftJoin(profiles, eq(users.id, profiles.user_id))
+      .leftJoin(
+        nationalityTranslate,
+        eq(
+          personalInformation.nationality_id,
+          nationalityTranslate.nationality_id,
+        ),
+      )
+      .leftJoin(
+        countryTranslate,
+        eq(arrivalRegistration.country_id, countryTranslate.country_id),
+      )
       .orderBy(desc(arrivalRegistration.id))
       .offset(offset)
       .limit(limit)
@@ -142,8 +176,28 @@ export class ArrivalRegisterHandler
         eq(arrivalRegistration.passport_information_id, passportInformation.id),
       )
       .innerJoin(
+        personalInformation,
+        eq(arrivalRegistration.personal_information_id, personalInformation.id),
+      )
+      .leftJoin(
         visaInformation,
         eq(arrivalRegistration.visa_information_id, visaInformation.id),
+      )
+      .leftJoin(users, eq(arrivalRegistration.verified_by, users.id))
+      .leftJoin(profiles, eq(users.id, profiles.user_id))
+      .leftJoin(
+        nationalityTranslate,
+        and(
+          eq(
+            personalInformation.nationality_id,
+            nationalityTranslate.nationality_id,
+          ),
+          eq(nationalityTranslate.lang, 'en'),
+        ),
+      )
+      .leftJoin(
+        countryTranslate,
+        eq(arrivalRegistration.country_id, countryTranslate.country_id),
       )
       .where(whereConditions);
   }
