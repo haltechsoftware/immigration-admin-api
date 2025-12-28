@@ -52,10 +52,10 @@ export class GetReportDepartureHandler
       );
 
     return {
-      total_departure_tourism_today: todayCountResult[0].value,
-      total_departure_tourism_month_days: thirtyDaysCountResult[0].value,
-      total_departure_tourism_one_year: oneYearCountResult[0].value,
-      total_departure_tourism_all: allCountResult[0].value,
+      total_departure_today: todayCountResult[0].value,
+      total_departure_month_days: thirtyDaysCountResult[0].value,
+      total_departure_one_year: oneYearCountResult[0].value,
+      total_departure_all: allCountResult[0].value,
     };
   }
 }
