@@ -59,7 +59,7 @@ export const arrivalRegistration = mysqlTable(
     traveling_by_type: travelingByType.notNull(),
     traveling_by_no: varchar('traveling_by_no', { length: 255 }).notNull(),
     is_traveling_in_tour: varchar('is_traveling_in_tour', { length: 255 }),
-    verification_code: char('verification_code', { length: 10 }).unique(),
+    verification_code: char('verification_code', { length: 20 }).unique(),
     verified_at: timestamp('verified_at', { mode: 'string' }),
     // verified_by: varchar('verified_by', { length: 255 }),
     verified_by: bigint('verified_by', {

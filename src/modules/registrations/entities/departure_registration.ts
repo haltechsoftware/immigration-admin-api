@@ -28,7 +28,7 @@ export const departureRegistration = mysqlTable(
     }),
     departure_name: varchar('departure_name', { length: 255 }).notNull(),
     last_leaving: varchar('last_leaving', { length: 255 }).notNull(),
-    verification_code: char('verification_code', { length: 10 }).unique(),
+    verification_code: char('verification_code', { length: 20 }).unique(),
     verified_at: timestamp('verified_at', { mode: 'string' }),
     verified_by: bigint('verified_by', {
       mode: 'number',
