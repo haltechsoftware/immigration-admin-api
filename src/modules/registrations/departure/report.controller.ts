@@ -12,6 +12,7 @@ import {
   QueryReportDepartureDtoType,
 } from './dto/query-report-departure.dto';
 import ReportDepartureRegisterQuery from './queries/impl/report-departure.command';
+import GetReportDepartureQuery from './queries/impl/report-departure.query';
 
 @Controller('report')
 export class ReportArrivalRegistrationController {
@@ -27,6 +28,13 @@ export class ReportArrivalRegistrationController {
   ) {
     return await this.queryBus.execute<ReportDepartureRegisterQuery>(
       new ReportDepartureRegisterQuery(query, res),
+    );
+  }
+
+  @Get('departure-tourism')
+  async arrivalDeparture() {
+    return await this.queryBus.execute<GetReportDepartureQuery>(
+      new GetReportDepartureQuery(),
     );
   }
 }

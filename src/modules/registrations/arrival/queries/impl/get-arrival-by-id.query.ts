@@ -1,4 +1,3 @@
 export default class GetArrivalByIdQuery {
-    constructor(public readonly id: number) {}
-  }
-  
+  constructor(public readonly id: number) {}
+}

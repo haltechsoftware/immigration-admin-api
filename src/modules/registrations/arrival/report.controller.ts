@@ -15,6 +15,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { Public } from 'src/common/decorators/public.decorator';
 import { BotDetectionGuard } from 'src/common/guards/bot-detection.guard';
+import GetReportArrivalQuery from './queries/impl/report-arrival.query';
 
 @Controller('report')
 export class ReportArrivalRegistrationController {
@@ -30,6 +31,14 @@ export class ReportArrivalRegistrationController {
   ) {
     return await this.queryBus.execute<ReportArrivalRegisterQuery>(
       new ReportArrivalRegisterQuery(query, res),
+    );
+  }
+
+  // @Permissions(PermissionGroup.Registration, PermissionName.Read)
+  @Get('arrival-tourism')
+  async arrivalRegister() {
+    return await this.queryBus.execute<GetReportArrivalQuery>(
+      new GetReportArrivalQuery(),
     );
   }
 

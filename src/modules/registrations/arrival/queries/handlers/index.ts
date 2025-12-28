@@ -3,6 +3,7 @@ import { checkCountryExceptVisaHandler } from './check-country-except-visa.repos
 import { GetArrivalByIdHandler } from './get-arrival-by-id.repository';
 import { queryCountriesClientHandler } from './get-country.repository';
 import { queryPointClientHandler } from './get-point-client.repository';
+import { GetReportArrivalHandler } from './report-arrival-query.repository';
 import { ReportArrivalRegisterHandler } from './report-arrival.repository';
 
 const arrivalRegisterHandlers = [
@@ -12,6 +13,7 @@ const arrivalRegisterHandlers = [
   queryCountriesClientHandler,
   checkCountryExceptVisaHandler,
   ReportArrivalRegisterHandler,
+  GetReportArrivalHandler,
 ];
 
 export default arrivalRegisterHandlers;

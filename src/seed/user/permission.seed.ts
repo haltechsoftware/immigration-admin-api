@@ -233,6 +233,25 @@ export default async () => {
         group_name: PermissionGroup.BlackList,
         description: 'ສາມາດເບິ່ງຂໍ້ມູນໃນບັນຊີດຳ',
       },
+
+      {
+        id: 42,
+        name: `${PermissionGroup.nationality}:${PermissionName.Read}`,
+        group_name: PermissionGroup.nationality,
+        description: 'ສາມາດເບິ່ງຂໍ້ມູນສັນຊາດ',
+      },
+      {
+        id: 43,
+        name: `${PermissionGroup.nationality}:${PermissionName.Write}`,
+        group_name: PermissionGroup.nationality,
+        description: 'ສາມາດເພີ່ມ ຫຼື ແກ້ໄຂຂໍ້ມູນສັນຊາດ',
+      },
+      {
+        id: 44,
+        name: `${PermissionGroup.nationality}:${PermissionName.Remove}`,
+        group_name: PermissionGroup.nationality,
+        description: 'ສາມາດລຶບຂໍ້ມູນສັນຊາດ',
+      },
     ]);
   }
 };

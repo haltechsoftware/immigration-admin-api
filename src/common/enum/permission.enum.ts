@@ -21,4 +21,5 @@ export enum PermissionGroup {
   Country = 'country',
   Service = 'service',
   BlackList = 'black-list',
+  nationality = 'nationality',
 }
