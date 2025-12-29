@@ -101,7 +101,7 @@ export class DepartureRegisterHandler
         ? or(
             sql`${nationalityTranslate.name} LIKE ${`%${search}%`}`,
             sql`${nationalityTranslate.short_name} LIKE ${`%${search}%`}`,
-            sql`${departureRegistration.departure_name} = ${search}`,
+            sql`${departureRegistration.departure_name} LIKE ${`%${search}%`}`,
             sql`${
               departureRegistration.verification_code
             } LIKE ${`%${search}%`}`,
