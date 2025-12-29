@@ -106,6 +106,7 @@ export class ArrivalRegisterHandler
             sql`${arrivalRegistration.verification_code} LIKE ${`%${search}%`}`,
             sql`${personalInformation.name} LIKE ${`%${search}%`}`,
             sql`${personalInformation.phone_number} LIKE ${`%${search}%`}`,
+            sql`${passportInformation.number} LIKE ${`%${search}%`}`,
           )
         : undefined,
       entry_name
