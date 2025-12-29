@@ -23,8 +23,11 @@ import ArrivalRegisterQuery from '../impl/arrival.query';
 import { profiles, users } from 'src/modules/users/entities';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
 import { format } from 'date-fns';
-import { nationalityTranslate } from 'src/modules/nationality/entities';
-import { countryTranslate } from 'src/modules/checkpoints/entities';
+import {
+  nationality,
+  nationalityTranslate,
+} from 'src/modules/nationality/entities';
+import { countries, countryTranslate } from 'src/modules/checkpoints/entities';
 
 @QueryHandler(ArrivalRegisterQuery)
 export class ArrivalRegisterHandler
@@ -100,6 +103,9 @@ export class ArrivalRegisterHandler
             sql`${countryTranslate.name} LIKE ${`%${search}%`}`,
             sql`${countryTranslate.slug} LIKE ${`%${search}%`}`,
             sql`${arrivalRegistration.entry_name} LIKE ${`%${search}%`}`,
+            sql`${arrivalRegistration.verification_code} LIKE ${`%${search}%`}`,
+            sql`${personalInformation.name} LIKE ${`%${search}%`}`,
+            sql`${personalInformation.phone_number} LIKE ${`%${search}%`}`,
           )
         : undefined,
       entry_name
@@ -147,19 +153,27 @@ export class ArrivalRegisterHandler
         visaInformation,
         eq(arrivalRegistration.visa_information_id, visaInformation.id),
       )
-      .leftJoin(users, eq(arrivalRegistration.verified_by, users.id))
-      .leftJoin(profiles, eq(users.id, profiles.user_id))
+      .leftJoin(
+        nationality,
+        eq(personalInformation.nationality_id, nationality.id),
+      )
       .leftJoin(
         nationalityTranslate,
-        eq(
-          personalInformation.nationality_id,
-          nationalityTranslate.nationality_id,
+        and(
+          eq(nationalityTranslate.nationality_id, nationality.id),
+          eq(nationalityTranslate.lang, 'en'),
         ),
       )
+      .leftJoin(countries, eq(arrivalRegistration.country_id, countries.id))
       .leftJoin(
         countryTranslate,
-        eq(arrivalRegistration.country_id, countryTranslate.country_id),
+        and(
+          eq(countries.id, countryTranslate.country_id),
+          eq(countryTranslate.lang, 'en'),
+        ),
       )
+      .leftJoin(users, eq(arrivalRegistration.verified_by, users.id))
+      .leftJoin(profiles, eq(users.id, profiles.user_id))
       .orderBy(desc(arrivalRegistration.id))
       .offset(offset)
       .limit(limit)
@@ -183,22 +197,27 @@ export class ArrivalRegisterHandler
         visaInformation,
         eq(arrivalRegistration.visa_information_id, visaInformation.id),
       )
-      .leftJoin(users, eq(arrivalRegistration.verified_by, users.id))
-      .leftJoin(profiles, eq(users.id, profiles.user_id))
+      .leftJoin(
+        nationality,
+        eq(personalInformation.nationality_id, nationality.id),
+      )
       .leftJoin(
         nationalityTranslate,
         and(
-          eq(
-            personalInformation.nationality_id,
-            nationalityTranslate.nationality_id,
-          ),
+          eq(nationalityTranslate.nationality_id, nationality.id),
           eq(nationalityTranslate.lang, 'en'),
         ),
       )
+      .leftJoin(countries, eq(arrivalRegistration.country_id, countries.id))
       .leftJoin(
         countryTranslate,
-        eq(arrivalRegistration.country_id, countryTranslate.country_id),
+        and(
+          eq(countries.id, countryTranslate.country_id),
+          eq(countryTranslate.lang, 'en'),
+        ),
       )
+      .leftJoin(users, eq(arrivalRegistration.verified_by, users.id))
+      .leftJoin(profiles, eq(users.id, profiles.user_id))
       .where(whereConditions);
   }
 }

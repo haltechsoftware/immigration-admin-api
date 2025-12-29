@@ -13,7 +13,6 @@ import {
 } from 'drizzle-orm';
 import { DrizzleService } from 'src/infrastructure/drizzle/drizzle.service';
 import {
-  arrivalRegistration,
   departureRegistration,
   passportInformation,
 } from 'src/modules/registrations/entities';
@@ -23,7 +22,10 @@ import { personalInformation } from './../../../entities/personal_information';
 import { profiles, users } from 'src/modules/users/entities';
 import { format } from 'date-fns';
 import { DateTimeFormat } from 'src/common/enum/date-time-fomat.enum';
-import { nationalityTranslate } from 'src/modules/nationality/entities';
+import {
+  nationality,
+  nationalityTranslate,
+} from 'src/modules/nationality/entities';
 
 @QueryHandler(DepartureRegisterQuery)
 export class DepartureRegisterHandler
@@ -57,6 +59,16 @@ export class DepartureRegisterHandler
             )
           : null,
         created_at: val.departure_registration.created_at,
+        personal_information: {
+          id: val.personal_information.id,
+          name: val.personal_information.name,
+          family_name: val.personal_information.family_name,
+          gender: val.personal_information.gender,
+          date_of_birth: val.personal_information.date_of_birth,
+          nationality_id: val.personal_information.nationality_id,
+          nationality: val.nationalities,
+          nationalityTranslate: val.nationality_translates,
+        },
         passport_information: {
           id: val.passport_information.id,
           number: val.passport_information.number,
@@ -89,8 +101,13 @@ export class DepartureRegisterHandler
         ? or(
             sql`${nationalityTranslate.name} LIKE ${`%${search}%`}`,
             sql`${nationalityTranslate.short_name} LIKE ${`%${search}%`}`,
-            sql`${arrivalRegistration.traveling_by_type} = ${search}`,
-            sql`${arrivalRegistration.entry_name} LIKE ${`%${search}%`}`,
+            sql`${departureRegistration.departure_name} = ${search}`,
+            sql`${
+              departureRegistration.verification_code
+            } LIKE ${`%${search}%`}`,
+            sql`${personalInformation.name} LIKE ${`%${search}%`}`,
+            sql`${personalInformation.phone_number} LIKE ${`%${search}%`}`,
+            sql`${passportInformation.number} LIKE ${`%${search}%`}`,
           )
         : undefined,
       departure_name
@@ -144,10 +161,14 @@ export class DepartureRegisterHandler
       .leftJoin(users, eq(departureRegistration.verified_by, users.id))
       .leftJoin(profiles, eq(users.id, profiles.user_id))
       .leftJoin(
+        nationality,
+        eq(personalInformation.nationality_id, nationality.id),
+      )
+      .leftJoin(
         nationalityTranslate,
-        eq(
-          personalInformation.nationality_id,
-          nationalityTranslate.nationality_id,
+        and(
+          eq(nationalityTranslate.nationality_id, nationality.id),
+          eq(nationalityTranslate.lang, 'en'),
         ),
       )
       .orderBy(desc(departureRegistration.id))
@@ -173,6 +194,17 @@ export class DepartureRegisterHandler
         eq(
           departureRegistration.passport_information_id,
           passportInformation.id,
+        ),
+      )
+      .leftJoin(
+        nationality,
+        eq(personalInformation.nationality_id, nationality.id),
+      )
+      .leftJoin(
+        nationalityTranslate,
+        and(
+          eq(nationalityTranslate.nationality_id, nationality.id),
+          eq(nationalityTranslate.lang, 'en'),
         ),
       )
       .where(whereConditions);
