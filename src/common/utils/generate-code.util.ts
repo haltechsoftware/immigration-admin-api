@@ -14,12 +14,12 @@ export const generateCode = () => {
   const prefix = `${year}${month}-`; // e.g., "2512-" for December 2025
 
   // Generate 10 random digits after the dash
-  const randomLength = 10;
+  const randomLength = 8;
 
   let randomDigits = '';
   for (let i = 0; i < randomLength; i++) {
     randomDigits += Math.floor(Math.random() * 10);
   }
 
-  return `${prefix}${month}${randomDigits}`;
+  return `${prefix}${year}${randomDigits}`;
 };

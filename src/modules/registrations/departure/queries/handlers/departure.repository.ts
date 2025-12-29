@@ -107,6 +107,24 @@ export class DepartureRegisterHandler
             } LIKE ${`%${search}%`}`,
             sql`${personalInformation.name} LIKE ${`%${search}%`}`,
             sql`${personalInformation.family_name} LIKE ${`%${search}%`}`,
+            sql`CONCAT(
+            ${personalInformation.name},
+            ' ',
+            ${personalInformation.family_name}
+          ) LIKE ${`%${search}%`}`,
+            sql`CONCAT(
+            ${personalInformation.family_name},
+            ' ',
+            ${personalInformation.name}
+          ) LIKE ${`%${search}%`}`,
+            sql`CONCAT(
+            ${personalInformation.name},
+            ${personalInformation.family_name}
+          ) LIKE ${`%${search}%`}`,
+            sql`CONCAT(
+            ${personalInformation.family_name},
+            ${personalInformation.name}
+          ) LIKE ${`%${search}%`}`,
             sql`${personalInformation.phone_number} LIKE ${`%${search}%`}`,
             sql`${passportInformation.number} LIKE ${`%${search}%`}`,
           )
