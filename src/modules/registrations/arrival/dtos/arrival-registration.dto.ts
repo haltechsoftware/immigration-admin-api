@@ -27,6 +27,9 @@ export enum travellingByType {
   Flight = 'flight',
   Car = 'car',
   Bus = 'bus',
+  Waterway = 'waterway',
+  Train = 'train',
+  Other = 'other',
 }
 
 const ArrivalRegistrationDto = object({

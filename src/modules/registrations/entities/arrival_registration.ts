@@ -32,6 +32,8 @@ export const travelingByType = mysqlEnum('traveling_by_type', [
   'bus',
   'car',
   'flight',
+  'waterway',
+  'train',
 ]);
 
 export const arrivalRegistration = mysqlTable(
