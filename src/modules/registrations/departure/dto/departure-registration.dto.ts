@@ -1,5 +1,6 @@
 import englishOnly from 'src/common/utils/english-only';
 import {
+  enum_,
   maxLength,
   minLength,
   object,
@@ -10,6 +11,7 @@ import {
 } from 'valibot';
 import { PersonalInfoSchema } from '../../arrival/dtos/personal-info.dto';
 import { PassportInfoSchema } from '../../arrival/dtos/passport-info.dto';
+import { travellingByType } from '../../arrival/dtos/arrival-registration.dto';
 
 const DepartureRegistrationDto = object({
   departure_point: string('must be a string.', [
@@ -33,6 +35,16 @@ const DepartureRegistrationDto = object({
     minLength(1, 'Please enter Check in date.'),
     regex(/^\d{4}-\d{2}-\d{2}$/, 'Check in date must be in YYYY-MM-DD format.'),
   ]),
+  travelling_by: object({
+    type: enum_(travellingByType, 'Please select an option.'),
+    no: string('No must be a string.', [
+      minLength(1, 'Please enter No.'),
+      maxLength(
+        255,
+        'Please enter No with a maximum length of 255 characters.',
+      ),
+    ]),
+  }),
 
   passport_info: PassportInfoSchema,
 });

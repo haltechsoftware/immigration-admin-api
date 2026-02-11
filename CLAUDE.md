@@ -92,10 +92,12 @@ modules/{domain}/
 │   └── handlers/       # Query handlers (data retrieval)
 ├── repositories/       # Optional: Data access layer
 ├── entities/           # Drizzle ORM schema definitions
-├── dtos/               # Valibot validation schemas
+├── dto/                # Valibot validation schemas (singular "dto")
 ├── {domain}.controller.ts
 └── {domain}.module.ts
 ```
+
+**Note:** Some modules use `handler` (singular) instead of `handlers` for query/command handlers. Follow the existing pattern in each module.
 
 ### Database Layer (Drizzle ORM)
 
@@ -132,7 +134,7 @@ export class SomeRepository {
 **Example:**
 ```typescript
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
-import { CreateUserDto, CreateUserDtoType } from './dtos/create-user.dto';
+import { CreateUserDto, CreateUserDtoType } from './dto/create-user.dto';
 
 @Post()
 async create(@Valibot({ schema: CreateUserDto }) body: CreateUserDtoType) {
@@ -172,28 +174,39 @@ async create(@Valibot({ schema: CreateUserDto }) body: CreateUserDtoType) {
 
 ### Pagination Patterns
 
-**DTOs:**
+**Common DTOs** (import from `src/common/dtos/`):
+- `GetByIdDto` - Standard ID parameter validation
+- `GetBySlugDto` - Slug parameter validation
 - `OffsetBasePaginateDto` - Traditional offset/limit pagination
 - `CursorBasePaginateDto` - Cursor-based pagination (for large datasets)
+- `LanguageDto` - Language code validation
 
-**Interface:**
+**Interface** (`src/common/interface/pagination/paginated.interface.ts`):
 ```typescript
-interface Paginated<T> {
-  data: T[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
+interface IPaginated<Entity> {
+  data: Entity[];
+  total: number;
 }
 ```
+
+## Common Utilities and Interfaces
+
+**Location:** `src/common/`
+
+- **`dto/`** - Reusable DTOs for common operations ( GetById, GetBySlug, pagination, language)
+- **`decorators/`** - Custom NestJS decorators (@Auth, @Public, @Permissions, @Valibot)
+- **`guards/`** - Auth and permission guards
+- **`enum/`** - Common enums (PermissionName, PermissionGroup, etc.)
+- **`interface/`** - Shared TypeScript interfaces
+- **`utils/`** - Utility functions (slug generation, date validation, image optimization)
+- **`filters/`** - Global exception filters (ValibotExceptionsFilter)
 
 ## Key Configuration Files
 
 - **`drizzle.config.ts`**: Database schema paths and credentials
 - **`vitest.config.ts`**: Test configuration with SWC plugin and path aliases (`@src`, `@test`)
-- **`tsconfig.json`**: Path aliases and compiler options
+- **`nest-cli.json`**: NestJS compiler config with SWC builder
+- **`tsconfig.json`**: TypeScript compiler options
 
 ## Domain Modules
 
@@ -228,8 +241,17 @@ Many entities have translation tables (e.g., `news_translate`, `province_transla
 ### Testing
 - Unit tests: `**/*.spec.ts`
 - E2E tests: `**/*.e2e-spec.ts`
-- Test configuration: `vitest.config.ts` and `vitest.config.e2e.ts`
+- Test configuration: `vitest.config.ts` (handles both unit and e2e tests)
 - Use Vitest with SWC for fast test execution
+
+**Running specific tests:**
+```bash
+# Run a specific test file
+pnpm run test path/to/file.spec.ts
+
+# Run tests matching a pattern
+pnpm run test -- --grep "test name"
+```
 
 ## Deployment
 

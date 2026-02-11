@@ -13,6 +13,7 @@ import { blackListStatus } from './backlist_status.enum';
 import { passportInformation } from './passport_information';
 import { personalInformation } from './personal_information';
 import { users } from 'src/modules/users/entities';
+import { travelingByType } from './traveling-by-type.enum';
 
 export const departureRegistration = mysqlTable(
   'departure_registration',
@@ -34,6 +35,8 @@ export const departureRegistration = mysqlTable(
       mode: 'number',
       unsigned: true,
     }),
+    traveling_by_type: travelingByType,
+    traveling_by_no: varchar('traveling_by_no', { length: 255 }).notNull(),
     black_list: blackListStatus.notNull(),
     check_in_date: date('check_in_date'),
     created_at: timestamp('created_at', { mode: 'string' })

@@ -18,6 +18,7 @@ import { personalInformation } from './personal_information';
 import { visaInformation } from './visa_information';
 import { users } from 'src/modules/users/entities';
 import { ArrivalRegistration } from 'src/common/enum/arrival-registration.enum';
+import { travelingByType } from './traveling-by-type.enum';
 
 export const purpose = mysqlEnum('purpose', [
   'transit',
@@ -26,14 +27,6 @@ export const purpose = mysqlEnum('purpose', [
   'visit',
   'official',
   'diplomatic',
-]);
-
-export const travelingByType = mysqlEnum('traveling_by_type', [
-  'bus',
-  'car',
-  'flight',
-  'waterway',
-  'train',
 ]);
 
 export const arrivalRegistration = mysqlTable(

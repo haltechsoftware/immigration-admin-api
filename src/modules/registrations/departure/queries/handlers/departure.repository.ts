@@ -50,6 +50,8 @@ export class DepartureRegisterHandler
         departure_name: val.departure_registration.departure_name,
         black_list: val.departure_registration.black_list,
         verification_code: val.departure_registration.verification_code,
+        traveling_by_type: val.departure_registration.traveling_by_type,
+        arrival_registration_no: val.departure_registration.traveling_by_no,
         verified_at: val.departure_registration.verified_at,
         verified_by: val.departure_registration.verified_by,
         check_in_date: val.departure_registration.check_in_date

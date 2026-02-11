@@ -104,6 +104,8 @@ export class DepartureRepository {
           passport_information_id: passportInfoRes.insertId, // ✅ Correct access to insertId
           verification_code: code,
           check_in_date: new Date(input.check_in_date),
+          traveling_by_type: input.travelling_by.type,
+          traveling_by_no: input.travelling_by.no,
         });
 
         // return code;
