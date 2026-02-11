@@ -75,6 +75,7 @@ const ArrivalRegistrationDto = object({
   intend_Address: IntendedAddressSchema,
 });
 
+// test
 type ArrivalRegistrationDtoType = Output<typeof ArrivalRegistrationDto>;
 
 export { ArrivalRegistrationDto, ArrivalRegistrationDtoType };
