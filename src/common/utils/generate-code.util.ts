@@ -8,7 +8,7 @@ export const generateCode = (lastFullCode: string | null) => {
   const now = new Date();
   const year = String(now.getFullYear()).slice(-2); // "26"
   const month = String(now.getMonth() + 1).padStart(2, '0'); // "03"
-  const prefix = `${month}${year}`; // Result: "2603"
+  const prefix = `${year}${month}`; // Result: "2603"
 
   let nextNumber = 1;
 
