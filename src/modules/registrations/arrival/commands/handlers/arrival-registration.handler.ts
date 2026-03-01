@@ -34,9 +34,13 @@ export default class ArrivalRegistrationHandler
       );
     }
 
+    console.log('nationality_id', input.personal_info.nationality_id);
+
     const nationality = await this.nationalityRepository.findOne(
       Number(input.personal_info.nationality_id),
     );
+
+    console.log('nationality', nationality);
 
     if (!nationality) {
       throw new NotFoundException({
