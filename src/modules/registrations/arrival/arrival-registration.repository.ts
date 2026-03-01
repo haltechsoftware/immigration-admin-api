@@ -75,6 +75,21 @@ export class ArrivalRegistrationRepository {
     return result !== undefined;
   }
 
+  async getLastCode(): Promise<string | null> {
+    const targetCode = '03260000001';
+
+    const result = await this.drizzle.db().query.arrivalRegistration.findFirst({
+      where: (fields, { eq, isNotNull, and }) =>
+        and(
+          isNotNull(fields.verification_code),
+          eq(fields.verification_code, targetCode),
+        ),
+      orderBy: (fields, { desc }) => desc(fields.verification_code),
+    });
+
+    return result ? result.verification_code : null;
+  }
+
   async create(
     { input }: ArrivalRegistrationCommand,
     passport_path: string,

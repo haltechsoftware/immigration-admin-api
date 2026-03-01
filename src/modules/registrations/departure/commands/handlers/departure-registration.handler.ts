@@ -85,8 +85,10 @@ export default class DepartureRegistrationHandler
     const maxAttempts = 100;
     let attempts = 0;
 
+    const existingCodes = await this.repository.getLastCode();
+
     while (!isUnique && attempts < maxAttempts) {
-      code = generateCode();
+      code = generateCode(existingCodes);
       isUnique = !(await this.repository.checkVerificationCodeExists(code));
       attempts++;
     }

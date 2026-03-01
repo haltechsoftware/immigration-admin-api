@@ -4,23 +4,29 @@
  * @returns Numeric string with year (2 digits) + month (2 digits) + dash + random digits
  * @example For year 2025 month 12: 2512-1234567890
  */
-export const generateCode = () => {
+export const generateCode = (lastFullCode: string | null) => {
   const now = new Date();
-  const gregorianYear = now.getFullYear();
-  const year = String(gregorianYear).slice(-2); // e.g., "26"
-  const month = String(now.getMonth() + 1).padStart(2, '0'); // e.g., "03"
+  const year = String(now.getFullYear()).slice(-2); // "26"
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // "03"
+  const prefix = `${month}${year}`; // Result: "2603"
 
-  // Format: YYMM- (4 digits + dash)
-  const prefix = `${month}${year}`;
+  let nextNumber = 1;
 
-  // 1. Generate a random number between 1 and 9,999,999
-  const min = 1;
-  const max = 9999999;
-  const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+  if (lastFullCode && lastFullCode.length >= 11) {
+    // lastFullCode is "26030000001"
+    // .substring(4) takes everything after "2603", which is "0000001"
+    const lastNumberString = lastFullCode.substring(4);
+    const lastNumber = parseInt(lastNumberString, 10);
 
-  // 2. Pad the number with leading zeros to ensure it is always 7 digits long
-  const randomDigits = String(randomNumber).padStart(7, '0');
+    nextNumber = lastNumber + 1;
+  }
 
-  // Result: e.g., "2603-0000452"
-  return `${prefix}${randomDigits}`;
+  // Safety reset if you exceed 7 digits
+  if (nextNumber > 9999999) nextNumber = 1;
+
+  // Pad to 7 digits
+  const paddedNumber = String(nextNumber).padStart(7, '0');
+
+  // Returns "26030000001"
+  return `${prefix}${paddedNumber}`;
 };
