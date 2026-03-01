@@ -148,17 +148,29 @@ export default class ArrivalRegistrationHandler
     const maxAttempts = 100;
     let attempts = 0;
 
-    const existingCodes = await this.repository.getLastCode();
+    // 1. Get the initial 'last code' from the database
+    let currentLastCode = await this.repository.getLastCode();
 
     while (!isUnique && attempts < maxAttempts) {
-      code = generateCode(existingCodes);
-      isUnique = !(await this.repository.checkVerificationCodeExists(code));
-      attempts++;
+      // 2. Generate the next number based on the current reference
+      code = generateCode(currentLastCode);
+
+      // 3. Check if THIS specific new code exists
+      const exists = await this.repository.checkVerificationCodeExists(code);
+
+      if (!exists) {
+        isUnique = true; // Success! We found an empty slot.
+      } else {
+        // 4. CRITICAL: If the code exists, make IT the new reference.
+        // This way, the next loop generates code + 1 (e.g., ...002 -> ...003)
+        currentLastCode = code;
+        attempts++;
+      }
     }
 
     if (!isUnique) {
       throw new Error(
-        'Failed to generate unique verification code after multiple attempts',
+        'Failed to generate unique verification code after 100 increments',
       );
     }
 

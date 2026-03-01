@@ -6,27 +6,30 @@
  */
 export const generateCode = (lastFullCode: string | null) => {
   const now = new Date();
-  const year = String(now.getFullYear()).slice(-2); // "26"
-  const month = String(now.getMonth() + 1).padStart(2, '0'); // "03"
-  const prefix = `${year}${month}`; // Result: "2603"
+  const year = String(now.getFullYear()).slice(-2);
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const prefix = `${year}${month}`; // "2603"
 
   let nextNumber = 1;
 
-  if (lastFullCode && lastFullCode.length >= 11) {
-    // lastFullCode is "26030000001"
-    // .substring(4) takes everything after "2603", which is "0000001"
+  // Basic validation: ensure it's a string and has the expected length
+  if (
+    lastFullCode &&
+    typeof lastFullCode === 'string' &&
+    lastFullCode.length >= 11
+  ) {
     const lastNumberString = lastFullCode.substring(4);
-    const lastNumber = parseInt(lastNumberString, 10);
+    const parsed = parseInt(lastNumberString, 10);
 
-    nextNumber = lastNumber + 1;
+    // If parsed is NaN (invalid string) or <= 0, we stay at 1
+    if (!isNaN(parsed) && parsed > 0) {
+      nextNumber = parsed + 1;
+    }
   }
 
-  // Safety reset if you exceed 7 digits
+  // If we hit the limit, wrap back to 1
   if (nextNumber > 9999999) nextNumber = 1;
 
-  // Pad to 7 digits
   const paddedNumber = String(nextNumber).padStart(7, '0');
-
-  // Returns "26030000001"
   return `${prefix}${paddedNumber}`;
 };
