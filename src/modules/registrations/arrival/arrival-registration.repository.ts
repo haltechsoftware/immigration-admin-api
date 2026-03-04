@@ -13,6 +13,7 @@ import {
 import ArrivalRegistrationCommand from './commands/impl/arrival-registration.command';
 import { Gender } from './dtos/personal-info.dto';
 import { countries, countryTranslate } from 'src/modules/checkpoints/entities';
+import { generateNextCode } from 'src/common/utils/default-code.util';
 
 @Injectable()
 export class ArrivalRegistrationRepository {
@@ -76,7 +77,7 @@ export class ArrivalRegistrationRepository {
   }
 
   async getLastCode(): Promise<string | null> {
-    const targetCode = '260';
+    const targetCode = generateNextCode();
 
     const result = await this.drizzle.db().query.arrivalRegistration.findFirst({
       where: (fields, { eq, isNotNull, and }) =>
