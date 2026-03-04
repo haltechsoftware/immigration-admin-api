@@ -60,7 +60,7 @@ export class DepartureRepository {
   }
 
   async getLastCode(): Promise<string | null> {
-    const targetCode = '26030';
+    const targetCode = '260';
 
     const result = await this.drizzle
       .db()

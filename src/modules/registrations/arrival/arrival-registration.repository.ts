@@ -76,7 +76,7 @@ export class ArrivalRegistrationRepository {
   }
 
   async getLastCode(): Promise<string | null> {
-    const targetCode = '26030';
+    const targetCode = '260';
 
     const result = await this.drizzle.db().query.arrivalRegistration.findFirst({
       where: (fields, { eq, isNotNull, and }) =>
