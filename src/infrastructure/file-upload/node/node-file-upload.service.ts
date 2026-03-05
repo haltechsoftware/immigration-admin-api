@@ -64,9 +64,8 @@ export class NodeFileUploadService implements IFileUpload {
   }
 
   async remove(path: string): Promise<void> {
-    const fullPath = resolve(process.cwd(), path);
     try {
-      await unlink(fullPath);
+      await unlink(path);
     } catch (err: any) {
       if (err.code === 'ENOENT') {
         return;
@@ -74,7 +73,7 @@ export class NodeFileUploadService implements IFileUpload {
 
       if (err.code === 'EACCES') {
         console.warn(
-          `Warning: Permission denied when trying to delete file: ${fullPath}. The file will remain on disk.`,
+          `Warning: Permission denied when trying to delete file: ${path}. The file will remain on disk.`,
         );
         console.warn(
           'To fix this, ensure the Node.js process has write permissions to the client/ directory.',
