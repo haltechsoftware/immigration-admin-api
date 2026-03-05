@@ -145,7 +145,7 @@ export default class ArrivalRegistrationHandler
     // Generate unique verification code
     let code: string;
     let isUnique = false;
-    const maxAttempts = 100;
+    const maxAttempts = 100000000;
     let attempts = 0;
 
     // 1. Get the initial 'last code' from the database
@@ -169,7 +169,7 @@ export default class ArrivalRegistrationHandler
     }
 
     if (!isUnique) {
-      throw new Error(
+      console.log(
         'Failed to generate unique verification code after 100 increments',
       );
     }
