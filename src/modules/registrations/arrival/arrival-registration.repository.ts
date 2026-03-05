@@ -13,7 +13,6 @@ import {
 import ArrivalRegistrationCommand from './commands/impl/arrival-registration.command';
 import { Gender } from './dtos/personal-info.dto';
 import { countries, countryTranslate } from 'src/modules/checkpoints/entities';
-import { generateNextCode } from 'src/common/utils/default-code.util';
 
 @Injectable()
 export class ArrivalRegistrationRepository {
@@ -77,14 +76,8 @@ export class ArrivalRegistrationRepository {
   }
 
   async getLastCode(): Promise<string | null> {
-    const targetCode = generateNextCode();
-
     const result = await this.drizzle.db().query.arrivalRegistration.findFirst({
-      where: (fields, { eq, isNotNull, and }) =>
-        and(
-          isNotNull(fields.verification_code),
-          eq(fields.verification_code, targetCode),
-        ),
+      where: (fields, { isNotNull }) => isNotNull(fields.verification_code),
       orderBy: (fields, { desc }) => desc(fields.verification_code),
     });
 
@@ -138,17 +131,17 @@ export class ArrivalRegistrationRepository {
           visa.place_of_issue
         ) {
           const visaInfoRes = await tx.insert(visaInformation).values({
-            number: visa.no, // Matches the 'number' column in the DB
+            number: visa.no, // Matches 'number' column in the DB
             visaCategory: visa.visaCategory, // Drizzle will map 'visaCategory' to 'visa_category' in the DB
             date_issue: format(visa.date_of_issue, DateTimeFormat.date),
             place_issue: visa.place_of_issue,
-            image: null, // Handles the image field correctly (null if not provided)
+            image: null, // Handles of image field correctly (null if not provided)
           });
 
-          visaId = visaInfoRes[0].insertId; // Get the insertId from the response
+          visaId = visaInfoRes[0].insertId; // Get insertId from the response
         }
 
-        // Use the verification code passed from handler
+        // Use of the verification code passed from handler
         const code = verificationCode;
 
         // Arrival Registration

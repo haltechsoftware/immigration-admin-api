@@ -9,7 +9,6 @@ import {
   personalInformation,
 } from '../entities';
 import DepartureRegistrationCommand from './commands/impl/departure-registration.command';
-import { generateNextCode } from 'src/common/utils/default-code.util';
 
 @Injectable()
 export class DepartureRepository {
@@ -61,16 +60,10 @@ export class DepartureRepository {
   }
 
   async getLastCode(): Promise<string | null> {
-    const targetCode = generateNextCode();
-
     const result = await this.drizzle
       .db()
       .query.departureRegistration.findFirst({
-        where: (fields, { eq, isNotNull, and }) =>
-          and(
-            isNotNull(fields.verification_code),
-            eq(fields.verification_code, targetCode),
-          ),
+        where: (fields, { isNotNull }) => isNotNull(fields.verification_code),
         orderBy: (fields, { desc }) => desc(fields.verification_code),
       });
 

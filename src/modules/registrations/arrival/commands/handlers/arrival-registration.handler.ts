@@ -169,8 +169,8 @@ export default class ArrivalRegistrationHandler
     }
 
     if (!isUnique) {
-      console.log(
-        'Failed to generate unique verification code after 100 increments',
+      throw new Error(
+        'Failed to generate a unique verification code after maximum attempts.',
       );
     }
 
