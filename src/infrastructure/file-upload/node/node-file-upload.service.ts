@@ -1,5 +1,4 @@
 import { Injectable, Provider } from '@nestjs/common';
-import { existsSync } from 'fs';
 import { mkdir, unlink, writeFile } from 'fs/promises';
 import { extname, join, resolve } from 'path';
 import { IFileUpload } from '../file-upload.interface';
@@ -65,13 +64,25 @@ export class NodeFileUploadService implements IFileUpload {
   }
 
   async remove(path: string): Promise<void> {
+    const fullPath = resolve(process.cwd(), path);
     try {
-      await unlink(path);
+      await unlink(fullPath);
     } catch (err: any) {
-      if (err.code !== 'ENOENT') {
-        throw err; // ❌ ถ้าเป็น error อื่นเช่น permission denied ต้อง throw
+      if (err.code === 'ENOENT') {
+        return;
       }
-      // ✅ ถ้าเป็น ENOENT (ไฟล์ไม่มี) ก็แค่ข้ามไป
+
+      if (err.code === 'EACCES') {
+        console.warn(
+          `Warning: Permission denied when trying to delete file: ${fullPath}. The file will remain on disk.`,
+        );
+        console.warn(
+          'To fix this, ensure the Node.js process has write permissions to the client/ directory.',
+        );
+        return;
+      }
+
+      throw err;
     }
   }
 

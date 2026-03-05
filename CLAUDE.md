@@ -49,13 +49,13 @@ pnpm run format             # Format with Prettier
 The codebase strictly separates write and read operations using NestJS CQRS:
 
 **Commands (Write Operations):**
-- Located in `modules/*/commands/impl/*.command.ts`
-- Handlers in `modules/*/commands/handlers/*.handler.ts`
+- Located in `modules/*/*/commands/*.command.ts` or `modules/*/commands/impl/*.command.ts`
+- Handlers in `modules/*/*/commands/*.handler.ts` or `modules/*/commands/handlers/*.handler.ts`
 - Executed via `CommandBus.execute(new SomeCommand(input))`
 
 **Queries (Read Operations):**
-- Located in `modules/*/queries/impl/*.query.ts`
-- Handlers in `modules/*/queries/handlers/*.handler.ts` or repository files
+- Located in `modules/*/*/queries/*.query.ts` or `modules/*/queries/impl/*.query.ts`
+- Handlers in `modules/*/*/queries/*.handler.ts` or `modules/*/queries/handlers/*.handler.ts`
 - Executed via `QueryBus.execute(new SomeQuery(input))`
 
 **Typical Controller Pattern:**
@@ -81,7 +81,9 @@ export class ResourceController {
 
 ### Module Structure
 
-Each domain module follows this structure:
+The codebase has **two organizational patterns**:
+
+**Pattern A: Simple modules** with commands/queries at the module level:
 ```
 modules/{domain}/
 ├── commands/
@@ -92,12 +94,32 @@ modules/{domain}/
 │   └── handlers/       # Query handlers (data retrieval)
 ├── repositories/       # Optional: Data access layer
 ├── entities/           # Drizzle ORM schema definitions
-├── dto/                # Valibot validation schemas (singular "dto")
+├── dto/                # Valibot validation schemas (note: some use "dtos")
 ├── {domain}.controller.ts
 └── {domain}.module.ts
 ```
 
-**Note:** Some modules use `handler` (singular) instead of `handlers` for query/command handlers. Follow the existing pattern in each module.
+**Pattern B: Nested sub-modules** (for complex domains):
+```
+modules/{parent-domain}/
+├── {child-domain}/
+│   ├── commands/
+│   ├── queries/
+│   ├── repositories/
+│   ├── dto/            # May also be "dtos"
+│   └── {child}.controller.ts
+└── {parent-domain}.module.ts
+```
+
+**Examples:**
+- `news/news/` and `news/category/` - Nested sub-modules
+- `registrations/arrival/` and `registrations/departure/` - Nested sub-modules
+- `users/auth/`, `users/roles/`, `users/users/` - Nested sub-modules
+
+**Important Notes:**
+- Some modules use `dto/` (singular), others use `dtos/` (plural) - follow the existing pattern
+- Some modules use `handler` (singular) instead of `handlers` for query/command handlers
+- There is a typo in `users/roles/quries` (should be `queries`)
 
 ### Database Layer (Drizzle ORM)
 
@@ -148,11 +170,13 @@ async create(@Valibot({ schema: CreateUserDto }) body: CreateUserDtoType) {
 1. **Rate Limiting**: `ThrottlerGuard` (60 requests/minute per IP)
 2. **JWT Auth**: `AuthGuard` validates JWT tokens via session IDs
 3. **Permissions**: `PermissionsGuard` checks role-based access
+4. **Google reCAPTCHA**: `RecaptchaGuard` for bot prevention on sensitive endpoints
 
 **Decorators:**
 - `@Public()` - Bypass authentication (e.g., login endpoint)
 - `@Auth()` - Access JWT payload (returns `IJwtPayload`)
 - `@Permissions(PermissionGroup.News, PermissionName.Write)` - Require specific permissions
+- `@Recaptcha()` - Require Google reCAPTCHA validation
 
 **Session Management:**
 - JWT tokens contain `token_id` referencing `sessions` table
@@ -193,13 +217,19 @@ interface IPaginated<Entity> {
 
 **Location:** `src/common/`
 
-- **`dto/`** - Reusable DTOs for common operations ( GetById, GetBySlug, pagination, language)
-- **`decorators/`** - Custom NestJS decorators (@Auth, @Public, @Permissions, @Valibot)
+- **`dto/`** - Reusable DTOs for common operations (GetById, GetBySlug, pagination, language)
+- **`decorators/`** - Custom NestJS decorators (@Auth, @Public, @Permissions, @Recaptcha, @Valibot)
 - **`guards/`** - Auth and permission guards
-- **`enum/`** - Common enums (PermissionName, PermissionGroup, etc.)
+- **`enum/`** - Common enums (PermissionName, PermissionGroup, DateTimeFormat, etc.)
 - **`interface/`** - Shared TypeScript interfaces
-- **`utils/`** - Utility functions (slug generation, date validation, image optimization)
+- **`utils/`** - Utility functions:
+  - `generate-slug.ts` - URL slug generation
+  - `image-optimize.util.ts` - Image processing with Sharp
+  - `generate-code.util.ts` / `generate-verify-code.ts` - Code generation and verification
+  - `check-date.util.ts` / `validate-date.ts` - Date validation
+  - `english-only.ts` - Language filtering
 - **`filters/`** - Global exception filters (ValibotExceptionsFilter)
+- **`google-recaptcha/`** - Google reCAPTCHA integration
 
 ## Key Configuration Files
 
@@ -222,6 +252,8 @@ interface IPaginated<Entity> {
 - `laws/` - Legal information
 - `services/` - Government services
 - `nationality/` - Nationality management
+- `contacts/` - Contact information management
+- `files_and_directories/` - File and directory management
 
 ## Important Patterns
 
