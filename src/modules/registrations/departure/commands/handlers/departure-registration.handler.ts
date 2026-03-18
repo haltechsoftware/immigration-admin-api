@@ -92,6 +92,7 @@ export default class DepartureRegistrationHandler
 
     // 1. Get the initial 'last code' from the database
     let currentLastCode = await this.repository.getLastCode();
+    console.log('currentLastCode', currentLastCode);
 
     while (!isUnique && attempts < maxAttempts) {
       // 2. Generate the next number based on the current reference

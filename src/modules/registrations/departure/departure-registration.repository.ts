@@ -59,15 +59,14 @@ export class DepartureRepository {
     return result !== undefined;
   }
 
-  async getLastCode(): Promise<string | null> {
+  async getLastCode(): Promise<string> {
     const result = await this.drizzle
       .db()
       .query.departureRegistration.findFirst({
-        // where: (fields, { isNotNull }) => isNotNull(fields.verification_code),
-        orderBy: (fields, { desc }) => desc(fields.verification_code),
+        orderBy: (fields, { desc }) => desc(fields.id),
       });
 
-    return result ? result.verification_code : null;
+    return result.verification_code;
   }
 
   async create(
