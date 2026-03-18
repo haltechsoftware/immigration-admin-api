@@ -77,7 +77,7 @@ export class ArrivalRegistrationRepository {
 
   async getLastCode(): Promise<string | null> {
     const result = await this.drizzle.db().query.arrivalRegistration.findFirst({
-      where: (fields, { isNotNull }) => isNotNull(fields.verification_code),
+      // where: (fields, { isNotNull }) => isNotNull(fields.verification_code),
       orderBy: (fields, { desc }) => desc(fields.verification_code),
     });
 
@@ -91,6 +91,7 @@ export class ArrivalRegistrationRepository {
     // visa_filePath: string,
     // people_file_path: string,
   ): Promise<any> {
+    console.log('input', input);
     try {
       return await this.drizzle.db().transaction(async (tx) => {
         const { passport_info, personal_info, visa, intend_Address } = input;

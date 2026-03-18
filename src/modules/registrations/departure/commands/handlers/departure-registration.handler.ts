@@ -87,7 +87,7 @@ export default class DepartureRegistrationHandler
     // Generate unique verification code
     let code: string;
     let isUnique = false;
-    const maxAttempts = 100000000;
+    const maxAttempts = 10000000000000;
     let attempts = 0;
 
     // 1. Get the initial 'last code' from the database

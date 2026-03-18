@@ -63,7 +63,7 @@ export class DepartureRepository {
     const result = await this.drizzle
       .db()
       .query.departureRegistration.findFirst({
-        where: (fields, { isNotNull }) => isNotNull(fields.verification_code),
+        // where: (fields, { isNotNull }) => isNotNull(fields.verification_code),
         orderBy: (fields, { desc }) => desc(fields.verification_code),
       });
 
