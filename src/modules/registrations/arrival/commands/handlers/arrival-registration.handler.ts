@@ -36,7 +36,8 @@ export default class ArrivalRegistrationHandler
 
     // console.log('nationality_id', input.personal_info.nationality_id);
 
-    const nationalityId = Number(input.personal_info.nationality_id);
+    const nationalityId = parseInt(input.personal_info.nationality_id);
+    console.log('nationalityId', nationalityId);
     if (isNaN(nationalityId)) {
       throw new NotFoundException({
         message: 'ບໍ່ພົບຂໍ້ມູນສັນຊາດ',

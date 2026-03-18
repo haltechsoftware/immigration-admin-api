@@ -21,7 +21,7 @@ export default class DepartureRegistrationHandler
   ) {}
 
   async execute({ input }: DepartureRegistrationCommand): Promise<string> {
-    const nationalityId = Number(input.personal_info.nationality_id);
+    const nationalityId = parseInt(input.personal_info.nationality_id);
     if (isNaN(nationalityId)) {
       throw new NotFoundException({
         message: 'ບໍ່ພົບຂໍ້ມູນສັນຊາດ',

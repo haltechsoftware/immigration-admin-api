@@ -33,7 +33,7 @@ import { NationalityModule } from './modules/nationality/nationality.module';
       throttlers: [
         {
           ttl: 60000, // 1 minute
-          limit: 60, // limit 60 requests per minute/IP
+          limit: 120, // limit 60 requests per minute/IP
         },
       ],
     }),
