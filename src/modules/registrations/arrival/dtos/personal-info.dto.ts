@@ -1,4 +1,4 @@
-import { object, string, minLength, maxLength, enum_ } from 'valibot';
+import { enum_, maxLength, minLength, object, string } from 'valibot';
 export enum Gender {
   Male = 'male',
   Female = 'female',
@@ -42,6 +42,7 @@ export const PersonalInfoSchema = object({
   // ]),
   nationality_id: string('nationality from must be a string.', [
     minLength(1, 'Please select an option.'),
+    // regex(/^\d+$/, 'Nationality ID must be a valid number.'),
   ]),
   occupation: string('Occupation must be a string', [
     minLength(1, 'Please enter Occupation.'),

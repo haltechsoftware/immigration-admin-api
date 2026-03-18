@@ -34,17 +34,22 @@ export default class ArrivalRegistrationHandler
       );
     }
 
-    console.log('nationality_id', input.personal_info.nationality_id);
+    // console.log('nationality_id', input.personal_info.nationality_id);
 
-    const nationality = await this.nationalityRepository.findOne(
-      Number(input.personal_info.nationality_id),
-    );
+    const nationalityId = Number(input.personal_info.nationality_id);
+    if (isNaN(nationalityId)) {
+      throw new NotFoundException({
+        message: 'ບໍ່ພົບຂໍ້ມູນສັນຊາດ',
+      });
+    }
 
-    console.log('nationality', nationality);
+    const nationality = await this.nationalityRepository.findOne(nationalityId);
+
+    // console.log('nationality', nationality);
 
     if (!nationality) {
       throw new NotFoundException({
-        message: `ບໍ່ພົບຂໍ້ມູນສັນຊາດs`,
+        message: `ບໍ່ພົບຂໍ້ມູນສັນຊາດ`,
       });
     }
 

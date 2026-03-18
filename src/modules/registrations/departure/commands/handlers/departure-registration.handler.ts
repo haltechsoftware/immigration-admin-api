@@ -21,13 +21,18 @@ export default class DepartureRegistrationHandler
   ) {}
 
   async execute({ input }: DepartureRegistrationCommand): Promise<string> {
-    const nationality = await this.nationalityRepository.findOne(
-      Number(input.personal_info.nationality_id),
-    );
+    const nationalityId = Number(input.personal_info.nationality_id);
+    if (isNaN(nationalityId)) {
+      throw new NotFoundException({
+        message: 'ບໍ່ພົບຂໍ້ມູນສັນຊາດ',
+      });
+    }
+
+    const nationality = await this.nationalityRepository.findOne(nationalityId);
 
     if (!nationality) {
       throw new NotFoundException({
-        message: `ບໍ່ພົບຂໍ້ມູນສັນຊາດs`,
+        message: `ບໍ່ພົບຂໍ້ມູນສັນຊາດ`,
       });
     }
     validateCheckInDate(input.check_in_date, TypeCheckDate.DEPARTURE);

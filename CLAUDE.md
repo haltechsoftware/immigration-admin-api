@@ -120,6 +120,10 @@ modules/{parent-domain}/
 - Some modules use `dto/` (singular), others use `dtos/` (plural) - follow the existing pattern
 - Some modules use `handler` (singular) instead of `handlers` for query/command handlers
 - There is a typo in `users/roles/quries` (should be `queries`)
+- **Handler file naming**: Most handlers use `.handler.ts` but some (notably in `news/` module) use `.repository.ts` for query handlers
+- **Handler export patterns**: Handlers are exported via `index.ts` files. Two patterns exist:
+  - `export default const Handlers = [Handler1, Handler2, ...]` - imported without brackets
+  - `export const handlers: Provider[] = [Handler1, Handler2, ...]` - imported with spread operator
 
 ### Database Layer (Drizzle ORM)
 
@@ -143,6 +147,28 @@ export class SomeRepository {
   async findOne(id: number) {
     return await this._getPrepared.execute({ id });
   }
+}
+```
+
+### Infrastructure Layer
+
+**Location:** `src/infrastructure/`
+
+The infrastructure layer contains cross-cutting concerns and external service integrations:
+
+- **`drizzle/`** - Database connection and service (DrizzleService, DrizzleModule)
+- **`file-upload/`** - File upload abstraction with multiple implementations:
+  - `NodeFileUploadModule` (active) - Local filesystem storage
+  - `SupabaseStorageModule` (available but commented out) - Supabase cloud storage
+  - `file-upload.interface.ts` - Interface for file upload implementations
+  - `inject-key.ts` - Injection token for file upload services
+
+**File Upload Abstraction:**
+```typescript
+// Interface definition in file-upload.interface.ts
+export interface IFileUpload {
+  upload(file: Express.Multer.File): Promise<string>;
+  delete(url: string): Promise<void>;
 }
 ```
 
@@ -172,6 +198,8 @@ async create(@Valibot({ schema: CreateUserDto }) body: CreateUserDtoType) {
 3. **Permissions**: `PermissionsGuard` checks role-based access
 4. **Google reCAPTCHA**: `RecaptchaGuard` for bot prevention on sensitive endpoints
 
+**Guard Execution Order:** Guards are applied in the order they are registered in `app.module.ts`: ThrottlerGuard → AuthGuard → PermissionsGuard
+
 **Decorators:**
 - `@Public()` - Bypass authentication (e.g., login endpoint)
 - `@Auth()` - Access JWT payload (returns `IJwtPayload`)
@@ -183,11 +211,15 @@ async create(@Valibot({ schema: CreateUserDto }) body: CreateUserDtoType) {
 - Sessions are validated on each request
 - Logout deletes session from database
 
-### Request Context
+### Request Context & Interceptors
 
 - **Module**: `RequestContextModule` from `nestjs-request-context`
 - **Interceptor**: `MergeDrizzleToReqInterceptor` injects `DrizzleService` into request object
 - **Usage**: Access database via `req.drizzle` instead of direct injection in some cases
+
+**MergeParamToBodyInterceptor:**
+- Merges route parameters into the request body: `req.body = { ...req.params, ...req.body }`
+- Useful when PUT/PATCH endpoints need both URL params and body fields validated together with Valibot
 
 ### File Uploads
 
@@ -238,6 +270,23 @@ interface IPaginated<Entity> {
 - **`nest-cli.json`**: NestJS compiler config with SWC builder
 - **`tsconfig.json`**: TypeScript compiler options
 
+## Environment Configuration
+
+**Required Environment Variables** (see `src/common/interface/env.interface.ts`):
+- `DB_HOST` - MySQL database host
+- `DB_USER` - MySQL database user
+- `DB_PASS` - MySQL database password
+- `DB_DATABASE` - MySQL database name
+- `REDIS_URL` - Redis connection URL
+- `JWT_SECRET` - JWT signing secret
+
+**Additional Configuration:**
+- `PORT` - Application port (defaults to 3000 if not specified)
+
+**Static File Serving:**
+- Files are served from `client/` directory at `/client` route
+- The `client/` directory is automatically created on startup if it doesn't exist
+
 ## Domain Modules
 
 **Primary domains:**
@@ -254,6 +303,34 @@ interface IPaginated<Entity> {
 - `nationality/` - Nationality management
 - `contacts/` - Contact information management
 - `files_and_directories/` - File and directory management
+
+**Module Barrel Exports:**
+Parent domains with sub-modules use barrel exports for cleaner imports:
+```typescript
+// Example from registrations/index.ts
+export const registrationModules = [
+  ArrivalRegistrationModule,
+  DepartureRegistrationModule,
+  NoOfRegisterModule,
+  NoOfTouristsModule,
+  VisitorModule,
+];
+```
+
+## Database Seeding
+
+**Location:** `src/seed/`
+
+The seed directory contains scripts to populate the database with initial data:
+- `provinces/` - Province and province translation seeds
+- `user/` - Default user, roles, and permissions seeds
+- `main.ts` - Entry point for seed execution
+
+**Running seeds:**
+```bash
+pnpm run build          # First build the project
+pnpm run drizzle:seed   # Run all seed scripts
+```
 
 ## Important Patterns
 
@@ -275,6 +352,8 @@ Many entities have translation tables (e.g., `news_translate`, `province_transla
 - E2E tests: `**/*.e2e-spec.ts`
 - Test configuration: `vitest.config.ts` (handles both unit and e2e tests)
 - Use Vitest with SWC for fast test execution
+
+**Note:** The `test:e2e` script references `vitest.config.e2e.ts` but this file does not exist. E2E tests currently use the main `vitest.config.ts` configuration.
 
 **Running specific tests:**
 ```bash
