@@ -77,7 +77,7 @@ export class ArrivalRegistrationRepository {
 
   async getLastCode(): Promise<string> {
     const result = await this.drizzle.db().query.arrivalRegistration.findFirst({
-      orderBy: (fields, { desc }) => desc(fields.verification_code),
+      orderBy: (fields, { desc }) => desc(fields.id),
     });
 
     return result.verification_code;
