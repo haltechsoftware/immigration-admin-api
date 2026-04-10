@@ -18,7 +18,18 @@ export function validateCheckInDate(
       throw new BadRequestException('Check-in date must be in the future.');
     }
   } else if (type === TypeCheckDate.SCAN) {
-    if (checkInDate < today) {
+    // สร้างวัน check-in โดยตัดเวลาให้เป็น 00:00:00 (เริ่มต้นของวัน)
+    const checkInDay = new Date(checkInDate);
+    checkInDay.setHours(0, 0, 0, 0);
+
+    // คำนวณเวลา cutoff = วันถัดไปของ check-in ตอน 06:00 น.
+    // (อนุญาตให้สแกนได้ถึง 6 โมงเช้าของวันถัดไป)
+    const cutoff = new Date(checkInDay);
+    cutoff.setDate(cutoff.getDate() + 1);
+    cutoff.setHours(6, 0, 0, 0);
+
+    // ถ้าเวลาปัจจุบันเลย cutoff แล้ว แปลว่าเกิน 6 ชั่วโมงของวันถัดไป → throw error
+    if (new Date() > cutoff) {
       throw new BadRequestException(
         'ບໍ່ສາມາດສະແກນໄດ້ ເພາະວ່າໄກວັນທີແລ້ວ, ກະລຸນາລົງທະບຽນໃໝ່.',
       );
