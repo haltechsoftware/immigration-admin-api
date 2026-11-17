@@ -1,21 +1,28 @@
-import { Injectable, Provider } from '@nestjs/common';
+import { BadRequestException, Injectable, Provider } from '@nestjs/common';
 import { mkdir, unlink, writeFile } from 'fs/promises';
-import { extname, join, resolve } from 'path';
+import { join, resolve, sep } from 'path';
+import { detectFileType } from '../detect-file-type';
 import { IFileUpload } from '../file-upload.interface';
 import { FILE_UPLOAD_SERVICE } from '../inject-key';
 
 @Injectable()
 export class NodeFileUploadService implements IFileUpload {
-  async upload(
-    path: string,
-    buffer: Buffer,
-    fileName: string,
-  ): Promise<string> {
-    const extension = extname(fileName);
-    const newFileName = this.generateUniqueFilename(extension);
+  // The client file name (third argument of IFileUpload.upload) is
+  // intentionally ignored: the stored extension comes from the content only.
+  async upload(path: string, buffer: Buffer): Promise<string> {
+    const fileType = detectFileType(buffer);
+    if (!fileType)
+      throw new BadRequestException({
+        message: 'ປະເພດໄຟລ໌ບໍ່ຖືກຕ້ອງ.',
+      });
+
+    const newFileName = this.generateUniqueFilename(`.${fileType.ext}`);
 
     const basePath = resolve(process.cwd(), 'client');
-    const fullPath = join(basePath, path);
+    const fullPath = resolve(basePath, path);
+    if (fullPath !== basePath && !fullPath.startsWith(basePath + sep))
+      throw new BadRequestException({ message: 'ທີ່ຢູ່ໄຟລ໌ບໍ່ຖືກຕ້ອງ.' });
+
     await mkdir(fullPath, { recursive: true });
     const filePath = join(fullPath, newFileName);
 

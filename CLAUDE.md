@@ -20,27 +20,37 @@ This is a **NestJS-based administrative API** for an immigration management syst
 pnpm run start:dev          # Start dev server with SWC watch mode
 
 # Building
-pnpm run build              # Compile TypeScript to dist/
+pnpm run build              # Compile to dist/ with SWC (does NOT type-check)
+pnpm exec tsc --noEmit -p tsconfig.build.json   # Type-check (excludes specs)
 
 # Testing
-pnpm run test               # Run unit tests with Vitest
-pnpm run test:e2e           # Run end-to-end tests
+pnpm run test               # Run all tests with Vitest
+pnpm run test:e2e           # Broken: vitest.config.e2e.ts does not exist
 pnpm run test:cov           # Generate test coverage
 pnpm run test:watch         # Run tests in watch mode
 
-# Database operations (Drizzle ORM)
-pnpm run drizzle:generate   # Generate database migrations
-pnpm run drizzle:push       # Push schema changes to database
-pnpm run drizzle:seed       # Run database seed scripts
+# Database operations (Drizzle ORM, drizzle-kit 0.20 syntax; reads .env)
+pnpm run drizzle:generate   # Generate SQL migrations into drizzle/
+pnpm run drizzle:push       # Push schema changes to the configured database
+pnpm run drizzle:seed       # Run seeds from dist/ (build first)
 
 # Production
 pnpm run start:prod         # Run production build
 pnpm run deploy             # Deploy via SCP to production server
 
 # Code quality
-pnpm run lint               # Lint and auto-fix TypeScript
+pnpm run lint               # ESLint — runs with --fix, so it rewrites files
 pnpm run format             # Format with Prettier
 ```
+
+**Known baselines (verify before attributing failures to your change):**
+- `tsc --noEmit -p tsconfig.build.json` reports 3 pre-existing errors (`checkpoint/queries/handlers/get-all.ts`, `arrival-registration.repository.ts`, `seed/provinces/province-translate-seed.ts`). TS is loosely configured (`strictNullChecks: false`, `noImplicitAny: false`).
+- `src/infrastructure/drizzle/drizzle.service.spec.ts` needs a live database and fails without one; the interceptor specs are pure unit tests.
+- If `pnpm run …` aborts with `ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY` (pnpm's deps check wants to reinstall `node_modules`), call the binaries directly instead, e.g. `./node_modules/.bin/vitest run`. Both `pnpm-lock.yaml` and `package-lock.json` exist; pnpm is what CI uses.
+
+## Workspace rules
+
+This package sits inside the `immigration-admin/` workspace, whose `AGENTS.md` (loaded via the parent `CLAUDE.md`) governs work here: non-trivial changes need an approved OpenSpec change under `../openspec/`, and commit, push, and deploy each need explicit human authorization. Pushing to `main` is itself a deploy — `.github/workflows/deploy-uat.yml` builds and rsyncs to the server and restarts it with pm2.
 
 ## Architecture
 
@@ -332,6 +342,8 @@ pnpm run build          # First build the project
 pnpm run drizzle:seed   # Run all seed scripts
 ```
 
+The default-user seed requires `SEED_DEV_PASSWORD` and `SEED_ADMIN_PASSWORD` in the environment and aborts without them. Never hard-code credentials in seeds.
+
 ## Important Patterns
 
 ### Translation Support
@@ -353,15 +365,15 @@ Many entities have translation tables (e.g., `news_translate`, `province_transla
 - Test configuration: `vitest.config.ts` (handles both unit and e2e tests)
 - Use Vitest with SWC for fast test execution
 
-**Note:** The `test:e2e` script references `vitest.config.e2e.ts` but this file does not exist. E2E tests currently use the main `vitest.config.ts` configuration.
+**Note:** The `test:e2e` script references `vitest.config.e2e.ts`, which does not exist, so the script fails. The main `vitest.config.ts` already includes `*.e2e-spec.ts`, so `pnpm run test` runs those too.
 
 **Running specific tests:**
 ```bash
-# Run a specific test file
-pnpm run test path/to/file.spec.ts
+# Run a specific test file (or every spec under a directory)
+pnpm run test src/common/interceptor/merge-param-to-body
 
-# Run tests matching a pattern
-pnpm run test -- --grep "test name"
+# Run tests whose name matches a pattern (Vitest uses -t, not --grep)
+pnpm run test -t "test name"
 ```
 
 ## Deployment
@@ -369,3 +381,5 @@ pnpm run test -- --grep "test name"
 **Production Server:** Ubuntu at 157.119.183.230
 **Deploy Command:** `pnpm run deploy` - Copies `dist/` and `package.json` via SCP
 **Server Path:** `/var/www/api.immigration.gov`
+
+**CI deploy:** every push to `main` runs `.github/workflows/deploy-uat.yml`, which builds, rsyncs the repo (excluding `client/`, `.env*`, `node_modules`) to `/var/www/admin.immigration.gov/`, writes `.env` from secrets, and runs `pm2 restart api`.

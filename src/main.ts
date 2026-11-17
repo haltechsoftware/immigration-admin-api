@@ -13,7 +13,12 @@ async function bootstrap() {
 
   if (!existsSync('client')) mkdirSync('client');
 
-  app.use('/client', express.static(join(__dirname, '..', 'client')));
+  app.use(
+    '/client',
+    express.static(join(__dirname, '..', 'client'), {
+      setHeaders: (res) => res.setHeader('X-Content-Type-Options', 'nosniff'),
+    }),
+  );
 
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new ValibotExceptionsFilter(httpAdapter));

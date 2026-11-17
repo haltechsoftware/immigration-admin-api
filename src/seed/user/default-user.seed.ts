@@ -1,10 +1,18 @@
-
 import { inArray, sql } from 'drizzle-orm';
 import { profiles, users, usersToRoles } from 'src/modules/users/entities';
 import { db } from '../main';
 import { hashSync } from 'bcryptjs';
 
+const requireEnv = (name: string) => {
+  const value = process.env[name];
+  if (!value) throw new Error(`Seed aborted: ${name} is not set.`);
+  return value;
+};
+
 export default async () => {
+  const devPassword = requireEnv('SEED_DEV_PASSWORD');
+  const adminPassword = requireEnv('SEED_ADMIN_PASSWORD');
+
   const existUser = await db
     .select({ value: sql<number>`count(*)`.as('value') })
     .from(users)
@@ -15,18 +23,13 @@ export default async () => {
       {
         id: 1,
         email: 'dev@gmail.com',
-        password: hashSync('DevAdm1n@2024', 10),
+        password: hashSync(devPassword, 10),
       },
       {
         id: 2,
         email: 'admin@gmail.com',
-        password: hashSync('AdmD3v!2024', 10),
+        password: hashSync(adminPassword, 10),
       },
-      // {
-      //   id: 3,
-      //   email: 'adminhotel@gmail.com',
-      //   password: hashSync('H0t3lAdm!n#24', 10),
-      // },
     ]);
 
     const res = await db

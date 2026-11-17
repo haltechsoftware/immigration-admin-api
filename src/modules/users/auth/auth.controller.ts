@@ -1,5 +1,6 @@
 import { Controller, Get, Post } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { Throttle } from '@nestjs/throttler';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
 import { Valibot } from 'src/common/decorators/valibot/valibot.decorator';
@@ -17,6 +18,7 @@ export class AuthController {
   ) {}
 
   @Public()
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post('login')
   async login(@Valibot({ schema: LoginDto }) body: LoginDtoType) {
     return await this.commandBus.execute<LoginCommand>(new LoginCommand(body));

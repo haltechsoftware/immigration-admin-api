@@ -14,7 +14,10 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
       where: (fields, { eq }) => eq(fields.id, sql.placeholder('id')),
       with: {
         profile: true,
-        sessions: { orderBy: ({ created_at }, { desc }) => desc(created_at) },
+        sessions: {
+          columns: { created_at: true },
+          orderBy: ({ created_at }, { desc }) => desc(created_at),
+        },
         usersToRoles: {
           with: {
             role: {

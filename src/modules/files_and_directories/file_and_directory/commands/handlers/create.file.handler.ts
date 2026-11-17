@@ -14,6 +14,10 @@ export class CreateFileHandler implements ICommandHandler<CreateFilesCommand> {
   private part: string[] = [];
 
   async execute({ input }: CreateFilesCommand) {
+    // Reset first: a previous upload that threw would otherwise leave stale
+    // path segments behind for the next request.
+    this.part = [];
+
     if (!!input.directory_id)
       await this.getParentSize(input.directory_id, input.file.size);
 

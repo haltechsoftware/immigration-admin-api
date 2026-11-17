@@ -20,9 +20,11 @@ export class GetUserHandler implements IQueryHandler<GetUserQuery> {
 
   async execute({ paginate: { offset, limit } }: GetUserQuery) {
     const res = await this.drizzle.db().query.users.findMany({
+      columns: { password: false },
       with: {
         profile: true,
         sessions: {
+          columns: { created_at: true },
           orderBy: ({ created_at }, { desc }) => [desc(created_at)],
           limit: 1,
         },
